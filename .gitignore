@@ -1,0 +1,13 @@
+# Claude Code yerel ayarları (kişiye özel)
+.claude/
+
+# Sitede kullanılmayan büyük kaynak görseller (diskte kalır, depoya girmez)
+/hero-bg.png
+/assets/images/hero-hedef.png
+/assets/images/hero-bg.webp
+/assets/images/ali-efe.webp
+
+# İşletim sistemi / editör çöpleri
+Thumbs.db
+.DS_Store
+desktop.ini
