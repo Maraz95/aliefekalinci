@@ -27,28 +27,31 @@
   transform: scale(1.045);
 }
 
-/* Yıldırım çarpması anındaki güçlü ama kontrollü parlama */
+/* Yıldırım çarpması anındaki güçlü ama kontrollü plazma flaşı */
 .loader__flash {
   position: absolute; inset: 0; z-index: 4;
   pointer-events: none; opacity: 0;
   background: radial-gradient(circle at var(--sx, 50%) var(--sy, 50%),
-    rgba(255, 255, 255, .96) 0%,
-    rgba(245, 235, 214, .75) 26%,
-    rgba(138, 104, 69, .48) 56%,
-    rgba(22, 74, 112, .28) 85%,
-    rgba(16, 24, 32, .1) 100%);
+    rgba(255, 255, 255, .98) 0%,
+    rgba(224, 242, 255, .82) 22%,
+    rgba(116, 178, 255, .48) 46%,
+    rgba(196, 150, 98, .28) 70%,
+    rgba(16, 24, 32, .08) 100%);
 }
 
 /* Çarpma noktasından büyüyerek siteyi açan enerji halkası (hafif GPU katmanı) */
 .loader__shockwave {
   position: absolute; z-index: 5;
   left: var(--sx, 50%); top: var(--sy, 50%);
-  width: 140vmax; height: 140vmax;
+  width: 165vmax; height: 165vmax;
   border-radius: 50%;
   transform: translate(-50%, -50%) scale(0);
   pointer-events: none; opacity: 0;
-  border: 3px solid #FFF8EB;
-  box-shadow: 0 0 28px rgba(196, 150, 98, .75), inset 0 0 24px rgba(245, 235, 214, .45);
+  border: 3.5px solid #EAF6FF;
+  box-shadow:
+    0 0 34px rgba(120, 186, 255, .85),
+    0 0 64px rgba(196, 150, 98, .48),
+    inset 0 0 28px rgba(235, 246, 255, .55);
   will-change: transform, opacity;
 }
 
