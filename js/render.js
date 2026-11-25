@@ -22,7 +22,8 @@
 
   /* --- Zaman çizelgesi --- */
   function renderTimeline() {
-    document.getElementById('timelineList').innerHTML = D.timeline.map((t) => `
+    const tl = document.getElementById('timelineList'); if (!tl) return;
+    tl.innerHTML = D.timeline.map((t) => `
       <li class="tl-item">
         <span class="mono accent">${esc(t.year)}</span>
         <h3 class="tl-item__title">${esc(t.title)}</h3>
@@ -32,13 +33,14 @@
 
   /* --- Blog kartları (son 3 yazı) --- */
   function renderBlog() {
-    const fmt = (d) => new Date(d).toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' });
+    const fmt = (d) => new Date(d).toLocaleDateString(document.documentElement.lang === 'en' ? 'en-GB' : 'tr-TR', { day: 'numeric', month: 'long', year: 'numeric' });
     document.getElementById('blogGrid').innerHTML = D.posts.slice(0, 3).map((p) => `
-      <article class="bcard" data-cursor>
+      <a class="bcard" href="blog.html?v=2#${esc(p.slug)}" data-cursor>
         <div class="bcard__meta mono"><span class="accent">${esc(p.tag)}</span><span>${fmt(p.date)}</span></div>
         <h3 class="bcard__title">${esc(p.title)}</h3>
         <p class="bcard__excerpt">${esc(p.excerpt)}</p>
-      </article>`).join('');
+        <span class="bcard__more mono">Devamını oku →</span>
+      </a>`).join('');
   }
 
   renderSkills();

@@ -20,10 +20,12 @@ window.DATA = {
        url      : "Projeyi İncele" bağlantısı (boşsa buton pasif)
        github   : GitHub deposu bağlantısı (boşsa buton pasif) */
   projects: [
-    { slug: 'proje-01', title: 'Proje 01', category: 'Kategori', status: 'Durum', summary: 'Projenin kısa açıklaması buraya gelecek. Bu alan iki satırlık bir tanıtım metni için ayrıldı.', tags: ['Etiket', 'Etiket', 'Etiket', 'Etiket'], image: '', url: '', github: '' },
-    { slug: 'proje-02', title: 'Proje 02', category: 'Kategori', status: 'Durum', summary: 'Projenin kısa açıklaması buraya gelecek. Bu alan iki satırlık bir tanıtım metni için ayrıldı.', tags: ['Etiket', 'Etiket', 'Etiket'], image: '', url: '', github: '' },
-    { slug: 'proje-03', title: 'Proje 03', category: 'Kategori', status: 'Durum', summary: 'Projenin kısa açıklaması buraya gelecek. Bu alan iki satırlık bir tanıtım metni için ayrıldı.', tags: ['Etiket', 'Etiket', 'Etiket', 'Etiket'], image: '', url: '', github: '' },
-    { slug: 'proje-04', title: 'Proje 04', category: 'Kategori', status: 'Durum', summary: 'Projenin kısa açıklaması buraya gelecek. Bu alan iki satırlık bir tanıtım metni için ayrıldı.', tags: ['Etiket', 'Etiket', 'Etiket'], image: '', url: '', github: '' }
+    { slug: 'grafik-animasyon', title: 'Grafik Animasyon I', category: 'Ders çalışmaları', status: 'Eklenecek', summary: 'Grafik Animasyon I dersinde yaptığım çalışmalar. Görseller ve açıklamalar projeler sayfasında.', tags: ['Grafik', 'Animasyon'], image: 'assets/images/projeler/grafik-animasyon-01.svg', url: 'projeler.html', github: '' },
+    { slug: 'portfolyo', title: 'Bu Portfolyo Sitesi', category: 'Web', status: 'Yayında', summary: 'Fiber optik tünel, Blender\'da modellenip Three.js ile canlı çizilen 3B Hakkımda sahnesi ve kaydırma animasyonları.', tags: ['Three.js', 'GSAP', 'Blender', 'JavaScript'], image: '', url: 'projeler.html', github: 'https://github.com/Maraz95' },
+    { slug: 'kumes', title: 'Full Otomatik Kümes', category: 'Saha · Elektrik', status: '2026', summary: 'Bilecik\'te tam otomatik kümeste kablo çekimi ve elektrik tesisatı çalışmaları.', tags: ['Tesisat', 'Kablolama', 'Otomasyon'], image: '', url: 'projeler.html', github: '' },
+    { slug: 'rms-a', title: 'RMS-A İstasyonu', category: 'Saha · Elektrik', status: '2025', summary: 'Doğalgaz istasyonunda pano bağlantıları, saha kablolaması ve projektör montajı.', tags: ['Pano', 'Kablolama', 'Saha'], image: '', url: 'projeler.html', github: '' },
+    { slug: 'oyun', title: 'Oyun Projem', category: 'Oyun · Devlog', status: 'Geliştiriliyor', summary: 'Kendi geliştirdiğim oyun projesi. Tasarım, mekanikler ve geliştirme sürecini blogda paylaşıyorum.', tags: ['Oyun', 'Devlog', 'Kod'], image: '', url: 'projeler.html', github: 'https://github.com/Maraz95' },
+    { slug: 'otomasyon', title: 'Endüstriyel Otomasyon', category: 'PLC · Yazılım', status: 'Yakında', summary: 'Sahadaki pano ve sensör mantığını Python ve PLC kontrol arayüzleriyle birleştiren sistem çalışması.', tags: ['PLC', 'Python', 'Otomasyon'], image: '', url: 'projeler.html', github: '' }
   ],
 
   /* Eski proje kayıtları (silinmedi, gerekirse yukarı geri taşınabilir):
@@ -50,8 +52,8 @@ window.DATA = {
   ],
 
   posts: [
-    { slug: 'elektrikten-yazilima', date: '2026-11-20', tag: 'Kişisel', title: 'Elektrikçilikten yazılıma geçişim', excerpt: 'Sahada öğrendiklerimin kod yazarken nasıl işime yaradığı.' },
-    { slug: 'devlog-1', date: '2026-11-21', tag: 'Oyun', title: 'Oyun devlog #1', excerpt: 'Oyunun ilk prototipi ve karşılaştığım sorunlar.' },
-    { slug: 'scroll-animasyonlari', date: '2026-11-22', tag: 'Web', title: 'Bu sitedeki scroll animasyonlarını nasıl yaptım', excerpt: 'GSAP ScrollTrigger ile pin, scrub ve kablo efekti.' }
+    { slug: 'sifirdan-projeye', date: '2026-11-21', tag: 'Yazılım', title: 'Sıfırdan Projeye: Bir Yazılım Fikri Nasıl Ürüne Dönüşür?', excerpt: 'Bir yazılım projesine başlamak çoğu zaman birkaç satır kod yazmaktan fazlasını gerektirir; fikri çalışan bir ürüne dönüştürmek için planlama, araştırma ve sabır gerekir.' },
+    { slug: 'elektrik-ve-yapay-zeka', date: '2026-11-22', tag: 'Teknoloji', title: 'Elektrik ve Yapay Zekâ', excerpt: 'Elektrik sistemleri artık yalnızca enerji üretimi ve dağıtımından ibaret değil; yapay zekâ bu dönüşümün önemli parçalarından biri.' },
+    { slug: 'yapay-zeka-gunluk-hayat', date: '2026-11-23', tag: 'Yapay Zekâ', title: 'Yapay Zekâ Günlük Hayatımızı Nasıl Değiştiriyor?', excerpt: 'Eskiden yalnızca bilim kurgu filmlerinde karşılaştığımız yapay zekâ teknolojileri, bugün eğitimden yazılıma günlük hayatımızın pek çok alanında aktif olarak kullanılıyor.' }
   ]
 };

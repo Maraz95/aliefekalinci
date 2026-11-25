@@ -1,0 +1,353 @@
+/* =========================================================
+   HAKKIMDA — Blender sahnesi üstünde
+   Arka plan: assets/images/about-scene-*.webp (kaya, taş teras,
+   selviler, deniz, adalar). Bu dosya sadece #about bölümünü ve
+   onun sahne katmanını (.about__scene) yönetir.
+   - Görünürlük (portaldan girince belirme, çıkarken siyaha sönme): js/portal.js
+   - Pin ve fare parallax'ı: js/about-scene.js
+   - 3B kamera hareketi (render kareleri) + canlı Three.js katmanı: js/about-3d.js
+   ========================================================= */
+
+/* ---------- Sahne katmanı (ekrana sabit, tam ekran) ----------
+   Tünelin (z-index 1) altında, fiber tuvalinin (z-index 0, daha önce) üstünde.
+   Başlangıçta gizli; görünmüyorken hiç çizilmez (visibility). */
+.about__scene {
+  --sh: 100svh;                    /* sahnenin yüksekliği (mobilde küçülür) */
+  position: fixed; left: 0; right: 0; top: 0;
+  height: var(--sh);
+  z-index: 0;
+  overflow: hidden;
+  opacity: 0; visibility: hidden;
+  pointer-events: none;
+}
+/* will-change sadece sahne görünürken açık (js/portal.js .is-on ekler): boşta GPU belleği tutmasın */
+.about__scene.is-on { will-change: opacity; }
+.about__scene.is-on .about__par { will-change: transform; }
+
+/* Fare parallax'ı bu katmanı ±12px kaydırır. Kenar görünmesin diye ölçekleme (scale)
+   yerine kutu her yönden 12px taşar: dönüşüm yok, yeniden örnekleme yok. */
+.about__par {
+  position: absolute; inset: -12px;
+}
+.about__zoom { position: absolute; inset: 0; }
+/* Görselin "cover" kırpımı: kutu görselle aynı en/boy oranında ve ekranı kaplar.
+   left/translate %30 = object-position: 30% (soldaki kaya kesilmesin).
+   İçindeki her katman görselle aynı yüzde koordinatlarını kullanır. */
+.about__frame {
+  position: absolute; left: 30%; top: 50%;
+  width: max(100vw, calc(var(--sh) * 1680 / 945));
+  aspect-ratio: 1680 / 945;
+  transform: translate(-30%, -50%);
+}
+.about__frame picture, .about__scene-img {
+  display: block; width: 100%; height: 100%; max-width: none;
+}
+
+/* ---------- 3B katmanlar (js/about-3d.js) ----------
+   __seq : Blender'da render edilmiş kamera hareketi (kareler, kaydırmaya bağlı)
+   __live: Three.js — aynı kamera ile canlı öğeler (deniz ışıltısı, martılar, toz)
+   İkisi de görselle aynı kutuda: koordinatlar birebir örtüşür. */
+.about__seq, .about__live {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  display: block;
+}
+.about__seq { display: none; }                   /* eski kare oynatıcı (artık kullanılmıyor) */
+.about__live { pointer-events: none; opacity: 0; } /* canlı 3B sahne hazır olunca görünür (js/about-3d.js) */
+
+/* Mobilde görselin alt kenarını koyu zemine eriten katman (masaüstünde kapalı) */
+.about__fadeb {
+  display: none;
+  position: absolute; left: 0; right: 0; bottom: 0; height: 30%;
+  background: linear-gradient(to bottom, rgba(16, 24, 32, 0), #101820);
+}
+
+/* ---------- Okunabilirlik: sağdan sola hafif koyu degrade (cam kart yok) ---------- */
+.about__shade {
+  position: absolute; inset: 0;
+  /* Sağda .55, metin sütunu boyunca yavaş azalır (%45'te .36), %85'te sıfır.
+     Böylece sütunun sol kenarındaki puslu ufuk üstündeki küçük etiket de AA (4.5:1) geçer. */
+  background: linear-gradient(to left,
+    rgba(5, 5, 5, .55) 0%,
+    rgba(5, 5, 5, .36) 45%,
+    rgba(5, 5, 5, 0) 85%);
+}
+
+/* =========================================================
+   HAKKIMDA İÇERİĞİ — 3B manzaranın üstünde kayan paneller
+   Palet (5 renk): gece #101820, kömür #202522, doğal taş #B8A58A,
+   eskitilmiş bronz #8A6845, derin deniz #164A70.
+   Kontrast (WCAG AA, ölçüldü): metin hep taş (panel zemininde 6.5:1+),
+   ikincil metin taş %80 (4.7:1+), bronz sadece çizgi/ikon/büyük yazı,
+   deniz sadece dolgu.
+   ========================================================= */
+.about {
+  --gece: #101820; --komur: #202522; --tas: #B8A58A; --bronz: #8A6845; --deniz: #164A70;
+  --tas-soluk: rgba(184, 165, 138, .8);
+  --cizgi: rgba(184, 165, 138, .18);
+  --panel: rgba(16, 24, 32, .86);
+  position: relative; z-index: 1;          /* sahne katmanının üstünde */
+  padding: 92svh var(--pad) 70svh;         /* önce sadece manzara, sonda manzara tekrar açılır */
+  background: transparent;
+  color: var(--tas);
+  font: 400 16px/1.65 'Inter Tight', system-ui, sans-serif;
+}
+.ab-panel {
+  position: relative;
+  max-width: 640px; margin: 0 0 22vh auto;  /* sağ sütun: soldaki kaya ve selviler görünür kalsın */
+  padding: clamp(22px, 3vw, 36px);
+  background: var(--panel);
+  border: 1px solid var(--cizgi); border-radius: 14px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, .35);
+}
+.ab-panel:last-child { margin-bottom: 0; }
+.ab-tek { max-width: 960px; margin: 0 0 0 auto; padding: clamp(22px, 4vw, 56px); }  /* tek parça */
+.ab-bolum + .ab-bolum, .ab-bolum + .ab-soz { margin-top: clamp(32px, 5vw, 56px); padding-top: clamp(32px, 5vw, 56px); border-top: 1px solid var(--cizgi); }
+.ab-soz blockquote { margin-top: 0; }
+.ab-soz { margin-top: clamp(32px, 5vw, 56px); padding-top: clamp(32px, 5vw, 56px); border-top: 1px solid var(--cizgi); }
+
+.about .section-label { color: var(--tas); margin-bottom: 14px; }
+.about h2 { font: 900 clamp(44px, 6vw, 84px)/.9 'Big Shoulders Display', sans-serif; text-transform: uppercase; color: var(--tas); }
+.about h3 { font: 800 clamp(28px, 3.4vw, 42px)/1 'Big Shoulders Display', sans-serif; text-transform: uppercase; color: var(--tas); margin-bottom: 16px; }
+.about h3::before { content: '// '; color: var(--bronz); font: 500 .45em 'JetBrains Mono', monospace; vertical-align: middle; }
+.about h4 { font-size: 18px; font-weight: 700; margin-bottom: 2px; color: var(--tas); }
+.about p + p { margin-top: 12px; }
+.about ul, .about ol { padding-left: 1.3em; }
+.about li + li { margin-top: 6px; }
+.about ul > li::marker { color: var(--bronz); }
+.about ol > li::marker { color: var(--tas); font-family: 'JetBrains Mono', monospace; }
+.about a { color: var(--tas); text-decoration-color: var(--bronz); text-underline-offset: 3px; }
+.about abbr[title] { text-decoration: underline dotted var(--bronz); text-underline-offset: 3px; cursor: help; }
+
+/* Özgeçmiş: vesikalık + metin */
+#ab-ozgecmis { display: grid; gap: 22px; }
+.about .vesikalik { max-width: 200px; }
+.about .vesikalik img { width: 100%; height: auto; border-radius: 10px; border: 5px solid var(--komur); outline: 1px solid var(--bronz); }
+.about .vesikalik figcaption { margin-top: 8px; font: 500 11px 'JetBrains Mono', monospace; letter-spacing: .08em; text-transform: uppercase; color: var(--tas-soluk); }
+.about .unvan { margin: 10px 0 14px; padding-left: 10px; border-left: 3px solid var(--bronz); font: 500 12px/1.5 'JetBrains Mono', monospace; letter-spacing: .06em; text-transform: uppercase; }
+.about .ozet { font-size: 18px; margin-bottom: 18px; }
+@media (min-width: 700px) { #ab-ozgecmis { grid-template-columns: 170px 1fr; align-items: start; } }
+
+/* Deneyim, eğitim, diller */
+.about .deneyim, .about .egitim { padding: 14px 0; border-top: 1px dashed var(--cizgi); }
+.about .rol { font: 500 12px 'JetBrains Mono', monospace; color: var(--tas-soluk); margin-bottom: 6px; }
+.about dl { display: grid; grid-template-columns: max-content 1fr; gap: 6px 18px; }
+.about dt { font-weight: 700; }
+
+/* Ders tablosu: mobilde yatay kaydırma, saat sütunu sabit */
+.about .tablo-kaydir { margin-top: 16px; overflow-x: auto; border: 1px solid var(--cizgi); border-radius: 8px; background: var(--komur); }
+.about .ders-tablosu { width: 100%; min-width: 680px; border-collapse: collapse; font-size: 13px; }
+.about .ders-tablosu caption { caption-side: top; text-align: left; padding: 10px 12px; font: 500 12px 'JetBrains Mono', monospace; color: var(--tas-soluk); }
+.about .ders-tablosu th, .about .ders-tablosu td { border: 1px solid var(--cizgi); padding: 8px 10px; vertical-align: top; text-align: left; }
+.about .ders-tablosu thead th { background: var(--komur); font-weight: 700; border-bottom: 2px solid var(--bronz); }
+.about .ders-tablosu tbody th { position: sticky; left: 0; z-index: 1; background: var(--gece); font: 500 11px 'JetBrains Mono', monospace; white-space: nowrap; }
+.about .ders-tablosu thead th:first-child { position: sticky; left: 0; z-index: 2; }
+.about .ders-tablosu small { color: var(--tas-soluk); }
+.about .etiket { display: inline-block; padding: 0 6px; border: 1px solid var(--bronz); border-radius: 999px; font: 500 10px/1.5 'JetBrains Mono', monospace; vertical-align: middle; }
+
+/* Yetenek çubukları: genişlik --dolu (JS) ya da --yuzde */
+.about .yetenek-listesi { list-style: none; padding: 0; display: grid; gap: 14px; }
+.about .yetenek-listesi li { display: grid; grid-template-columns: 1fr auto; gap: 6px 12px; align-items: center; margin: 0; }
+.about .yetenek-listesi .bar { grid-column: 1 / -1; grid-row: 2; height: 8px; border-radius: 99px; background: var(--komur); overflow: hidden; }
+.about .yetenek-listesi .bar::after { content: ''; display: block; height: 100%; width: calc(var(--dolu, var(--yuzde)) * 1%); background: linear-gradient(90deg, var(--deniz), var(--bronz)); border-radius: inherit; }
+.about .yuzde { font: 500 13px 'JetBrains Mono', monospace; }
+
+/* Kod, alıntı */
+.about code { font-family: 'JetBrains Mono', monospace; font-size: .88em; background: var(--komur); padding: 1px 5px; border-radius: 4px; }
+.about pre { margin-top: 16px; padding: 16px 18px; border-radius: 10px; background: var(--komur); border: 1px solid var(--cizgi); overflow-x: auto; font-size: 13px; line-height: 1.6; }
+.about pre code { background: none; padding: 0; }
+.about pre .k { font-weight: 700; text-decoration: underline; text-decoration-color: var(--bronz); text-underline-offset: 4px; }
+.about pre .f { font-weight: 700; }
+.about pre .c { color: var(--tas-soluk); font-style: italic; }
+.about figure figcaption { margin-top: 8px; font-size: 13px; color: var(--tas-soluk); }
+.about blockquote { margin-top: 24px; padding: 16px 20px; border-left: 4px solid var(--bronz); background: var(--komur); font-size: 20px; font-weight: 500; }
+.about blockquote footer { margin-top: 6px; font: 500 12px 'JetBrains Mono', monospace; color: var(--tas-soluk); }
+
+/* Paneller ekrana girerken belirir (JS ekler); hareketi azaltta gizlenmez */
+.ab-belir { opacity: 0; transform: translateY(40px); }
+
+/* =========================================================
+   MASAÜSTÜ SABİT KAMERA + SCROLL İLE YENİLENEN YAZI SAHNESİ
+   js/about-scene.js ≥ 900px'te .about.is-deck sınıfını ekler.
+   Kamera sabit kalır; kaydırdıkça 6 içerik bloğu aynı çerçevede
+   pürüzsüzce birbirinin yerini alır, bitince site normal akar.
+   ========================================================= */
+.about.is-deck {
+  padding: 0 var(--pad) 95svh;    /* yazılar bittikten sonra Projeler'e sakin manzara geçiş payı */
+  min-height: auto;
+}
+.ab-deck-zone {
+  position: relative;
+  min-height: 540svh;
+}
+.ab-sticky {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-top: 68px;
+  padding-bottom: 24px;
+}
+.about.is-deck .ab-tek {
+  width: min(920px, 100%);
+  max-width: 920px;
+  margin: 0;
+  padding: clamp(18px, 2.4vw, 32px);
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100svh - 96px);
+}
+
+/* Üstte slayt ilerleme çubuğu ve tıklanabilir adım noktaları */
+.ab-deck-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 14px;
+  margin-bottom: 16px;
+  border-bottom: 1px solid var(--cizgi);
+  flex: none;
+}
+.ab-deck-step {
+  font: 500 11px/1 'JetBrains Mono', monospace;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--tas-soluk);
+}
+.ab-deck-step b { color: #F5EBD6; font-weight: 600; }
+.ab-deck-dots {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.ab-deck-dot {
+  width: 24px; height: 4px; border-radius: 99px;
+  background: rgba(184, 165, 138, .24);
+  transition: width .35s var(--ease), background-color .35s;
+}
+.ab-deck-dot:hover { background: rgba(214, 199, 176, .6); }
+.ab-deck-dot.is-on { width: 38px; background: #C49662; }
+
+/* Üst üste binen slayt katmanları (grid tek hücre → en yüksek geçiş sorunsuz, taşarsa iç kaydırma) */
+.ab-slides {
+  position: relative;
+  display: grid;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+.ab-slide {
+  grid-area: 1 / 1;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(22px);
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(138, 104, 69, .55) transparent;
+  transition: opacity .48s var(--ease), transform .55s var(--ease), visibility .48s;
+}
+.ab-slide.is-past {
+  transform: translateY(-20px);
+}
+.ab-slide.is-active {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+.about.is-deck .ab-bolum,
+.about.is-deck .ab-soz {
+  margin-top: 0; padding-top: 0; border-top: 0;
+}
+.about.is-deck .ab-slide > * + * {
+  margin-top: 22px; padding-top: 20px; border-top: 1px solid var(--cizgi);
+}
+
+/* Slayt modunda ders programı: tek ekrana yatay/dikey taşmadan tam sığacak kompakt ızgara */
+.about.is-deck #ab-ders-programi h3 {
+  font-size: clamp(22px, 2.3vw, 30px);
+  margin-bottom: 6px;
+}
+.about.is-deck #ab-ders-programi > p {
+  font-size: 13px;
+  line-height: 1.4;
+}
+.about.is-deck #ab-ders-programi .tablo-kaydir {
+  margin-top: 10px;
+  overflow-x: hidden;
+}
+.about.is-deck #ab-ders-programi .ders-tablosu {
+  min-width: 0;
+  width: 100%;
+  table-layout: fixed;
+  font-size: 11.5px;
+  line-height: 1.25;
+}
+.about.is-deck #ab-ders-programi .ders-tablosu caption {
+  padding: 6px 10px;
+  font-size: 11px;
+}
+.about.is-deck #ab-ders-programi .ders-tablosu th,
+.about.is-deck #ab-ders-programi .ders-tablosu td {
+  padding: 5px 7px;
+  overflow-wrap: break-word;
+}
+.about.is-deck #ab-ders-programi .ders-tablosu thead th:first-child,
+.about.is-deck #ab-ders-programi .ders-tablosu tbody th {
+  width: 84px;
+  padding: 5px 6px;
+  font-size: 10px;
+}
+.about.is-deck #ab-ders-programi .ders-tablosu td b {
+  font-size: 11.5px;
+  color: #F5EBD6;
+}
+.about.is-deck #ab-ders-programi .ders-tablosu td br {
+  display: none;
+}
+.about.is-deck #ab-ders-programi .ders-tablosu small {
+  display: block;
+  margin-top: 2px;
+  font-size: 9.8px;
+  line-height: 1.2;
+}
+.about.is-deck #ab-ders-programi .etiket {
+  font-size: 9px;
+  line-height: 1.35;
+  padding: 0 4px;
+}
+@media (max-height: 760px) and (min-width: 900px) {
+  .about.is-deck #ab-ders-programi .ders-tablosu caption { display: none; }
+  .about.is-deck #ab-ders-programi .ders-tablosu th,
+  .about.is-deck #ab-ders-programi .ders-tablosu td { padding: 3.5px 6px; }
+  .about.is-deck #ab-ders-programi .ders-tablosu small { font-size: 9px; }
+}
+
+/* ---------- Telefon / dar ekran: manzara tam ekran, paneller tam genişlik ---------- */
+@media (max-width: 899px) {
+  .about { padding: 38svh 16px 26svh; }
+  .ab-panel, .ab-tek { max-width: none; margin: 0; padding: 22px 18px; --panel: rgba(16, 24, 32, .92); }
+  .about .vesikalik { max-width: 156px; }
+  .about h2 { font-size: clamp(38px, 11vw, 56px); }
+  .about h3 { font-size: clamp(24px, 7vw, 34px); }
+  .about .ozet { font-size: 16.5px; }
+  .about dl { grid-template-columns: minmax(84px, max-content) 1fr; gap: 6px 12px; }
+  .about .tablo-kaydir { -webkit-overflow-scrolling: touch; }
+  .about .ders-tablosu { min-width: 580px; font-size: 12.5px; }
+  .about .ders-tablosu th, .about .ders-tablosu td { padding: 7px 8px; }
+  .about blockquote { font-size: 17px; padding: 14px 16px; }
+}
+@supports (height: 100lvh) {
+  @media (max-width: 899px) {
+    .about__scene { --sh: 100lvh; }
+  }
+}
+
+/* ---------- Hareketi azalt: görsel statik (kareler ve 3B katman yüklenmez) ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .about__seq, .about__live { display: none; }
+  .ab-belir { opacity: 1; transform: none; }
+}

@@ -14,7 +14,7 @@
   display: block;
   z-index: 0;
   pointer-events: none;
-  transition: opacity .2s linear;
+  /* opaklık js/portal.js'te kaydırmaya bağlı; geçiş gecikmesi olmasın */
 }
 .no-fiber .fiber-stage { display: none; }
 
@@ -24,11 +24,11 @@
   padding: 0;                    /* genel section boşluğunu iptal et */
   background: transparent;       /* tünel arkadaki sahnede */
 }
-.no-fiber .tunnel { background: #03060a; }
+.no-fiber .tunnel { background: #101820; }
 
 .tunnel__sticky {
   position: sticky; top: 0;
-  height: 100vh; overflow: hidden;
+  height: 100svh; overflow: hidden;
 }
 
 /* ---------- Tünelin sonu: yazı ---------- */
@@ -36,16 +36,47 @@
   position: absolute; inset: 0;
   display: grid; place-content: center; text-align: center;
   font-family: var(--f-display, sans-serif); font-weight: 900; text-transform: uppercase;
-  font-size: clamp(56px, 11vw, 150px); line-height: .9; color: #EDEDED;
-  text-shadow: 0 0 40px rgba(47, 198, 255, .35);
+  font-size: clamp(56px, 11vw, 150px); line-height: .9; color: #B8A58A;
+  text-shadow: 0 0 40px rgba(138, 104, 69, .4);
   opacity: 0;
   pointer-events: none;
+  will-change: transform, opacity;   /* js/portal.js küçültüp söndürür */
 }
-.tunnel__end .accent { color: #5CC8FF; }
+.tunnel__end .accent { color: #B8A58A; }
 .tunnel__end small {
   display: block; margin-top: 18px;
   font: 500 clamp(12px, 1.4vw, 16px)/1.4 var(--f-mono, monospace);
-  letter-spacing: .12em; color: #5CC8FF; text-transform: none; text-shadow: none;
+  letter-spacing: .12em; color: #B8A58A; text-transform: none; text-shadow: none;
+}
+
+/* ---------- Portal: yazının yerinde açılan mavi halka (js/portal.js) ---------- */
+.tunnel__portal {
+  --size: min(46vmin, 440px);
+  position: absolute; left: 50%; top: 50%;
+  width: var(--size); height: var(--size);
+  margin: calc(var(--size) / -2) 0 0 calc(var(--size) / -2);   /* transform'u ölçeğe bırak */
+  opacity: 0; transform: scale(0);
+  will-change: transform, opacity;
+  pointer-events: none;
+}
+.tunnel__portal-ring {
+  position: absolute; inset: 0; border-radius: 50%;
+  border: 2px solid #8A6845;
+  box-shadow: 0 0 18px rgba(138, 104, 69, .55), inset 0 0 18px rgba(138, 104, 69, .35);
+}
+/* halkanın içi: ortası açık, kenara doğru mavi ve saydam */
+.tunnel__portal-core {
+  position: absolute; inset: 6%; border-radius: 50%;
+  background: radial-gradient(circle, rgba(184, 165, 138, .9) 0%, rgba(138, 104, 69, .35) 45%, rgba(138, 104, 69, 0) 72%);
+}
+
+/* ---------- Parlama: portaldan geçerken tek sefer (opaklık js'te, en fazla 0.85) ---------- */
+.tunnel__flash {
+  position: absolute; inset: 0; z-index: 3;
+  background: #B8A58A;
+  opacity: 0;
+  pointer-events: none;
+  will-change: opacity;
 }
 
 /* ---------- Ekran yazıları (HUD) ---------- */
@@ -54,22 +85,33 @@
   padding: 96px var(--pad, 48px) 40px;
   display: flex; flex-direction: column; justify-content: space-between;
   font: 500 12px/1.6 var(--f-mono, monospace); letter-spacing: .1em; text-transform: uppercase;
-  color: #8fb3cc;
+  color: #B8A58A;
+  will-change: opacity;              /* tünelin sonunda söner */
 }
 .tunnel__row { display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; }
-.tunnel__label b { color: #5CC8FF; font-weight: 500; }
-.tunnel__meter { width: 180px; height: 2px; background: rgba(255,255,255,.15); margin-top: 10px; }
-.tunnel__meter i { display: block; height: 100%; width: 0; background: #5CC8FF; box-shadow: 0 0 8px #5CC8FF; }
+.tunnel__label b { color: #B8A58A; font-weight: 500; }
+.tunnel__meter { width: 180px; height: 2px; background: rgba(184, 165, 138, .2); margin-top: 10px; }
+.tunnel__meter i { display: block; height: 100%; width: 0; background: #8A6845; box-shadow: 0 0 8px #8A6845; }
 .tunnel__code {
   align-self: center; text-align: center;
-  font-size: clamp(14px, 1.6vw, 20px); letter-spacing: .14em; color: #EDEDED; text-transform: none;
-  text-shadow: 0 0 12px rgba(92,200,255,.5);
+  font-size: clamp(14px, 1.6vw, 20px); letter-spacing: .14em; color: #B8A58A; text-transform: none;
+  text-shadow: 0 0 12px rgba(138, 104, 69, .5);
   min-height: 1.6em;
 }
 
 @media (max-width: 899px) {
-  .tunnel { height: 360vh; }
-  .tunnel__hud { padding-top: 84px; }
+  .tunnel { height: 255svh; }
+  .tunnel__hud {
+    padding:
+      calc(74px + env(safe-area-inset-top, 0px))
+      18px
+      calc(68px + env(safe-area-inset-bottom, 0px));
+    font-size: 11px;
+  }
+  .tunnel__row { gap: 12px; }
+  .tunnel__meter { width: 112px; }
+  .tunnel__end { font-size: clamp(44px, 13vw, 88px); padding: 0 18px; }
+  .tunnel__code { font-size: clamp(13px, 3.6vw, 17px); padding: 0 12px; }
 }
 
 /* Hareketi azalt: kısa bölüm, kamera kaydırmayla tek karede güncellenir */

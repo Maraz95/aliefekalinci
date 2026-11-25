@@ -1,11 +1,16 @@
 # Claude Code yerel ayarları (kişiye özel)
 .claude/
 
-# Sitede kullanılmayan büyük kaynak görseller (diskte kalır, depoya girmez)
+# Sitede kullanılmayan büyük kaynak dosyalar ve yerel yedekler (diskte kalır, depoya girmez)
 /hero-bg.png
 /assets/images/hero-hedef.png
 /assets/images/hero-bg.webp
 /assets/images/ali-efe.webp
+/assets/images/about-scene.png
+/assets/blenderaboutme/
+/_yedek_galeri_iletisim/
+/_yedek_magara_oncesi/
+/aydinlik.html
 
 # İşletim sistemi / editör çöpleri
 Thumbs.db

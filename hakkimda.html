@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Hakkımda — Ali Efe Kalinci | Elektrik Teknikerinden Yazılıma</title>
+  <meta name="description" content="Ali Efe Kalinci'nin özgeçmişi: elektrik teknikerliği saha deneyimi (kümes otomasyonu, RMS-A istasyonu), Akdeniz Üniversitesi Bilgisayar Programcılığı eğitimi, ders programı, yetenekler ve yol haritası.">
+  <meta name="author" content="Ali Efe Kalinci">
+  <link rel="canonical" href="https://maraz95.github.io/hakkimda.html">
+  <meta property="og:title" content="Hakkımda — Ali Efe Kalinci | Elektrik Teknikerinden Yazılıma">
+  <meta property="og:description" content="Ali Efe Kalinci'nin özgeçmişi: elektrik teknikerliği saha deneyimi (kümes otomasyonu, RMS-A istasyonu), Akdeniz Üniversitesi Bilgisayar Programcılığı eğitimi, ders programı, yetenekler ve yol haritası.">
+  <meta property="og:type" content="profile">
+  <meta property="og:locale" content="tr_TR">
+  <meta property="og:url" content="https://maraz95.github.io/hakkimda.html">
+  <meta property="og:image" content="https://maraz95.github.io/assets/images/vesikalik.jpg">
+  <link rel="icon" type="image/svg+xml" href="assets/images/favicon.svg?v=1">
+  <meta name="theme-color" content="#101820">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=Inter+Tight:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/hakkimda.css?v=5">
+</head>
+<body>
+  <!-- Menü: ana sayfadaki menüyle aynı düzen -->
+  <header class="nav">
+    <a href="index.html" class="nav__logo"><img class="nav__mark" src="assets/images/logo.svg" alt="" width="28" height="28" aria-hidden="true">Ali Efe Kalinci</a>
+    <nav class="nav__links" aria-label="Ana menü">
+      <a href="index.html"><span class="nav__num">01.</span> Ana Sayfa</a>
+      <a href="hakkimda.html" class="is-active" aria-current="page"><span class="nav__num">02.</span> Hakkımda</a>
+      <a href="projeler.html"><span class="nav__num">03.</span> Projeler</a>
+      <a href="blog.html"><span class="nav__num">04.</span> Blog</a>
+      <a href="galeri.html"><span class="nav__num">05.</span> Galeri</a>
+      <a href="iletisim.html"><span class="nav__num">06.</span> İletişim</a>
+    </nav>
+  </header>
+
+<!--
+  HAKKIMDA SAYFASI — İÇERİK TASLAĞI
+  Bu dosya sadece içerik ve anlamsal HTML yapısını taşır, stil yok.
+  Claude Code bunu tasarıma uyarlayıp hakkimda.html içine yerleştirecek.
+  "TODO" yazan yerleri Ali Efe onaylayacak / düzeltecek.
+
+  Ödev şartları bu dosyada nerede karşılanıyor:
+  - Vesikalık fotoğraf ............ #ozgecmis > figure
+  - Özgeçmiş ...................... #ozgecmis, #deneyim, #egitim, #diller
+  - Ders programı tablosu ......... #ders-programi > table
+  - Sırasız liste <ul> ............ #ilgi-alanlari
+  - Sıralı liste <ol> ............. #yol-haritasi
+  - abbr .......................... RMS-A, PLC, MYO, MBIL, CEFR, Python vb.
+  - code / pre .................... #sahadan-koda
+  - blockquote .................... #sahadan-koda sonu
+  - Yetenek yüzdeleri ............. #yetenekler (progressbar)
+-->
+
+<main id="main">
+
+  <!-- ===================== GİRİŞ + VESİKALIK + ÖZGEÇMİŞ ===================== -->
+  <section id="ozgecmis" aria-labelledby="ozgecmis-baslik">
+    <figure class="vesikalik">
+      <img src="assets/images/vesikalik-hd.webp" width="810" height="1040"
+           alt="Ali Efe Kalinci'nin vesikalık fotoğrafı">
+      <figcaption><span lang="tr">Ali Efe Kalinci</span></figcaption>
+    </figure>
+
+    <div class="ozgecmis-metin">
+      <h1 id="ozgecmis-baslik"><span lang="tr">Ali Efe Kalinci</span></h1>
+      <p class="unvan">Bilgisayar Programcılığı Öğrencisi · Elektrik Teknikerliği Deneyimi</p>
+
+      <!-- GEO için: sayfanın ne anlattığını tek paragrafta özetleyen giriş -->
+      <p class="ozet">
+        Akdeniz Üniversitesi'nde Bilgisayar Programcılığı okuyorum. Daha önce elektrik
+        teknikeri olarak sahada çalıştım: tam otomatik bir kümesin ve bir
+        <abbr title="Basınç Düşürme ve Ölçüm İstasyonu, A tipi">RMS-A</abbr>
+        doğal gaz istasyonunun elektrik işlerinde görev aldım. Şimdi bu saha bilgisini
+        yazılımla birleştiriyorum.
+      </p>
+
+      <h2>Hakkımda</h2>
+      <p>
+        Elektrik teknikerliği alanında saha deneyimi edinmiş, aynı zamanda bilişim ve
+        yazılım alanında kendini geliştiren bir öğrenciyim. Elektrik tesisatı, pano
+        bağlantıları ve kablolama çalışmalarında görev aldım.
+      </p>
+      <p>
+        Bilgisayar programcılığı eğitimimle birlikte teknik bilgimi yazılım ve yeni
+        teknolojilerle birleştirmeyi hedefliyorum. Öğrenmeye açık, araştırmayı seven ve
+        kendini geliştirmeye önem veren bir yapıya sahibim.
+      </p>
+      <p>
+        <strong>Kariyer hedefim</strong>, endüstriyel otomasyon alanında ilerleyerek
+        elektrik ve yazılım teknolojilerini bir araya getiren sistemler üzerine
+        uzmanlaşmaktır.
+      </p>
+    </div>
+  </section>
+
+  <!-- ===================== İŞ DENEYİMİ ===================== -->
+  <section id="deneyim" aria-labelledby="deneyim-baslik">
+    <h2 id="deneyim-baslik">İş Deneyimi</h2>
+
+    <article class="deneyim">
+      <h3>Şafak Medikal</h3>
+      <p class="rol">Muhasebe Stajyeri · <time datetime="2024">2024</time> · <span>1 ay</span></p>
+      <ul>
+        <li>Muhasebe departmanının günlük işleyişini gözlemledim.</li>
+        <li>Evrak düzenleme ve temel ofis işlemlerinde görev aldım.</li>
+      </ul>
+    </article>
+
+    <article class="deneyim">
+      <h3><abbr title="Basınç Düşürme ve Ölçüm İstasyonu, A tipi">RMS-A</abbr> İstasyonu</h3>
+      <p class="rol">Elektrik Teknikeri · <time datetime="2025">2025</time> · <span>yaklaşık 2,5 ay</span></p>
+      <ul>
+        <li>Elektrik panolarının bağlantı çalışmalarında görev aldım.</li>
+        <li>Kablo çekimi ve saha kablolama işlemlerinde çalıştım.</li>
+        <li>Projektör montajı ve bağlantı işlemlerinde yer aldım.</li>
+      </ul>
+    </article>
+
+    <article class="deneyim">
+      <h3>Bilecik Full Otomatik Kümes Elektrik Tesisatı</h3>
+      <p class="rol">Elektrik Teknikeri · <time datetime="2026">2026</time> · <span>yaklaşık 3 ay</span></p>
+      <ul>
+        <li>Kümes içerisinde kablo çekimi ve elektrik tesisatı çalışmalarında görev aldım.</li>
+        <li>Kümes ofisinin inşaat sürecindeki elektrik tesisatı uygulamalarına katıldım.</li>
+      </ul>
+    </article>
+  </section>
+
+  <!-- ===================== EĞİTİM + DİLLER ===================== -->
+  <section id="egitim" aria-labelledby="egitim-baslik">
+    <h2 id="egitim-baslik">Eğitim</h2>
+    <article class="egitim">
+      <h3>Mustafa Çizmecioğlu Anadolu Lisesi</h3>
+      <p>Lise · Mezun</p>
+    </article>
+    <article class="egitim">
+      <h3>Akdeniz Üniversitesi</h3>
+      <p>Bilgisayar Programcılığı · <time datetime="2026">2026</time> – Devam ediyor</p>
+    </article>
+  </section>
+
+  <section id="diller" aria-labelledby="diller-baslik">
+    <h2 id="diller-baslik">Yabancı Diller</h2>
+    <dl>
+      <dt>İngilizce</dt>
+      <dd><abbr title="Avrupa Ortak Dil Referans Çerçevesi (CEFR) seviyesi: orta">B1</abbr></dd>
+      <dt>Almanca</dt>
+      <dd><abbr title="Avrupa Ortak Dil Referans Çerçevesi (CEFR) seviyesi: başlangıç">A1</abbr> — geliştirmeye devam ediyorum</dd>
+    </dl>
+  </section>
+
+  <!-- ===================== DERS PROGRAMI ===================== -->
+  <section id="ders-programi" aria-labelledby="ders-baslik">
+    <h2 id="ders-baslik">Ders Programım</h2>
+    <p>
+      2026–2027 Güz dönemi, Bilgisayar Programcılığı 1. sınıf.
+      Derslik kodlarında <abbr title="Bilgisayar Programcılığı Laboratuvarı">L23</abbr>
+      laboratuvarı, <abbr title="Uzaktan Eğitim">UE</abbr> çevrim içi dersi gösterir.
+    </p>
+
+    <!-- Mobilde yatay kaydırma için sarmalayıcı -->
+    <div class="tablo-kaydir" role="region" aria-labelledby="ders-baslik" tabindex="0">
+      <table class="ders-tablosu">
+        <caption>Haftalık ders programı (Pazartesi – Cuma)</caption>
+        <thead>
+          <tr>
+            <th scope="col">Saat</th>
+            <th scope="col">Pazartesi</th>
+            <th scope="col">Salı</th>
+            <th scope="col">Çarşamba</th>
+            <th scope="col">Perşembe</th>
+            <th scope="col">Cuma</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row"><time>08:30</time>–<time>09:20</time></th>
+            <td></td>
+            <td rowspan="2"><b>Türk Dili I</b><br><small>TDB 101 · Sanal sınıf · Öğr. Gör. Talha Tunç</small></td>
+            <td rowspan="2"><b>Fizik I</b><br><small><abbr title="Meslek Yüksekokulu">MYO</abbr> 123 · Z05 · Öğr. Gör. Dr. Reyhan Özaydın Özkara</small></td>
+            <td rowspan="2"><b>Grafik Animasyon I</b> <span class="etiket">Lab</span><br><small>MBIL 105 · L23 · Öğr. Gör. Dr. Erokan Canbazoğlu</small></td>
+            <td></td>
+          </tr>
+          <tr>
+            <th scope="row"><time>09:30</time>–<time>10:20</time></th>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <th scope="row"><time>10:30</time>–<time>11:20</time></th>
+            <td></td>
+            <td></td>
+            <td rowspan="2"><b>Temel Matematik</b><br><small>MYO 131 · Z03 · Prof. Dr. Harun Barış Çolakoğlu</small></td>
+            <td rowspan="2"><b>Grafik Animasyon I</b><br><small>MBIL 105 · 303 · Öğr. Gör. Dr. Erokan Canbazoğlu</small></td>
+            <td></td>
+          </tr>
+          <tr>
+            <th scope="row"><time>11:30</time>–<time>12:20</time></th>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <th scope="row"><time>13:30</time>–<time>14:20</time></th>
+            <td rowspan="2"><b>Programlamanın Temelleri</b><br><small>MBIL 101 · 303 · Öğr. Gör. Hasan Özalp</small></td>
+            <td rowspan="2"><b>Atatürk İlkeleri ve İnkılap Tarihi I</b><br><small>ATA 101 · UE · Öğr. Gör. Koray Ergin</small></td>
+            <td rowspan="2"><b>Veri Tabanı I</b><br><small>MBIL 103 · 303 · Öğr. Gör. Hasan Özalp</small></td>
+            <td><b>Web Tasarımının Temelleri</b><br><small>MBIL 113 · 303 · Öğr. Gör. Dr. Erokan Canbazoğlu</small></td>
+            <td><b>Ofis Yazılımları</b><br><small>MBIL 111 · 303 · Öğr. Gör. Hasan Özalp</small></td>
+          </tr>
+          <tr>
+            <th scope="row"><time>14:30</time>–<time>15:20</time></th>
+            <td><b>Web Tasarımının Temelleri</b> <span class="etiket">Lab</span><br><small>MBIL 113 · L23 · Öğr. Gör. Dr. Erokan Canbazoğlu</small></td>
+            <td><b>Ofis Yazılımları</b> <span class="etiket">Lab</span><br><small>MBIL 111 · L23 · Öğr. Gör. Hasan Özalp</small></td>
+          </tr>
+          <tr>
+            <th scope="row"><time>15:30</time>–<time>16:20</time></th>
+            <td rowspan="2"><b>Programlamanın Temelleri</b> <span class="etiket">Lab</span><br><small>MBIL 101 · L23 · Öğr. Gör. Hasan Özalp</small></td>
+            <td rowspan="2"><b>İngilizce I</b><br><small>YBD 121 · UE · Öğr. Gör. Bengü Şahin Kimyon</small></td>
+            <td rowspan="2"><b>Veri Tabanı I</b> <span class="etiket">Lab</span><br><small>MBIL 103 · L23 · Öğr. Gör. Hasan Özalp</small></td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <th scope="row"><time>16:30</time>–<time>17:20</time></th>
+            <td></td>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ===================== İLGİ ALANLARI (SIRASIZ LİSTE) ===================== -->
+  <section id="ilgi-alanlari" aria-labelledby="ilgi-baslik">
+    <h2 id="ilgi-baslik">İlgi Alanlarım</h2>
+    <ul>
+      <li>Basketbol oynamak</li>
+      <li>Kamp yapmak</li>
+      <li>Balık tutmak</li>
+      <li>Yüzmek</li>
+      <li>Dağcılık ve doğa yürüyüşü</li>
+      <li>Gece ya da akşam geç vakitlerde araba sürmek</li>
+    </ul>
+  </section>
+
+  <!-- ===================== YOL HARİTASI (SIRALI LİSTE) ===================== -->
+  <section id="yol-haritasi" aria-labelledby="yol-baslik">
+    <h2 id="yol-baslik">Sahadan Koda: Yol Haritam</h2>
+    <p>Kariyer hedefime giden adımları sırasıyla şöyle planlıyorum:</p>
+    <ol>
+      <li>Sahada elektrik tesisatı, pano ve kablolama deneyimi kazanmak <em>(tamamlandı)</em></li>
+      <li>Programlamanın temellerini ve Python'u öğrenmek <em>(devam ediyor)</em></li>
+      <li>Web teknolojileri: <abbr title="HyperText Markup Language">HTML</abbr>, <abbr title="Cascading Style Sheets">CSS</abbr>, <abbr title="JavaScript">JS</abbr></li>
+      <li>Veri tabanları ile veri toplamak ve saklamak</li>
+      <li><abbr title="Programlanabilir Mantık Denetleyicisi">PLC</abbr> ve endüstriyel otomasyon</li>
+      <li>Elektrik ve yazılımı birleştiren sistemlerde uzmanlaşmak</li>
+    </ol>
+  </section>
+
+  <!-- ===================== YETENEKLER (YÜZDE GÖRSELLEŞTİRME) ===================== -->
+  <section id="yetenekler" aria-labelledby="yetenek-baslik">
+    <h2 id="yetenek-baslik">Yeteneklerim</h2>
+    <!-- TODO (Ali Efe): yüzdeler ÖNERİDİR, kendine göre düzelt. -->
+    <ul class="yetenek-listesi">
+      <li>
+        <span class="yetenek-ad" id="y-python">Python</span>
+        <div class="bar" role="progressbar" aria-labelledby="y-python"
+             aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="--yuzde:40"></div>
+        <span class="yuzde">%40</span>
+      </li>
+      <li>
+        <span class="yetenek-ad" id="y-gitar">Gitar</span>
+        <div class="bar" role="progressbar" aria-labelledby="y-gitar"
+             aria-valuenow="70" aria-valuemin="0" aria-valuemax="100" style="--yuzde:70"></div>
+        <span class="yuzde">%70</span>
+      </li>
+      <li>
+        <span class="yetenek-ad" id="y-ing">İngilizce (B1)</span>
+        <div class="bar" role="progressbar" aria-labelledby="y-ing"
+             aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="--yuzde:60"></div>
+        <span class="yuzde">%60</span>
+      </li>
+      <li>
+        <span class="yetenek-ad" id="y-alm">Almanca (A1)</span>
+        <div class="bar" role="progressbar" aria-labelledby="y-alm"
+             aria-valuenow="10" aria-valuemin="0" aria-valuemax="100" style="--yuzde:10"></div>
+        <span class="yuzde">%10</span>
+      </li>
+    </ul>
+  </section>
+
+  <!-- ===================== SAHADAN KODA (code / pre / blockquote) ===================== -->
+  <section id="sahadan-koda" aria-labelledby="koda-baslik">
+    <h2 id="koda-baslik">Sahadan Koda</h2>
+    <p>
+      Kümeste bir termostat, sıcaklık yükselince fanı çalıştıran bir röleyi tetikler.
+      Aynı mantığı Python'da bir <code>if</code> koşulu ile yazabilirim.
+      Örneğin tek satırlık <code>print("Merhaba, saha!")</code> ilk adımdı;
+      aşağıdaki kod ise sahada kurduğum sistemin yazılımdaki karşılığı:
+    </p>
+
+    <figure>
+      <pre><code class="language-python"># Kümes havalandırma kontrolü — röle mantığının Python karşılığı
+ESIK_SICAKLIK = 28  # °C
+
+def fan_kontrol(sicaklik):
+    if sicaklik &gt; ESIK_SICAKLIK:
+        return "Fan AÇIK"     # röle çeker
+    return "Fan KAPALI"       # röle bırakır
+
+for olcum in [24, 27, 29, 31]:
+    print(olcum, "°C →", fan_kontrol(olcum))</code></pre>
+      <figcaption>Sahadaki röle-termostat mantığının Python ile yazılmış hali.</figcaption>
+    </figure>
+
+    <blockquote lang="kk">
+      <p>Aspanda bürküt, jerde kökbörü bol.</p>
+      <footer>— <cite>Kazakça söz</cite> · <span lang="tr">“Gökte kartal, yerde bozkurt ol.”</span></footer>
+    </blockquote>
+  </section>
+
+</main>
+
+  <footer class="altbilgi">
+    <span>© 2026 Ali Efe Kalinci</span>
+    <span>Sahadan koda</span>
+    <a href="index.html">← Ana sayfaya dön</a>
+  </footer>
+
+  <script src="js/i18n.js?v=20"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="js/hakkimda.js?v=1"></script>
+</body>
+</html>

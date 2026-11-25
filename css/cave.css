@@ -1,0 +1,410 @@
+/* =========================================================
+   KIYI MAĞARASI GALERİSİ & KAMP ATEŞİ İLETİŞİM STİLLERİ
+   Masaüstünde (≥ 900px, canlı 3B açıkken):
+   - #galeri 3B mağara yürüyüş sahnesine dönüşür; duvarlardaki 12 fotoğrafa
+     tıklayınca tam boyut görüntüleyici açılır.
+   - #contact sağa dönen kamp ateşi odasında köz ışığıyla hafif seçilebilir
+     durur; kamp ateşine tıklayınca alevler yanar ve iletişim kartları
+     sıcak ateş ışığıyla tam aydınlanır.
+   Mobilde (< 900px) veya hareketi azalt modunda: hızlı 2B mozaik + 2B kamp ateşi.
+   ========================================================= */
+
+/* ---------- Sabit 3B Mağara Tuvali ---------- */
+.cave-stage {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  background: #070B12;
+}
+.cave-stage canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+body.cave-pointer { cursor: pointer; }
+/* 3B mağara açıkken Blog altındaki siyah şeridi kaldır → yıldızlı geceden mağaraya kesintisiz geçiş */
+body.has-cave-3d .blog { background: transparent; }
+
+/* ---------- Galeri 3B Mağara Modu (yalnızca masaüstü .is-cave-3d) ---------- */
+.gallery.is-cave-3d {
+  min-height: 520svh;
+  padding: 0;
+  background: transparent;
+  content-visibility: visible;
+  contain-intrinsic-size: none;
+}
+.gallery.is-cave-3d .topo-bg,
+.gallery.is-cave-3d > .section-label,
+.gallery.is-cave-3d > .section-title,
+.gallery.is-cave-3d > .gallery__intro,
+.gallery.is-cave-3d > .mz-elev,
+.gallery.is-cave-3d > .mz-filters,
+.gallery.is-cave-3d > .mozaik {
+  display: none;
+}
+
+/* Mağara içi sabit HUD katmanı (fotoğraflara tıklamayı engellemez) */
+.cave-hud {
+  display: none;
+}
+.gallery.is-cave-3d .cave-hud {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  padding: clamp(86px, 10vh, 114px) var(--pad) clamp(24px, 3.5vh, 38px);
+  pointer-events: none;
+  z-index: 2;
+}
+.cave-hud__top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+}
+.cave-hud__title {
+  font-family: var(--f-display);
+  font-weight: 900;
+  font-size: clamp(40px, 4.2vw, 66px);
+  line-height: .95;
+  text-transform: uppercase;
+  color: #FFF5E4;
+  text-shadow: 0 6px 26px rgba(0, 0, 0, .75);
+  margin-top: 4px;
+}
+.cave-hud__sub {
+  margin-top: 8px;
+  max-width: 44ch;
+  font-size: 14px;
+  color: rgba(232, 220, 200, .82);
+  text-shadow: 0 2px 14px rgba(0, 0, 0, .8);
+}
+.cave-hud__actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  pointer-events: auto;
+}
+.cave-hud__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 14px;
+  border-radius: 999px;
+  font-size: 11px;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+  color: #F5EBD6;
+  background: rgba(12, 19, 28, .76);
+  border: 1px solid rgba(214, 168, 114, .42);
+  cursor: pointer;
+  transition: background-color .28s, border-color .28s, color .28s;
+}
+.cave-hud__btn:hover,
+.cave-hud__btn.is-on {
+  background: rgba(196, 150, 98, .26);
+  border-color: #D8AD77;
+  color: #FFF8EB;
+}
+
+/* Fotoğraf üzerine gelince çıkan alt orta bilgi şeridi */
+.cave-hover-tip {
+  align-self: center;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 18px;
+  border-radius: 12px;
+  background: rgba(10, 15, 22, .86);
+  border: 1px solid rgba(216, 173, 119, .58);
+  box-shadow: 0 18px 42px -12px rgba(0, 0, 0, .8), 0 0 26px -8px rgba(216, 173, 119, .38);
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity .26s var(--ease), transform .3s var(--ease);
+}
+.cave-hover-tip.is-show {
+  opacity: 1;
+  transform: translateY(0);
+}
+.cave-hover-tip__no {
+  font-size: 11px;
+  letter-spacing: .12em;
+  color: #D8AD77;
+}
+.cave-hover-tip__title {
+  font-family: var(--f-display);
+  font-weight: 800;
+  font-size: 22px;
+  letter-spacing: .02em;
+  text-transform: uppercase;
+  color: #FFF5E4;
+  line-height: 1;
+}
+.cave-hover-tip__meta {
+  font-size: 10px;
+  letter-spacing: .1em;
+  color: rgba(242, 215, 168, .82);
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgba(138, 104, 69, .22);
+  border: 1px solid rgba(196, 150, 98, .35);
+}
+.cave-hover-tip__hint {
+  font-size: 10px;
+  letter-spacing: .08em;
+  color: rgba(214, 199, 176, .72);
+  border-left: 1px solid rgba(214, 199, 176, .2);
+  padding-left: 12px;
+}
+
+/* Alt ilerleme şeridi */
+.cave-hud__bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 18px;
+  pointer-events: auto;
+}
+.cave-hud__progress {
+  flex: 1;
+  max-width: 340px;
+  height: 3px;
+  border-radius: 99px;
+  background: rgba(214, 199, 176, .2);
+  overflow: hidden;
+}
+.cave-hud__progress i {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, #8A6845, #F2D7A8);
+  transform-origin: left;
+  transform: scaleX(0);
+}
+.cave-hud__count {
+  font-size: 12px;
+  letter-spacing: .12em;
+  color: #F2D7A8;
+}
+.cave-hud__guide {
+  font-size: 11px;
+  letter-spacing: .08em;
+  color: rgba(214, 199, 176, .74);
+  text-shadow: 0 2px 10px rgba(0, 0, 0, .85);
+}
+
+/* "Izgara Görünümü" açıldığında #galeri normal sayfa akışına geçer → #contact üstüne asla binmez */
+.gallery.is-cave-3d.is-mosaic-overlay {
+  min-height: auto;
+  padding: clamp(92px, 11vh, 128px) var(--pad) clamp(64px, 8vh, 96px);
+  background:
+    radial-gradient(ellipse 65% 45% at 80% 18%, rgba(22, 74, 112, .18), transparent 70%),
+    radial-gradient(ellipse 55% 45% at 18% 82%, rgba(138, 104, 69, .12), transparent 68%),
+    var(--bg);
+}
+.gallery.is-cave-3d.is-mosaic-overlay .cave-hud {
+  position: relative;
+  height: auto;
+  padding: 0 0 24px;
+  pointer-events: auto;
+}
+.gallery.is-cave-3d.is-mosaic-overlay .cave-hover-tip,
+.gallery.is-cave-3d.is-mosaic-overlay .cave-hud__bar {
+  display: none;
+}
+.gallery.is-cave-3d.is-mosaic-overlay > .mz-filters {
+  display: flex;
+  position: relative;
+  z-index: 2;
+}
+.gallery.is-cave-3d.is-mosaic-overlay > .mozaik {
+  display: grid;
+  position: relative;
+  z-index: 2;
+}
+
+/* ---------- 3B Kamp Ateşi Yüzen Etkileşim Düğmesi ---------- */
+.cf-prompt {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 18;
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 9px 16px;
+  border-radius: 999px;
+  font-size: 11px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: #FFE7C4;
+  background: rgba(16, 12, 10, .82);
+  border: 1px solid rgba(255, 118, 52, .68);
+  box-shadow: 0 0 28px -4px rgba(255, 96, 32, .55), 0 12px 26px -10px rgba(0, 0, 0, .8);
+  cursor: pointer;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity .35s var(--ease), border-color .3s, box-shadow .3s, background-color .3s;
+}
+.cf-prompt.is-visible {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+.cf-prompt:hover,
+.cf-prompt.is-hovered {
+  background: rgba(42, 20, 10, .92);
+  border-color: #FFA048;
+  box-shadow: 0 0 36px rgba(255, 130, 48, .75);
+}
+.cf-prompt.is-lit {
+  border-color: rgba(255, 186, 104, .55);
+  background: rgba(24, 15, 10, .74);
+  box-shadow: 0 0 24px -6px rgba(255, 154, 68, .55);
+}
+.cf-btn__flame {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #FFD479 0%, #FF5B19 65%, #9B1E05 100%);
+  box-shadow: 0 0 12px rgba(255, 96, 32, .95);
+  animation: ember-breathe 1.9s ease-in-out infinite;
+}
+.cf-prompt.is-lit .cf-btn__flame,
+.cf-mobile-btn.is-lit .cf-btn__flame {
+  background: radial-gradient(circle, #FFF6D0 0%, #FFA23A 60%, #FF4D0A 100%);
+  box-shadow: 0 0 16px rgba(255, 168, 66, 1);
+}
+@keyframes ember-breathe {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.25); opacity: .72; }
+}
+
+/* ---------- İletişim: Kamp Odası & Köz → Alev Işığı Geçişi ---------- */
+.contact.is-cave-contact {
+  background: transparent;
+  content-visibility: visible;
+  contain-intrinsic-size: none;
+}
+.contact.is-cave-contact .topo-bg { display: none; }
+/* Masaüstünde sağ yarıya yasla ki sol taraftaki 3B kamp ateşi tamamen açık kalsın */
+@media (min-width: 900px) {
+  .contact.is-cave-contact .contact__hud,
+  .contact.is-cave-contact .iletisim-bilgi,
+  .contact.is-cave-contact .ib__form,
+  .contact.is-cave-contact .footer {
+    width: min(740px, 56vw);
+    margin-left: auto;
+  }
+  .contact.is-cave-contact .ib__deger {
+    font-size: clamp(22px, 2.7vw, 42px);
+  }
+  .contact.is-cave-contact .ib__deger--adres {
+    font-size: clamp(18px, 1.8vw, 26px);
+  }
+}
+
+/* Köz hâli: iletişim kartları karanlıkta sıcak köz ışığıyla hafif seçilebilir durur */
+.contact:not(.is-fire-lit) .iletisim-bilgi {
+  opacity: .50;
+  filter: brightness(.78) saturate(.88);
+  border-color: rgba(255, 108, 46, .28);
+  box-shadow: 0 24px 64px -22px rgba(0, 0, 0, .82), -14px 0 42px -18px rgba(255, 86, 26, .26);
+  transition: opacity .85s var(--ease), filter .85s var(--ease), border-color .7s, box-shadow .85s;
+}
+.contact:not(.is-fire-lit) .iletisim-bilgi:hover {
+  opacity: .76;
+  filter: brightness(.92);
+}
+.contact:not(.is-fire-lit) .ib__form {
+  opacity: .56;
+  filter: brightness(.80) saturate(.88);
+  background: linear-gradient(155deg, rgba(20, 31, 42, .94) 0%, rgba(16, 24, 32, .98) 100%);
+  border-color: rgba(255, 108, 46, .28);
+  color: #F5EBD6;
+  border-radius: 14px;
+  transition: opacity .85s var(--ease), filter .85s var(--ease), border-color .7s, box-shadow .85s, background .7s;
+}
+.contact:not(.is-fire-lit) .ib__form:hover {
+  opacity: .84;
+  filter: brightness(.95);
+  background: linear-gradient(155deg, rgba(28, 38, 48, .95) 0%, rgba(18, 25, 34, .98) 100%);
+  color: #FFF7EA;
+  border-color: rgba(214, 168, 114, .65);
+}
+
+/* Kamp ateşi yakılınca: kartlar ve iletişim formu düğmesi aynı sıcak ateş ışığıyla tam parlaklığa çıkar */
+.contact.is-fire-lit .iletisim-bilgi {
+  opacity: 1;
+  filter: brightness(1.04) saturate(1.06);
+  border-color: rgba(255, 168, 86, .68);
+  box-shadow:
+    0 28px 74px -20px rgba(0, 0, 0, .72),
+    -26px 0 72px -18px rgba(255, 128, 44, .42),
+    0 0 48px -14px rgba(255, 166, 78, .32);
+  transition: opacity .95s var(--ease), filter .95s var(--ease), border-color .8s, box-shadow .95s;
+}
+.contact.is-fire-lit .ib {
+  background: linear-gradient(145deg, rgba(34, 24, 18, .88) 0%, rgba(18, 17, 20, .93) 100%);
+}
+.contact.is-fire-lit .ib::before {
+  background: linear-gradient(90deg, rgba(255, 138, 48, .85), #F5D093, transparent);
+  opacity: .75;
+}
+.contact.is-fire-lit .ib__etiket { color: #F2B978; }
+.contact.is-fire-lit .ib__deger {
+  color: #FFF7EA;
+  text-shadow: 0 0 24px rgba(255, 152, 64, .28);
+}
+.contact.is-fire-lit .ib__form {
+  opacity: 1;
+  border-radius: 14px;
+  background: linear-gradient(145deg, rgba(34, 24, 18, .88) 0%, rgba(18, 17, 20, .93) 100%);
+  border-color: rgba(255, 168, 86, .68);
+  color: #FFF7EA;
+  box-shadow: 0 20px 52px -18px rgba(0, 0, 0, .72), 0 0 32px -10px rgba(255, 146, 56, .38);
+}
+.contact.is-fire-lit .ib__form:hover {
+  background: linear-gradient(145deg, rgba(52, 34, 22, .94) 0%, rgba(28, 22, 20, .96) 100%);
+  border-color: #FFC07A;
+  color: #FFF8EB;
+  box-shadow: 0 22px 54px -16px rgba(0, 0, 0, .75), 0 0 36px -6px rgba(255, 160, 72, .52);
+}
+
+/* Mobil & 3B kapalı cihazlar için kompakt kamp ateşi düğmesi */
+.cf-mobile-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 42px;
+  padding: 9px 15px;
+  border-radius: 12px;
+  font-size: 11px;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+  color: #FFE7C4;
+  background: linear-gradient(145deg, rgba(40, 20, 12, .9), rgba(18, 16, 20, .95));
+  border: 1px solid rgba(255, 118, 52, .58);
+  cursor: pointer;
+  transition: border-color .3s, box-shadow .3s;
+}
+.cf-mobile-btn.is-lit {
+  border-color: #FFA654;
+  box-shadow: 0 0 24px -6px rgba(255, 142, 48, .65);
+}
+.contact.is-cave-contact .cf-mobile-btn { display: none; }
+@media (max-width: 899px) {
+  .contact:not(.is-fire-lit) .iletisim-bilgi { opacity: .76; filter: brightness(.88); }
+  .contact:not(.is-fire-lit) .ib__form { opacity: .82; filter: brightness(.92); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cf-btn__flame { animation: none; }
+  .contact .iletisim-bilgi { transition: none; }
+}

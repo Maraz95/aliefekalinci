@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /icerik/
+Disallow: /aydinlik.html
+
+Sitemap: https://maraz95.github.io/sitemap.xml

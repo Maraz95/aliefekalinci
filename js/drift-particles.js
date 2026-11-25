@@ -23,7 +23,8 @@ const viewW = () => Math.max(1, document.documentElement.clientWidth || window.i
 const viewH = () => Math.max(1, document.documentElement.clientHeight || window.innerHeight || 1);
 
 const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-const lowPower = window.matchMedia('(hover: none) and (pointer: coarse)').matches || window.innerWidth < 700;
+const touchOnly = window.matchMedia('(hover: none) and (pointer: coarse)').matches;
+const lowPower = touchOnly || window.innerWidth < 700;
 const SIM = lowPower ? 32 : 48;    // doku kenarı → 1024 ya da 2304 parçacık (çizgi hâlinde az da yeterli)
 const COUNT = SIM * SIM;
 // İmlecin izi: son TRAIL noktası, aralarında TRAIL_STEP mesafe (dünya birimi; Hero yüksekliği = 2)
@@ -274,6 +275,10 @@ function mulberry32(seed) {             // tekrarlanabilir rastgele sayı
    --------------------------------------------------------- */
 function init() {
   if (!canvas) return;
+  // Dokunmatik telefonlarda fare imleci olmadığı için ekstra WebGL bağlamı ve GPU belleği harcama
+  if (touchOnly) { canvas.style.display = 'none'; return; }
+  // Dokunmatik telefon/tablette imleç yok: ışık izi gereksiz, GPU ve pil harcamasın
+  if (window.matchMedia('(hover: none) and (pointer: coarse)').matches) { canvas.style.display = 'none'; return; }
 
   let renderer;
   try {

@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <!-- Dış kod köşeli parantezleri -->
+  <path d="M13 15H7V49H13" stroke="#8A6845" stroke-width="2.6" stroke-linecap="square"/>
+  <path d="M51 15H57V49H51" stroke="#8A6845" stroke-width="2.6" stroke-linecap="square"/>
+  <!-- A / Dağ zirvesi gövdesi -->
+  <path d="M18 47L32 15L46 47" stroke="#F5EBD6" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Elektrik / sinyal darbesi kesiti -->
+  <path d="M23.5 36.5H31L28.5 41.5L40.5 31.5H33.5" stroke="#C49662" stroke-width="2.9" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Zirve noktası -->
+  <circle cx="32" cy="15" r="2.7" fill="#C49662"/>
+</svg>

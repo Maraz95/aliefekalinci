@@ -2,30 +2,174 @@
 <html lang="tr">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Ali Efe Kalinci — Portfolyo</title>
+  <meta name="description" content="Ali Efe Kalinci — elektrik ve otomasyon sahasından yazılıma geçen geliştirici. Saha projeleri, yazılım işleri ve blog.">
+  <meta name="author" content="Ali Efe Kalinci">
+  <link rel="canonical" href="https://maraz95.github.io/">
+  <meta property="og:url" content="https://maraz95.github.io/">
+  <meta property="og:locale" content="tr_TR">
+  <meta property="og:image" content="https://maraz95.github.io/assets/images/vesikalik.jpg">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "Ali Efe Kalinci",
+    "url": "https://maraz95.github.io/",
+    "image": "https://maraz95.github.io/assets/images/vesikalik.jpg",
+    "jobTitle": "Bilgisayar Programcılığı öğrencisi · Elektrik teknikeri",
+    "email": "mailto:efekalinci4@gmail.com",
+    "telephone": "+90 546 433 84 48",
+    "address": { "@type": "PostalAddress", "addressLocality": "Bolu", "addressRegion": "Merkez", "addressCountry": "TR" },
+    "alumniOf": [
+      { "@type": "HighSchool", "name": "Mustafa Çizmecioğlu Anadolu Lisesi" },
+      { "@type": "CollegeOrUniversity", "name": "Akdeniz Üniversitesi" }
+    ],
+    "knowsLanguage": ["tr", "en", "de"],
+    "knowsAbout": ["Elektrik tesisatı", "Endüstriyel otomasyon", "Python", "Web geliştirme", "Three.js"],
+    "sameAs": ["https://github.com/Maraz95"]
+  }
+  </script>
+  <meta name="theme-color" content="#101820">
+  <meta property="og:title" content="Ali Efe Kalinci — Sahadan Koda">
+  <meta property="og:description" content="Elektrik ve otomasyon sahasından yazılıma geçen bir geliştiricinin portfolyosu.">
+  <meta property="og:type" content="website">
+  <!-- Sekme ikonu: Zirve & Sinyal logosu -->
+  <link rel="icon" type="image/svg+xml" href="assets/images/favicon.svg?v=1">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=Inter+Tight:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <!-- Kimlik kartındaki vesikalık fotoğraf erken insin -->
   <link rel="preload" as="image" href="assets/images/vesikalik-hd.webp">
-  <link rel="stylesheet" href="css/base.css">
-  <link rel="stylesheet" href="css/main.css?v=2">
-  <link rel="stylesheet" href="css/hero.css?v=3">
-  <link rel="stylesheet" href="css/tunnel.css">
-  <link rel="stylesheet" href="css/projects.css?v=6">
+  <link rel="stylesheet" href="css/base.css?v=3">
+  <link rel="stylesheet" href="css/main.css?v=18">
+  <link rel="stylesheet" href="css/hero.css?v=12">
+  <link rel="stylesheet" href="css/tunnel.css?v=4">
+  <link rel="stylesheet" href="css/projects.css?v=12">
+  <link rel="stylesheet" href="css/about.css?v=17">
+  <link rel="stylesheet" href="css/galeri.css?v=8">
+  <link rel="stylesheet" href="css/cave.css?v=5">
 </head>
 <body class="is-loading">
 
-  <!-- ========== LOADER: 0'dan 100'e sayaç, sonra perde yukarı kalkar ========== -->
+  <!-- ========== LOADER: Devreye enerji verme · osiloskop · yıldırım çarpması ile açılış ========== -->
   <div class="loader" id="loader" aria-hidden="true">
-    <div class="loader__top mono"><span>[ SYS.BOOT ]</span><span>PORTFOLYO v1.0</span></div>
-    <div class="loader__count"><span id="loaderCount">0</span><span class="accent">%</span></div>
-    <div>
-      <div class="loader__bar"><span id="loaderBar"></span></div>
-      <p class="loader__log mono" id="loaderLog">Sistem başlatılıyor…</p>
+    <!-- Yıldırımın çarptığı noktadan dairesel olarak açılan yüzey -->
+    <div class="loader__surface" id="loaderSurface">
+      <!-- Teknik grid, atmosfer parlaması ve köşe nişangahları -->
+      <div class="loader__bg">
+        <div class="loader__grid"></div>
+        <div class="loader__glow"></div>
+        <div class="loader__scan"></div>
+      </div>
+      <span class="loader__corner loader__corner--tl"></span>
+      <span class="loader__corner loader__corner--tr"></span>
+      <span class="loader__corner loader__corner--bl"></span>
+      <span class="loader__corner loader__corner--br"></span>
+
+      <!-- İçerik katmanı -->
+      <div class="loader__inner" id="loaderInner">
+      <div class="loader__top mono">
+        <span class="loader__boot"><i class="loader__led" id="loaderLed"></i>[ SYS.BOOT ]</span>
+        <span class="loader__telemetry">
+          <span class="loader__coords">40.7350° N · 31.6061° E</span>
+          <span class="loader__sep">/</span>
+          <span id="loaderVolt">000V</span> · <span id="loaderFreq">00.0Hz</span>
+        </span>
+        <span>PORTFOLYO v1.0</span>
+      </div>
+
+      <div class="loader__stage">
+        <!-- Sol: Tek hat şeması + canlı osiloskop + pano kontrol listesi -->
+        <div class="loader__hud">
+          <!-- Tek hat şeması: Faz → Pano → Fiber → Kod -->
+          <div class="loader__schematic">
+            <div class="loader__schematic-head mono">
+              <span>TEK HAT ŞEMASI</span>
+              <span id="loaderState">BEKLEMEDE</span>
+            </div>
+            <svg class="loader__circuit" viewBox="0 0 460 64" fill="none" aria-hidden="true">
+              <!-- Pasif zemin hattı -->
+              <path class="lc__base" d="M28 24 H432" stroke-width="1.5" stroke-dasharray="4 4"/>
+              <!-- Aktif akım hattı (JS ile dolar) -->
+              <path class="lc__live" id="loaderCircuitPath" d="M28 24 H432" stroke-width="2"/>
+              <!-- 4 düğüm noktası -->
+              <g class="lc__node" data-step="0" transform="translate(28,24)">
+                <circle class="lc__ring" r="10"/>
+                <circle class="lc__dot" r="3.5"/>
+                <text y="28" text-anchor="middle">FAZ</text>
+              </g>
+              <g class="lc__node" data-step="1" transform="translate(162,24)">
+                <circle class="lc__ring" r="10"/>
+                <circle class="lc__dot" r="3.5"/>
+                <text y="28" text-anchor="middle">PANO</text>
+              </g>
+              <g class="lc__node" data-step="2" transform="translate(298,24)">
+                <circle class="lc__ring" r="10"/>
+                <circle class="lc__dot" r="3.5"/>
+                <text y="28" text-anchor="middle">FIBER</text>
+              </g>
+              <g class="lc__node" data-step="3" transform="translate(432,24)">
+                <circle class="lc__ring" r="10"/>
+                <circle class="lc__dot" r="3.5"/>
+                <text y="28" text-anchor="middle">KOD</text>
+              </g>
+            </svg>
+          </div>
+
+          <!-- Canlı AC osiloskop -->
+          <div class="loader__scope-wrap">
+            <div class="loader__scope-head mono">
+              <span>CH1 · AC SİNÜS</span>
+              <span id="loaderAmp">0.00 A</span>
+            </div>
+            <canvas class="loader__scope" id="loaderScope" width="460" height="84"></canvas>
+          </div>
+
+          <!-- Pano boot kontrol listesi -->
+          <ul class="loader__checks mono" id="loaderChecks">
+            <li data-at="18"><span class="chk__tag">[ .. ]</span> L1 · L2 · L3 faz dengesi</li>
+            <li data-at="45"><span class="chk__tag">[ .. ]</span> Pano &amp; klemens kontrolü</li>
+            <li data-at="72"><span class="chk__tag">[ .. ]</span> Fiber optik hat bağlantısı</li>
+            <li data-at="96"><span class="chk__tag">[ .. ]</span> Sahadan koda derleme</li>
+          </ul>
+        </div>
+
+        <!-- Sağ: Dev yüzde sayacı -->
+        <div class="loader__counter-wrap">
+          <span class="loader__counter-label mono">ENERJİ SEVİYESİ</span>
+          <div class="loader__count" id="loaderCountWrap">
+            <span id="loaderCount">0</span><span class="accent">%</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="loader__bottom">
+        <div class="loader__bar">
+          <span id="loaderBar"></span>
+          <i class="loader__spark" id="loaderSpark"></i>
+        </div>
+        <div class="loader__foot mono">
+          <p class="loader__log" id="loaderLog">Sistem başlatılıyor…</p>
+          <span class="loader__slogan">SAHADAN → KODA</span>
+        </div>
+      </div>
+      </div>
     </div>
+
+    <!-- Yıldırım çarpması flaşı, şok dalgası halkası ve kıvılcım/yıldırım tuvali -->
+    <div class="loader__flash" id="loaderFlash"></div>
+    <div class="loader__shockwave" id="loaderShockwave"></div>
+    <canvas class="loader__fx" id="loaderFx"></canvas>
   </div>
+
+  <!-- Workbench: basınca Hakkımda'dan itibaren 3B sahne ve sonrası gece moduna geçer -->
+  <button type="button" class="wb-btn mono" id="workbenchToggle" aria-pressed="false" title="Hakkımda ve sonrası için gece/gündüz geçişi">
+    <span class="wb-btn__led" aria-hidden="true"></span>
+    <span class="wb-btn__icon" aria-hidden="true">☾</span>
+    <span class="wb-btn__label">WORKBENCH</span>
+    <span class="wb-btn__state" id="workbenchState">GÜNDÜZ</span>
+  </button>
 
   <!-- Özel imleç (sadece mouse olan cihazlarda) -->
   <div class="cursor" id="cursor" aria-hidden="true"></div>
@@ -36,21 +180,26 @@
   <div class="cable" aria-hidden="true"><span class="cable__fill" id="cableFill"></span></div>
 
   <header class="nav">
-    <!-- Logo: mavi eğik çizgi + isim -->
-    <a href="#hero" class="nav__logo"><span class="nav__slash" aria-hidden="true"></span>Ali Efe Kalinci</a>
+    <!-- Logo: Zirve & Sinyal amblemi + isim -->
+    <a href="#hero" class="nav__logo"><img class="nav__mark" src="assets/images/logo.svg" alt="" width="40" height="40" aria-hidden="true">Ali Efe Kalinci</a>
     <!-- Menü: aktif bağlantı [ köşeli parantez ] içinde ve altı mavi çizgili -->
-    <nav class="nav__links" aria-label="Ana menü">
+    <nav class="nav__links" id="navLinks" aria-label="Ana menü">
       <a href="#hero" class="is-active"><span class="nav__txt"><span class="nav__num">01.</span> Ana Sayfa</span></a>
-      <a href="#projects"><span class="nav__txt"><span class="nav__num">02.</span> Projeler</span></a>
-      <a href="#blog"><span class="nav__txt"><span class="nav__num">03.</span> Blog</span></a>
-      <a href="#about"><span class="nav__txt"><span class="nav__num">04.</span> Hakkımda</span></a>
+      <a href="#about"><span class="nav__txt"><span class="nav__num">02.</span> Hakkımda</span></a>
+      <a href="#projects"><span class="nav__txt"><span class="nav__num">03.</span> Projeler</span></a>
+      <a href="#blog"><span class="nav__txt"><span class="nav__num">04.</span> Blog</span></a>
+      <a href="#galeri"><span class="nav__txt"><span class="nav__num">05.</span> Galeri</span></a>
+      <a href="#contact"><span class="nav__txt"><span class="nav__num">06.</span> İletişim</span></a>
     </nav>
-    <!-- Sağ üst: dış bağlantı (GitHub) -->
-    <a href="https://github.com/" class="nav__ext" target="_blank" rel="noopener" aria-label="GitHub profili (yeni sekmede açılır)">
+    <!-- Sağ üst: dış bağlantı (GitHub) + mobil menü düğmesi -->
+    <a href="https://github.com/Maraz95" class="nav__ext" target="_blank" rel="noopener" aria-label="GitHub profili (yeni sekmede açılır)">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
         <path d="M13 3h8v8"/><path d="M21 3l-10 10"/><path d="M19 14v4.5A2.5 2.5 0 0 1 16.5 21h-11A2.5 2.5 0 0 1 3 18.5v-11A2.5 2.5 0 0 1 5.5 5H10"/>
       </svg>
     </a>
+    <button type="button" class="nav__burger" id="navBurger" aria-label="Menüyü aç" aria-expanded="false" aria-controls="navLinks">
+      <span class="nav__burger-bars" aria-hidden="true"><i></i><i></i><i></i></span>
+    </button>
   </header>
 
   <!-- Fiber optik tünel: Hero ve tünel bölümünün arkasında sabit duran tek Three.js sahnesi (js/fiber-tunnel.js) -->
@@ -97,7 +246,7 @@
       </div>
 
       <!-- Alt orta: aşağı kaydır göstergesi -->
-      <a href="#about" class="hero__scroll" aria-label="Aşağı kaydır">
+      <a href="#tunnel" class="hero__scroll" aria-label="Aşağı kaydır">
         <span class="hero__mouse" aria-hidden="true"></span>
         <svg class="hero__chev" viewBox="0 0 24 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 1.5l10 9 10-9"/></svg>
       </a>
@@ -108,6 +257,13 @@
     <section class="tunnel" id="tunnel" aria-label="Sahadan koda: fiber optik tünel">
       <div class="tunnel__sticky">
         <div class="tunnel__end" aria-hidden="true">Sahadan<br><span class="accent">→ Koda</span><small>function automation() { return true; }</small></div>
+        <!-- Portal: yazı küçülüp kaybolunca yerinde açılan mavi halka; içinden geçilir (js/portal.js) -->
+        <div class="tunnel__portal" aria-hidden="true">
+          <span class="tunnel__portal-core"></span>
+          <span class="tunnel__portal-ring"></span>
+        </div>
+        <!-- Portaldan geçerken tek seferlik beyazımsı-mavi parlama (en fazla 0.85 opaklık) -->
+        <div class="tunnel__flash" aria-hidden="true"></div>
         <div class="tunnel__hud" aria-hidden="true">
           <div class="tunnel__row">
             <span class="tunnel__label"><b>[ HAT 02 ]</b> Fiber hattı</span>
@@ -123,139 +279,336 @@
     </section>
 
     <!-- ========== HAKKIMDA ========== -->
-    <section class="about" id="about">
-      <p class="section-label mono">01 — Hakkımda</p>
-      <p class="about__text" data-words>
-        Yıllarca sahada kablo çektim, pano kurdum, otomasyon sistemlerini çalışır hâle getirdim. Şimdi aynı mantığı koda taşıyorum: her sistemin bir girişi, bir çıkışı ve doğru bağlanması gereken parçaları var.
-      </p>
-      <div class="about__stats">
-        <div class="stat"><div class="stat__num"><span data-count="3">0</span>+</div><p class="stat__label">Yıl saha deneyimi</p></div>
-        <div class="stat"><div class="stat__num"><span data-count="2">0</span></div><p class="stat__label">Büyük saha projesi</p></div>
-        <div class="stat"><div class="stat__num"><span data-count="1">0</span></div><p class="stat__label">Oyun projesi</p></div>
-      </div>
-    </section>
-
-    <!-- ========== YETENEKLER (kayan şeritler) ========== -->
-    <section class="skills" aria-label="Yetenekler">
-      <div class="marquee" data-row="saha" data-dir="1"><div class="marquee__track"></div></div>
-      <div class="marquee marquee--alt" data-row="kod" data-dir="-1"><div class="marquee__track"></div></div>
-    </section>
-
-    <!-- ========== PROJELER: Spotlight + yatay galeri (js/projects.js) ==========
-         Üstte seçili projenin büyük vitrini (çerçeveli kart), altında tüm projelerin galerisi.
-         Galeri bir "sekme listesi" gibi çalışır: ok tuşlarıyla gezilir, seçim vitrini günceller. -->
-    <section class="projects" id="projects" aria-labelledby="projectsTitle">
-      <!-- ===== Arka plan (yalnızca görsel): teknik grid + ışık çizgileri ===== -->
-      <div class="pj-bg" aria-hidden="true">
-        <div class="pj-bg__grid"></div>
-        <svg class="pj-bg__streaks" viewBox="0 0 1672 941" preserveAspectRatio="xMidYMid slice" focusable="false">
-          <defs>
-            <linearGradient id="pjLineA" x1="0" y1="0" x2="1" y2="0">
-              <stop offset="0" stop-color="#5CC8FF" stop-opacity="0"/>
-              <stop offset=".5" stop-color="#5CC8FF" stop-opacity=".9"/>
-              <stop offset="1" stop-color="#5CC8FF" stop-opacity="0"/>
-            </linearGradient>
-          </defs>
-          <g class="pj-streaks-l" fill="none" stroke="url(#pjLineA)" stroke-linecap="round">
-            <path d="M-40 250 C 160 120, 360 60, 640 20" stroke-width="2.5"/>
-            <path d="M-40 290 C 170 160, 380 100, 700 70" stroke-width="1.2"/>
-            <path d="M-60 330 C 140 200, 300 150, 560 120" stroke-width="1"/>
-            <path d="M-20 420 C 120 330, 240 300, 420 290" stroke-width=".8"/>
-          </g>
-          <g class="pj-streaks-r" fill="none" stroke="url(#pjLineA)" stroke-linecap="round">
-            <path d="M1060 -10 C 1280 90, 1480 120, 1720 60" stroke-width="2.5"/>
-            <path d="M1100 40 C 1300 130, 1500 150, 1720 110" stroke-width="1.2"/>
-            <path d="M1200 160 C 1400 210, 1560 260, 1720 250" stroke-width="1"/>
-            <path d="M1380 320 C 1500 290, 1620 300, 1720 330" stroke-width=".8"/>
-          </g>
-        </svg>
-      </div>
-
-      <div class="pj-head">
-        <div>
-          <p class="pj-index"><b>02</b> / Projeler</p>
-          <h2 class="pj-title" id="projectsTitle">Projeler</h2>
+    <!-- Arka plan: Blender'da hazırlanan sahne (kaya, taş teras, selviler, deniz, adalar).
+         Ekrana sabit katman; bölümün DIŞINDA durur ki pin'lenen bölüm onu kaydırmasın.
+         Görünürlüğü js/portal.js, kamera ilerlemesi + içerik animasyonları js/about-scene.js,
+         canlı 3B sahne (Three.js) js/about-3d.js, stiller css/about.css.
+         Katmanlar: __par (fare parallax) → __zoom → __frame (görselin kırpımı, 16:9)
+         __frame içinde üç katman üst üste ve aynı koordinatta:
+           1) img        : ilk kare (kareler yüklenene kadar ve "hareketi azalt"ta görünen)
+           2) __seq      : Blender'da render edilmiş kamera hareketi, kaydırmaya bağlı oynar
+           3) __live     : Three.js — aynı kamerayla canlı 3B öğeler (deniz ışıltısı, martılar, toz) -->
+    <div class="about__scene" aria-hidden="true">
+      <div class="about__par">
+        <div class="about__zoom">
+          <div class="about__frame">
+            <picture>
+              <source type="image/webp"
+                      srcset="assets/images/about-scene-1280.webp?v=3 1280w, assets/images/about-scene-2400.webp?v=3 2400w"
+                      sizes="100vw">
+              <img class="about__scene-img" src="assets/images/about-scene-1280.webp?v=3" alt=""
+                   width="2400" height="1350" decoding="async">
+            </picture>
+            <canvas class="about__seq"></canvas>
+            <canvas class="about__live"></canvas>
+          </div>
         </div>
-        <p class="pj-intro">Geliştirdiğim uygulamalar, oyunlar ve deneysel projeler. Her biri, öğrendiklerimi pratiğe döktüğüm birer adım.</p>
+      </div>
+      <!-- Mobil: görselin alt kenarını koyu zemine eriten degrade (masaüstünde gizli) -->
+      <div class="about__fadeb"></div>
+      <!-- Okunabilirlik: sağdan sola hafif koyu degrade (cam kart yok) -->
+      <div class="about__shade"></div>
+    </div>
+
+    <!-- Hakkımda: tünelden çıkınca 3B manzara ekrana sabit kalır, içerik onun üstünde kayar.
+         Kaydırma boyunca kamera teras boyunca ilerler (js/about-scene.js → js/about-3d.js).
+         Ödev şartları: vesikalık, özgeçmiş, ders programı tablosu, ul/ol, abbr/code/pre/blockquote,
+         yüzdeli yetenekler — hepsi bu bölümde. -->
+    <section class="about" id="about" aria-label="Hakkımda">
+  <div class="ab-panel ab-tek">
+
+
+  <!-- ===================== GİRİŞ + VESİKALIK + ÖZGEÇMİŞ ===================== -->
+  <section class="ab-bolum" id="ab-ozgecmis" aria-labelledby="ab-ozgecmis-baslik">
+    <figure class="vesikalik">
+      <img src="assets/images/vesikalik-hd.webp" width="810" height="1040"
+           alt="Ali Efe Kalinci'nin vesikalık fotoğrafı">
+      <figcaption>Ali Efe Kalinci</figcaption>
+    </figure>
+
+    <div class="ozgecmis-metin">
+      <p class="section-label mono">02 — Hakkımda</p>
+      <h2 id="ab-ozgecmis-baslik">Ali Efe Kalinci</h2>
+      <p class="unvan">Bilgisayar Programcılığı Öğrencisi · Elektrik Teknikerliği Deneyimi</p>
+      <p class="ozet">
+        Akdeniz Üniversitesi'nde Bilgisayar Programcılığı okuyorum. Daha önce elektrik
+        teknikeri olarak sahada çalıştım: tam otomatik bir kümesin ve bir
+        <abbr title="Basınç Düşürme ve Ölçüm İstasyonu, A tipi">RMS-A</abbr>
+        doğal gaz istasyonunun elektrik işlerinde görev aldım. Şimdi bu saha bilgisini
+        yazılımla birleştiriyorum.
+      </p>
+
+      <h3>Hakkımda</h3>
+      <p>
+        Elektrik teknikerliği alanında saha deneyimi edinmiş, aynı zamanda bilişim ve
+        yazılım alanında kendini geliştiren bir öğrenciyim. Elektrik tesisatı, pano
+        bağlantıları ve kablolama çalışmalarında görev aldım.
+      </p>
+      <p>
+        Bilgisayar programcılığı eğitimimle birlikte teknik bilgimi yazılım ve yeni
+        teknolojilerle birleştirmeyi hedefliyorum. Öğrenmeye açık, araştırmayı seven ve
+        kendini geliştirmeye önem veren bir yapıya sahibim.
+      </p>
+      <p>
+        <strong>Kariyer hedefim</strong>, endüstriyel otomasyon alanında ilerleyerek
+        elektrik ve yazılım teknolojilerini bir araya getiren sistemler üzerine
+        uzmanlaşmaktır.
+      </p>
+    </div>
+  </section>
+
+  <!-- ===================== İŞ DENEYİMİ ===================== -->
+  <section class="ab-bolum" id="ab-deneyim" aria-labelledby="ab-deneyim-baslik">
+    <h3 id="ab-deneyim-baslik">İş Deneyimi</h3>
+
+    <article class="deneyim">
+      <h4>Şafak Medikal</h4>
+      <p class="rol">Muhasebe Stajyeri · <time datetime="2024">2024</time> · <span>1 ay</span></p>
+      <ul>
+        <li>Muhasebe departmanının günlük işleyişini gözlemledim.</li>
+        <li>Evrak düzenleme ve temel ofis işlemlerinde görev aldım.</li>
+      </ul>
+    </article>
+
+    <article class="deneyim">
+      <h4><abbr title="Basınç Düşürme ve Ölçüm İstasyonu, A tipi">RMS-A</abbr> İstasyonu</h4>
+      <p class="rol">Elektrik Teknikeri · <time datetime="2025">2025</time> · <span>yaklaşık 2,5 ay</span></p>
+      <ul>
+        <li>Elektrik panolarının bağlantı çalışmalarında görev aldım.</li>
+        <li>Kablo çekimi ve saha kablolama işlemlerinde çalıştım.</li>
+        <li>Projektör montajı ve bağlantı işlemlerinde yer aldım.</li>
+      </ul>
+    </article>
+
+    <article class="deneyim">
+      <h4>Bilecik Full Otomatik Kümes Elektrik Tesisatı</h4>
+      <p class="rol">Elektrik Teknikeri · <time datetime="2026">2026</time> · <span>yaklaşık 3 ay</span></p>
+      <ul>
+        <li>Kümes içerisinde kablo çekimi ve elektrik tesisatı çalışmalarında görev aldım.</li>
+        <li>Kümes ofisinin inşaat sürecindeki elektrik tesisatı uygulamalarına katıldım.</li>
+      </ul>
+    </article>
+  </section>
+
+  <!-- ===================== EĞİTİM + DİLLER ===================== -->
+  <section class="ab-bolum" id="ab-egitim" aria-labelledby="ab-egitim-baslik">
+    <h3 id="ab-egitim-baslik">Eğitim</h3>
+    <article class="egitim">
+      <h4>Mustafa Çizmecioğlu Anadolu Lisesi</h4>
+      <p>Lise · Mezun</p>
+    </article>
+    <article class="egitim">
+      <h4>Akdeniz Üniversitesi</h4>
+      <p>Bilgisayar Programcılığı · <time datetime="2026">2026</time> – Devam ediyor</p>
+    </article>
+  </section>
+
+  <section class="ab-bolum" id="ab-diller" aria-labelledby="ab-diller-baslik">
+    <h3 id="ab-diller-baslik">Yabancı Diller</h3>
+    <dl>
+      <dt>İngilizce</dt>
+      <dd><abbr title="Avrupa Ortak Dil Referans Çerçevesi (CEFR) seviyesi: orta">B1</abbr></dd>
+      <dt>Almanca</dt>
+      <dd><abbr title="Avrupa Ortak Dil Referans Çerçevesi (CEFR) seviyesi: başlangıç">A1</abbr> — geliştirmeye devam ediyorum</dd>
+    </dl>
+  </section>
+
+  <!-- ===================== DERS PROGRAMI ===================== -->
+  <section class="ab-bolum" id="ab-ders-programi" aria-labelledby="ab-ders-baslik">
+    <h3 id="ab-ders-baslik">Ders Programım</h3>
+    <p>
+      2026–2027 Güz dönemi, Bilgisayar Programcılığı 1. sınıf.
+      Derslik kodlarında <abbr title="Bilgisayar Programcılığı Laboratuvarı">L23</abbr>
+      laboratuvarı, <abbr title="Uzaktan Eğitim">UE</abbr> çevrim içi dersi gösterir.
+    </p>
+
+    <!-- Mobilde yatay kaydırma için sarmalayıcı -->
+    <div class="tablo-kaydir" role="region" aria-labelledby="ab-ders-baslik" tabindex="0">
+      <table class="ders-tablosu">
+        <caption>Haftalık ders programı (Pazartesi – Cuma)</caption>
+        <thead>
+          <tr>
+            <th scope="col">Saat</th>
+            <th scope="col">Pazartesi</th>
+            <th scope="col">Salı</th>
+            <th scope="col">Çarşamba</th>
+            <th scope="col">Perşembe</th>
+            <th scope="col">Cuma</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row"><time>08:30</time>–<time>09:20</time></th>
+            <td></td>
+            <td rowspan="2"><b>Türk Dili I</b><br><small>TDB 101 · Sanal sınıf · Öğr. Gör. Talha Tunç</small></td>
+            <td rowspan="2"><b>Fizik I</b><br><small><abbr title="Meslek Yüksekokulu">MYO</abbr> 123 · Z05 · Öğr. Gör. Dr. Reyhan Özaydın Özkara</small></td>
+            <td rowspan="2"><b>Grafik Animasyon I</b> <span class="etiket">Lab</span><br><small>MBIL 105 · L23 · Öğr. Gör. Dr. Erokan Canbazoğlu</small></td>
+            <td></td>
+          </tr>
+          <tr>
+            <th scope="row"><time>09:30</time>–<time>10:20</time></th>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <th scope="row"><time>10:30</time>–<time>11:20</time></th>
+            <td></td>
+            <td></td>
+            <td rowspan="2"><b>Temel Matematik</b><br><small>MYO 131 · Z03 · Prof. Dr. Harun Barış Çolakoğlu</small></td>
+            <td rowspan="2"><b>Grafik Animasyon I</b><br><small>MBIL 105 · 303 · Öğr. Gör. Dr. Erokan Canbazoğlu</small></td>
+            <td></td>
+          </tr>
+          <tr>
+            <th scope="row"><time>11:30</time>–<time>12:20</time></th>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <th scope="row"><time>13:30</time>–<time>14:20</time></th>
+            <td rowspan="2"><b>Programlamanın Temelleri</b><br><small>MBIL 101 · 303 · Öğr. Gör. Hasan Özalp</small></td>
+            <td rowspan="2"><b>Atatürk İlkeleri ve İnkılap Tarihi I</b><br><small>ATA 101 · UE · Öğr. Gör. Koray Ergin</small></td>
+            <td rowspan="2"><b>Veri Tabanı I</b><br><small>MBIL 103 · 303 · Öğr. Gör. Hasan Özalp</small></td>
+            <td><b>Web Tasarımının Temelleri</b><br><small>MBIL 113 · 303 · Öğr. Gör. Dr. Erokan Canbazoğlu</small></td>
+            <td><b>Ofis Yazılımları</b><br><small>MBIL 111 · 303 · Öğr. Gör. Hasan Özalp</small></td>
+          </tr>
+          <tr>
+            <th scope="row"><time>14:30</time>–<time>15:20</time></th>
+            <td><b>Web Tasarımının Temelleri</b> <span class="etiket">Lab</span><br><small>MBIL 113 · L23 · Öğr. Gör. Dr. Erokan Canbazoğlu</small></td>
+            <td><b>Ofis Yazılımları</b> <span class="etiket">Lab</span><br><small>MBIL 111 · L23 · Öğr. Gör. Hasan Özalp</small></td>
+          </tr>
+          <tr>
+            <th scope="row"><time>15:30</time>–<time>16:20</time></th>
+            <td rowspan="2"><b>Programlamanın Temelleri</b> <span class="etiket">Lab</span><br><small>MBIL 101 · L23 · Öğr. Gör. Hasan Özalp</small></td>
+            <td rowspan="2"><b>İngilizce I</b><br><small>YBD 121 · UE · Öğr. Gör. Bengü Şahin Kimyon</small></td>
+            <td rowspan="2"><b>Veri Tabanı I</b> <span class="etiket">Lab</span><br><small>MBIL 103 · L23 · Öğr. Gör. Hasan Özalp</small></td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <th scope="row"><time>16:30</time>–<time>17:20</time></th>
+            <td></td>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ===================== İLGİ ALANLARI (SIRASIZ LİSTE) ===================== -->
+  <section class="ab-bolum" id="ab-ilgi-alanlari" aria-labelledby="ab-ilgi-baslik">
+    <h3 id="ab-ilgi-baslik">İlgi Alanlarım</h3>
+    <ul>
+      <li>Basketbol oynamak</li>
+      <li>Kamp yapmak</li>
+      <li>Balık tutmak</li>
+      <li>Yüzmek</li>
+      <li>Dağcılık ve doğa yürüyüşü</li>
+      <li>Gece ya da akşam geç vakitlerde araba sürmek</li>
+    </ul>
+  </section>
+
+  <!-- ===================== YETENEKLER (YÜZDE GÖRSELLEŞTİRME) ===================== -->
+  <section class="ab-bolum" id="ab-yetenekler" aria-labelledby="ab-yetenek-baslik">
+    <h3 id="ab-yetenek-baslik">Yeteneklerim</h3>
+    <ul class="yetenek-listesi">
+      <li>
+        <span class="yetenek-ad" id="ab-y-python">Python</span>
+        <div class="bar" role="progressbar" aria-labelledby="ab-y-python"
+             aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="--yuzde:40"></div>
+        <span class="yuzde">%40</span>
+      </li>
+      <li>
+        <span class="yetenek-ad" id="ab-y-gitar">Gitar</span>
+        <div class="bar" role="progressbar" aria-labelledby="ab-y-gitar"
+             aria-valuenow="70" aria-valuemin="0" aria-valuemax="100" style="--yuzde:70"></div>
+        <span class="yuzde">%70</span>
+      </li>
+      <li>
+        <span class="yetenek-ad" id="ab-y-ing">İngilizce (B1)</span>
+        <div class="bar" role="progressbar" aria-labelledby="ab-y-ing"
+             aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="--yuzde:60"></div>
+        <span class="yuzde">%60</span>
+      </li>
+      <li>
+        <span class="yetenek-ad" id="ab-y-alm">Almanca (A1)</span>
+        <div class="bar" role="progressbar" aria-labelledby="ab-y-alm"
+             aria-valuenow="10" aria-valuemin="0" aria-valuemax="100" style="--yuzde:10"></div>
+        <span class="yuzde">%10</span>
+      </li>
+    </ul>
+  </section>
+
+  <!-- ===================== SÖZ (blockquote) ===================== -->
+  <div class="ab-soz">
+    <blockquote lang="kk">
+      <p>Aspanda bürküt, jerde kökbörü bol.</p>
+      <footer>— <cite>Kazakça söz</cite> · <span lang="tr">“Gökte kartal, yerde bozkurt ol.”</span></footer>
+    </blockquote>
+  </div>
+    
+  </div>
+    </section>
+
+    <!-- ========== PROJELER: Denizden yavaşça yükselen dev Akdeniz taş sütunları + detay paneli ==========
+         3B deniz sahnesinde (about-3d.js) 4 büyük yivli Akdeniz taş sütunu açık denizde su altından yükselir;
+         projeler bu sütunların tepesine oturur. Hover'da doğal gün ışığı parlar, tıklayınca detay paneli açılır. -->
+    <section class="projects" id="projects" aria-labelledby="projectsTitle">
+      <div class="pj-sticky">
+        <div class="pj-head">
+          <div>
+            <p class="pj-index"><b>03</b> / Projeler</p>
+            <h2 class="pj-title" id="projectsTitle">Projeler</h2>
+          </div>
+        </div>
+
+        <!-- Sütunların tepesine yerleşen proje kartları -->
+        <div class="pj-sea-stage" id="pjSeaStage">
+          <div class="pj-pillars" id="pjTrack" role="list" aria-label="Proje listesi"></div>
+        </div>
+
+        <p class="pj-hint mono">Detaylar için bir projeye tıkla</p>
       </div>
 
-      <!-- ===== Spotlight: dış çerçeve (köşe çizgileri, yan raylar) + panel ===== -->
-      <div class="pj-spot-wrap">
-        <span class="pj-corner pj-corner--tl" aria-hidden="true"></span>
-        <span class="pj-corner pj-corner--tr" aria-hidden="true"></span>
-        <span class="pj-corner pj-corner--bl" aria-hidden="true"></span>
-        <span class="pj-corner pj-corner--br" aria-hidden="true"></span>
-        <span class="pj-rail pj-rail--l" aria-hidden="true"></span>
-        <span class="pj-rail pj-rail--r" aria-hidden="true"></span>
+      <!-- ===== Detay Paneli (bir projeye tıklayınca açılır) ===== -->
+      <div class="pj-modal" id="pjModal" role="dialog" aria-modal="true" aria-labelledby="pjModalTitle" aria-hidden="true">
+        <div class="pj-modal__backdrop" id="pjBackdrop"></div>
+        <div class="pj-modal__dialog">
+          <div class="pj-spot-wrap">
+            <span class="pj-corner pj-corner--tl" aria-hidden="true"></span>
+            <span class="pj-corner pj-corner--tr" aria-hidden="true"></span>
+            <span class="pj-corner pj-corner--bl" aria-hidden="true"></span>
+            <span class="pj-corner pj-corner--br" aria-hidden="true"></span>
 
-        <div class="pj-spot" id="pjSpot" role="tabpanel">
-          <div class="pj-spot__grid" aria-hidden="true"></div>
-          <div class="pj-spot__text" id="pjText"></div>
-          <div class="pj-media" id="pjMedia">
-            <div class="pj-tilt" id="pjTilt">
-              <div class="pj-frame" id="pjFrame">
-                <!-- Pencere düğmeleri (süs) -->
-                <span class="pj-frame__ctrl" aria-hidden="true"><i></i><i></i><i></i></span>
+            <div class="pj-spot" id="pjSpot">
+              <div class="pj-spot__grid" aria-hidden="true"></div>
+              <div class="pj-spot__text" id="pjText"></div>
+              <div class="pj-media" id="pjMedia">
+                <div class="pj-tilt" id="pjTilt">
+                  <div class="pj-frame" id="pjFrame">
+                    <span class="pj-frame__ctrl" aria-hidden="true"><i></i><i></i><i></i></span>
+                  </div>
+                </div>
               </div>
+              <button type="button" class="pj-close" id="pjClose" aria-label="Detay panelini kapat">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+              </button>
+              <a class="pj-ext" id="pjExt" target="_blank" rel="noopener" aria-label="Projeyi yeni sekmede aç">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 3h8v8"/><path d="M21 3l-10 10"/><path d="M19 14v4.5A2.5 2.5 0 0 1 16.5 21h-11A2.5 2.5 0 0 1 3 18.5v-11A2.5 2.5 0 0 1 5.5 5H10"/></svg>
+              </a>
             </div>
           </div>
-          <a class="pj-ext" id="pjExt" target="_blank" rel="noopener" aria-label="Projeyi yeni sekmede aç">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 3h8v8"/><path d="M21 3l-10 10"/><path d="M19 14v4.5A2.5 2.5 0 0 1 16.5 21h-11A2.5 2.5 0 0 1 3 18.5v-11A2.5 2.5 0 0 1 5.5 5H10"/></svg>
-          </a>
-        </div>
-      </div>
 
-      <!-- ===== Galeri + zemin ===== -->
-      <div class="pj-bottom">
-        <div class="pj-ground" aria-hidden="true">
-          <div class="pj-ground__plane"></div>
-          <svg class="pj-ground__rings" viewBox="0 0 1600 300" preserveAspectRatio="none" focusable="false">
-            <defs>
-              <radialGradient id="pjFloorGlow" cx=".5" cy=".5" r=".5">
-                <stop offset="0" stop-color="#5CC8FF" stop-opacity=".16"/>
-                <stop offset="1" stop-color="#5CC8FF" stop-opacity="0"/>
-              </radialGradient>
-              <linearGradient id="pjFloorLine" x1="0" y1="0" x2="1" y2="0">
-                <stop offset="0" stop-color="#5CC8FF" stop-opacity="0"/>
-                <stop offset=".5" stop-color="#5CC8FF" stop-opacity=".8"/>
-                <stop offset="1" stop-color="#5CC8FF" stop-opacity="0"/>
-              </linearGradient>
-            </defs>
-            <ellipse cx="800" cy="190" rx="800" ry="110" fill="url(#pjFloorGlow)"/>
-            <g class="pj-ground__ringset" fill="none" stroke="#5CC8FF">
-              <ellipse cx="800" cy="190" rx="430" ry="46" stroke-opacity=".45" stroke-width="1.5"/>
-              <ellipse cx="800" cy="190" rx="600" ry="66" stroke-opacity=".28"/>
-              <ellipse cx="800" cy="190" rx="760" ry="88" stroke-opacity=".14"/>
-            </g>
-            <g stroke="url(#pjFloorLine)" fill="none">
-              <path d="M0 120 H1600" stroke-opacity=".5"/>
-              <path d="M60 150 H1540" stroke-opacity=".35"/>
-              <path d="M0 232 H520 M1080 232 H1600" stroke-width="2"/>
-            </g>
-          </svg>
-          <div class="pj-ground__reflect"></div>
+          <div class="pj-modal__nav">
+            <button type="button" class="pj-arrow" id="pjPrev" aria-label="Önceki proje">
+              <svg viewBox="0 0 20 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 6H2M7 1L2 6l5 5"/></svg>
+            </button>
+            <div class="pj-dots" id="pjDots" aria-hidden="true"></div>
+            <button type="button" class="pj-arrow" id="pjNext" aria-label="Sonraki proje">
+              <svg viewBox="0 0 20 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 6h17M13 1l5 5-5 5"/></svg>
+            </button>
+          </div>
         </div>
-
-        <div class="pj-gallery">
-          <button type="button" class="pj-arrow" id="pjPrev" aria-label="Önceki proje">
-            <svg viewBox="0 0 20 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 6H2M7 1L2 6l5 5"/></svg>
-          </button>
-          <div class="pj-track" id="pjTrack" role="tablist" aria-label="Proje listesi"></div>
-          <button type="button" class="pj-arrow" id="pjNext" aria-label="Sonraki proje">
-            <svg viewBox="0 0 20 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 6h17M13 1l5 5-5 5"/></svg>
-          </button>
-        </div>
-        <div class="pj-dots" id="pjDots" aria-hidden="true"></div>
-      </div>
-    </section>
-
-    <!-- ========== YOLCULUK (zaman çizelgesi) ========== -->
-    <section class="timeline" id="timeline">
-      <p class="section-label mono">03 — Yolculuk</p>
-      <h2 class="section-title">Sahadan<br>koda</h2>
-      <div class="timeline__wrap">
-        <div class="timeline__line"><span class="timeline__fill" id="timelineFill"></span></div>
-        <ol class="timeline__list" id="timelineList"></ol>
       </div>
     </section>
 
@@ -266,32 +619,286 @@
           <p class="section-label mono">04 — Blog</p>
           <h2 class="section-title">Son yazılar</h2>
         </div>
-        <a href="#blog" class="link-arrow mono">Tüm yazılar →</a>
+        <a href="blog.html?v=2" class="link-arrow mono">Tüm yazılar →</a>
       </div>
       <div class="blog__grid" id="blogGrid"></div>
     </section>
 
-    <!-- ========== İLETİŞİM ========== -->
-    <section class="contact" id="contact">
-      <p class="section-label mono">05 — İletişim</p>
-      <h2 class="contact__big">
-        <span class="line" data-split-scroll>Birlikte</span>
-        <span class="line accent" data-split-scroll>çalışalım</span>
-      </h2>
-      <div class="contact__row">
-        <button class="btn" id="copyEmail" data-magnetic data-email="ornek@mail.com">
-          <span id="copyEmailText">ornek@mail.com</span> <span aria-hidden="true">⧉</span>
-        </button>
-        <div class="socials mono">
-          <a href="https://github.com/" target="_blank" rel="noopener">GitHub</a>
-          <a href="https://linkedin.com/" target="_blank" rel="noopener">LinkedIn</a>
+    <!-- ========== 3B KIYI MAĞARASI & KAMP ATEŞİ SAHNESİ (js/cave-scene.js) ========== -->
+    <div class="cave-stage" id="caveStage" aria-hidden="true">
+      <canvas id="caveCanvas"></canvas>
+    </div>
+
+    <!-- ========== GALERİ ========== -->
+    <section class="gallery" id="galeri" aria-labelledby="galeriBaslik">
+      <!-- Masaüstü 3B mağara galerisi üst bilgi katmanı -->
+      <div class="cave-hud">
+        <div class="cave-hud__top">
+          <div>
+            <p class="section-label mono">05 — Galeri · AKDENİZ KOLONADI</p>
+            <h2 class="cave-hud__title">Galeri</h2>
+            <p class="cave-hud__sub">Kaydırdıkça traverten sütunlu kıyı galerisinde ilerle; bir fotoğrafa tıkla, tam boyutu ve hikâyesiyle açılsın.</p>
+          </div>
+          <div class="cave-hud__actions">
+            <button type="button" class="cave-hud__btn mono" id="caveViewToggle"><span>Izgara Görünümü</span></button>
+            <a href="galeri.html" class="cave-hud__btn mono">Tüm galeri →</a>
+          </div>
+        </div>
+
+        <div class="cave-hover-tip" id="caveHoverTip" aria-hidden="true">
+          <span class="cave-hover-tip__no mono" id="caveHoverNo">01</span>
+          <b class="cave-hover-tip__title" id="caveHoverTitle"></b>
+          <span class="cave-hover-tip__meta mono" id="caveHoverMeta"></span>
+          <span class="cave-hover-tip__hint mono">Tam boyut için tıkla</span>
+        </div>
+
+        <div class="cave-hud__bar">
+          <div class="cave-hud__progress" aria-hidden="true"><i id="caveHudBar"></i></div>
+          <span class="cave-hud__count mono" id="caveHudCount">01 / 12</span>
+          <span class="cave-hud__guide mono">Aşağı kaydır → Teras sonunda sağda kamp ateşi</span>
         </div>
       </div>
+
+      <!-- Topografik izohips haritası arka plan katmanı -->
+      <div class="topo-bg" aria-hidden="true">
+        <svg class="topo-bg__svg" viewBox="0 0 1440 900" fill="none" preserveAspectRatio="xMidYMid slice">
+          <g class="topo-bg__minor">
+            <path d="M-80 180 C160 110 340 240 560 165 C790 88 970 190 1200 120 C1340 78 1430 125 1520 96"/>
+            <path d="M-80 285 C190 205 370 340 610 250 C850 160 1010 295 1265 215 C1380 178 1450 220 1520 195"/>
+            <path d="M-80 410 C150 345 390 470 640 375 C870 288 1060 415 1310 335 C1410 302 1465 340 1520 322"/>
+            <path d="M-80 560 C180 485 410 615 670 520 C910 432 1085 555 1345 470 C1430 442 1475 480 1520 462"/>
+            <path d="M-80 715 C210 645 440 770 705 680 C945 598 1130 705 1380 620 C1450 596 1490 630 1520 615"/>
+            <path d="M850 220 C920 165 1060 155 1135 210 C1210 265 1190 365 1100 395 C990 430 845 390 815 320 C795 274 812 250 850 220 Z"/>
+            <path d="M905 245 C955 208 1045 202 1095 240 C1145 278 1132 342 1072 362 C998 386 902 360 882 312 C868 280 878 265 905 245 Z"/>
+            <path d="M120 580 C190 525 325 520 398 575 C470 630 455 730 365 762 C255 800 120 755 92 685 C74 638 86 606 120 580 Z"/>
+          </g>
+          <g class="topo-bg__major">
+            <path d="M-80 232 C175 156 355 292 585 206 C820 120 990 242 1232 168 C1360 128 1440 172 1520 146"/>
+            <path d="M-80 485 C165 415 400 542 655 448 C890 360 1072 485 1328 402 C1420 372 1470 410 1520 392"/>
+            <path d="M-80 795 C220 725 460 845 730 755 C970 675 1155 780 1405 695 C1465 675 1500 702 1520 692"/>
+            <path d="M950 268 C986 244 1038 242 1068 266 C1098 290 1090 326 1052 338 C1006 352 948 336 936 306 C928 286 932 280 950 268 Z"/>
+            <path d="M178 612 C226 576 312 572 360 608 C408 644 398 708 338 728 C264 752 176 724 158 678 C146 648 154 630 178 612 Z"/>
+          </g>
+        </svg>
+      </div>
+
+      <p class="section-label mono">05 — Galeri</p>
+      <h2 class="section-title" id="galeriBaslik">Galeri</h2>
+      <p class="gallery__intro">Hayatımdan ve sahadan kareler. Bir fotoğrafa bas, tam boyutuyla ve hikâyesiyle açılsın. <a href="galeri.html" class="link-arrow mono">Tüm galeri →</a></p>
+
+      <!-- Zirve & Yükselti Profili: Bolu'dan Köroğlu Zirvesi'ne etkileşimli rakım kesiti -->
+      <div class="mz-elev" id="mzElev" aria-label="Zirve ve yükselti profili">
+        <div class="mz-elev__top mono">
+          <span class="mz-elev__tag">YÜKSELTİ PROFİLİ · BOLU &amp; KARADENİZ</span>
+          <span class="mz-elev__max">MAX 2.399 M · KÖROĞLU</span>
+        </div>
+        <div class="mz-elev__graph">
+          <svg class="mz-elev__svg" viewBox="0 0 1000 132" fill="none" preserveAspectRatio="none" aria-hidden="true">
+            <defs>
+              <linearGradient id="elevFill" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#C49662" stop-opacity="0.24"/>
+                <stop offset="100%" stop-color="#C49662" stop-opacity="0.01"/>
+              </linearGradient>
+            </defs>
+            <!-- Referans irtifa çizgileri -->
+            <line x1="0" y1="24" x2="1000" y2="24" class="mz-elev__grid"/>
+            <line x1="0" y1="68" x2="1000" y2="68" class="mz-elev__grid"/>
+            <line x1="0" y1="110" x2="1000" y2="110" class="mz-elev__grid"/>
+            <!-- Dağ sırtı dolgu alanı -->
+            <path class="mz-elev__area" d="M0 132 L0 112 C40 112 58 106 80 106 C145 106 185 99 275 98 C355 97 420 56 505 42 C570 31 612 58 655 52 C690 47 710 31 745 31 C805 31 855 48 890 36 C912 28 924 18 940 18 C965 18 982 32 1000 44 L1000 132 Z" fill="url(#elevFill)"/>
+            <!-- Ana sırt çizgisi (kaydırınca çizilir) -->
+            <path class="mz-elev__line" id="elevPath" pathLength="1000" d="M0 112 C40 112 58 106 80 106 C145 106 185 99 275 98 C355 97 420 56 505 42 C570 31 612 58 655 52 C690 47 710 31 745 31 C805 31 855 48 890 36 C912 28 924 18 940 18 C965 18 982 32 1000 44"/>
+            <!-- Zirve noktaları -->
+            <g class="mz-elev__dots">
+              <circle class="mz-elev__dot" data-pin="0" cx="80" cy="106" r="4"/>
+              <circle class="mz-elev__dot" data-pin="1" cx="275" cy="98" r="4.5"/>
+              <circle class="mz-elev__dot" data-pin="2" cx="505" cy="42" r="5"/>
+              <circle class="mz-elev__dot" data-pin="3" cx="745" cy="31" r="5"/>
+              <circle class="mz-elev__dot mz-elev__dot--peak" data-pin="4" cx="940" cy="18" r="5.5"/>
+            </g>
+          </svg>
+        </div>
+        <div class="mz-elev__stops" role="list">
+          <div class="mz-stop" data-pin="0" role="listitem">
+            <span class="mz-stop__alt mono">726 m</span>
+            <span class="mz-stop__name">Bolu Merkez</span>
+            <span class="mz-stop__sub mono">Ana Kamp</span>
+          </div>
+          <button type="button" class="mz-stop mz-stop--link" data-pin="1" data-open-photo="10" role="listitem">
+            <span class="mz-stop__alt mono">860 m</span>
+            <span class="mz-stop__name">Yedigöller</span>
+            <span class="mz-stop__sub mono">Fotoğraf 11 ↗</span>
+          </button>
+          <div class="mz-stop" data-pin="2" role="listitem">
+            <span class="mz-stop__alt mono">1.975 m</span>
+            <span class="mz-stop__name">Çele Doruğu</span>
+            <span class="mz-stop__sub mono">Bolu · 2. Zirve</span>
+          </div>
+          <button type="button" class="mz-stop mz-stop--link" data-pin="3" data-open-photo="7" role="listitem">
+            <span class="mz-stop__alt mono">2.182 m</span>
+            <span class="mz-stop__name">Sis Dağı</span>
+            <span class="mz-stop__sub mono">Fotoğraf 08 ↗</span>
+          </button>
+          <div class="mz-stop mz-stop--peak" data-pin="4" role="listitem">
+            <span class="mz-stop__alt mono">2.399 m</span>
+            <span class="mz-stop__name">Köroğlu Zirvesi</span>
+            <span class="mz-stop__sub mono">Solo Zirve · Bolu</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- HUD Kategori Filtreleri -->
+      <div class="mz-filters" id="mzFilters" role="toolbar" aria-label="Galeri kategorileri">
+        <div class="mz-filters__btns">
+          <button type="button" class="mz-filter is-active mono" data-filter="all" aria-pressed="true">Tümü <span class="mz-filter__n">12</span></button>
+          <button type="button" class="mz-filter mono" data-filter="doga" aria-pressed="false">Dağcılık &amp; Doğa <span class="mz-filter__n">04</span></button>
+          <button type="button" class="mz-filter mono" data-filter="saha" aria-pressed="false">Saha <span class="mz-filter__n">02</span></button>
+          <button type="button" class="mz-filter mono" data-filter="hayat" aria-pressed="false">Hayat <span class="mz-filter__n">06</span></button>
+        </div>
+        <span class="mz-filters__status mono" id="mzFilterCount">12 / 12</span>
+      </div>
+
+      <div class="mozaik" id="galeriMozaik">
+        <figure class="mz-item" data-cat="doga" data-meta="SIĞACIK · İZMİR">
+          <button type="button" class="mz-btn"><span class="mz-no" aria-hidden="true">01</span><img src="assets/images/galeri/sigacik-balik.jpg" alt="Gün batımında Sığacık limanında balıkçı tekneleri ve ufukta rüzgâr türbinleri" width="768" height="1024" loading="lazy" decoding="async" style="object-position:50% 58%"></button>
+          <figcaption><b>Sığacık Limanı</b><span>İzmir/Seferihisar/Sığacıkta balık tuttuktan sonra eve dönerken</span></figcaption>
+        </figure>
+        <figure class="mz-item" data-cat="hayat" data-meta="ESKİŞEHİR · GEZİ">
+          <button type="button" class="mz-btn"><span class="mz-no" aria-hidden="true">02</span><img src="assets/images/galeri/eskisehir-festival.webp" alt="Çimenlik alanda festival çadırları ve arkada masal şatosu" width="960" height="1280" loading="lazy" decoding="async" style="object-position:50% 62%"></button>
+          <figcaption><b>Eskişehir Festivali</b><span>Eskişehir'e tatile gittiğimde bir festivalde çektim.</span></figcaption>
+        </figure>
+        <figure class="mz-item" data-cat="hayat" data-meta="YÖRESEL · HAYAT">
+          <button type="button" class="mz-btn"><span class="mz-no" aria-hidden="true">03</span><img src="assets/images/galeri/kuyu-tandir.jpg" alt="Taş örülü tandır kuyusunda asılı pişen kuyu tandır" width="739" height="950" loading="lazy" decoding="async" style="object-position:50% 52%"></button>
+          <figcaption><b>Kuyu Tandır</b><span>Kuyu tandır</span></figcaption>
+        </figure>
+        <figure class="mz-item" data-cat="hayat" data-meta="MÜZİK · HOBİ">
+          <button type="button" class="mz-btn"><span class="mz-no" aria-hidden="true">04</span><img src="assets/images/galeri/elektro-gitar.webp" alt="Kılıfının üzerinde duran siyah elektro gitar" width="720" height="1280" loading="lazy" decoding="async" style="object-position:50% 45%"></button>
+          <figcaption><b>Elektro Gitarım</b><span>Boş zamanlarımda çaldığım siyah elektro gitarım.</span></figcaption>
+        </figure>
+        <figure class="mz-item" data-cat="hayat" data-meta="SAHİL · BASKETBOL">
+          <button type="button" class="mz-btn"><span class="mz-no" aria-hidden="true">05</span><img src="assets/images/galeri/basket-sahasi.webp" alt="Deniz kenarında, tel örgülü basketbol sahası ve pota" width="960" height="1280" loading="lazy" decoding="async" style="object-position:50% 40%"></button>
+          <figcaption><b>Bayrampaşa Sahili</b><span>Arkadaşlarla gittiğimiz sahildeki basket sahası.</span></figcaption>
+        </figure>
+        <figure class="mz-item" data-cat="saha" data-meta="RMS-A · SAHA">
+          <button type="button" class="mz-btn"><span class="mz-no" aria-hidden="true">06</span><img src="assets/images/galeri/rmsa-pano.webp" alt="Sigortalar ve klemenslerle dolu elektrik panosu, önde açık proje çizimi" width="550" height="1026" loading="lazy" decoding="async" style="object-position:50% 35%"></button>
+          <figcaption><b>RMS-A Pano Bağlantısı</b><span>RMS-A istasyonunda pano bağlantılarını yaparken; önde proje çizimi.</span></figcaption>
+        </figure>
+        <figure class="mz-item" data-cat="hayat" data-meta="BOLU · EV">
+          <button type="button" class="mz-btn"><span class="mz-no" aria-hidden="true">07</span><img src="assets/images/galeri/kedim-garfi.webp" alt="Turuncu kedi Garfi, patisinin altında bir kol saatiyle halıda yatıyor" width="960" height="1280" loading="lazy" decoding="async" style="object-position:50% 30%"></button>
+          <figcaption><b>Kedim Garfi</b><span>Kendi saatimi takmıştım.</span></figcaption>
+        </figure>
+        <figure class="mz-item" data-cat="doga" data-meta="SİS DAĞI · 2.182 M">
+          <button type="button" class="mz-btn"><span class="mz-no" aria-hidden="true">08</span><img src="assets/images/galeri/sis-dagi-yaylasi.webp" alt="Karla kaplı yaylada kırmızı kamp çadırları ve arkada karlı tepe" width="1024" height="1023" loading="lazy" decoding="async" style="object-position:50% 55%"></button>
+          <figcaption><b>Sis Dağı Yaylası</b><span>Karla kaplı yaylada kamp çadırlarımız.</span></figcaption>
+        </figure>
+        <figure class="mz-item" data-cat="doga" data-meta="SEFERİHİSAR · İZMİR">
+          <button type="button" class="mz-btn"><span class="mz-no" aria-hidden="true">09</span><img src="assets/images/galeri/kiyi-magarasi.webp" alt="Kıyıdaki bir kaya mağarasının altından görünen turkuaz deniz" width="1280" height="960" loading="lazy" decoding="async" style="object-position:50% 60%"></button>
+          <figcaption><b>İzmir Seferihisar Ekmeksiz Plajı</b><span>Bir kıyı mağarasının içinden berrak deniz manzarası.</span></figcaption>
+        </figure>
+        <figure class="mz-item" data-cat="hayat" data-meta="YAYLA · GÜN BATIMI">
+          <button type="button" class="mz-btn"><span class="mz-no" aria-hidden="true">10</span><img src="assets/images/galeri/aksam-surusu.webp" alt="Araba camından görünen, gün batımında yayla" width="960" height="1280" loading="lazy" decoding="async" style="object-position:50% 50%"></button>
+          <figcaption><b>Akşam Araba Sürüşü</b><span>Arkadaşlarla piknik yaptığımız yayla.</span></figcaption>
+        </figure>
+        <figure class="mz-item" data-cat="doga" data-meta="YEDİGÖLLER · 860 M">
+          <button type="button" class="mz-btn"><span class="mz-no" aria-hidden="true">11</span><img src="assets/images/galeri/derin-gol.webp" alt="Ormanla çevrili yeşil göl ve önde ahşap korkuluk" width="960" height="1280" loading="lazy" decoding="async" style="object-position:50% 55%"></button>
+          <figcaption><b>Yedigöller — Derin Göl</b><span>Yedigöller'e kamp yapmaya gittiğimde çektim.</span></figcaption>
+        </figure>
+        <figure class="mz-item" data-cat="saha" data-meta="RMS-A · SAHA">
+          <button type="button" class="mz-btn"><span class="mz-no" aria-hidden="true">12</span><img src="assets/images/galeri/rmsa-istasyonu.jpg" alt="Kapakları açık RMS-A doğalgaz basınç düşürme istasyonu, kırmızı vanalar ve basınç göstergeleri" width="768" height="1024" loading="lazy" decoding="async" style="object-position:50% 56%"></button>
+          <figcaption><b>RMS-A İstasyonu</b><span>RMS-A istasyonu</span></figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <!-- ========== İLETİŞİM ========== -->
+    <section class="contact" id="contact">
+      <!-- Topografik izohips haritası arka plan katmanı -->
+      <div class="topo-bg topo-bg--contact" aria-hidden="true">
+        <svg class="topo-bg__svg" viewBox="0 0 1440 900" fill="none" preserveAspectRatio="xMidYMid slice">
+          <g class="topo-bg__minor">
+            <path d="M-60 150 C200 220 420 95 690 185 C950 272 1170 150 1500 225"/>
+            <path d="M-60 310 C220 385 455 245 725 340 C990 432 1190 295 1500 370"/>
+            <path d="M-60 490 C235 560 475 415 745 505 C1010 595 1210 465 1500 540"/>
+            <path d="M-60 680 C250 745 500 605 780 695 C1040 780 1230 650 1500 725"/>
+            <path d="M980 480 C1050 420 1190 415 1270 475 C1350 535 1330 640 1235 675 C1120 715 975 670 945 595 C925 545 942 512 980 480 Z"/>
+          </g>
+          <g class="topo-bg__major">
+            <path d="M-60 230 C210 302 438 170 708 262 C970 352 1180 222 1500 298"/>
+            <path d="M-60 585 C242 652 488 510 762 600 C1025 688 1220 558 1500 632"/>
+            <path d="M1040 515 C1088 478 1175 475 1228 512 C1280 550 1268 618 1205 640 C1128 666 1038 636 1018 588 C1006 556 1014 536 1040 515 Z"/>
+          </g>
+        </svg>
+      </div>
+
+      <!-- İletişim üst satırı: bölüm etiketi ve canlı pusula -->
+      <div class="contact__hud">
+        <div class="contact__head">
+          <p class="section-label mono">06 — İletişim</p>
+          <h2 class="sr-only">İletişim bilgileri</h2>
+        </div>
+
+        <div class="contact__controls">
+          <!-- Mobil / 3B kapalı cihazlar için kamp ateşi yakma düğmesi -->
+          <button type="button" class="cf-mobile-btn mono" id="campfireMobileBtn" aria-pressed="false">
+            <span class="cf-btn__flame" aria-hidden="true"></span>
+            <span class="cf-btn__txt">Kamp ateşini yak</span>
+          </button>
+
+          <!-- Canlı Pusula: imleç yönüne göre ibresi döner -->
+          <div class="contact__compass" id="contactCompass" title="Ana Kamp Pusulası">
+            <svg class="compass__svg" viewBox="0 0 80 80" fill="none" aria-hidden="true">
+              <circle cx="40" cy="40" r="35" class="compass__ring"/>
+              <circle cx="40" cy="40" r="28" class="compass__ring-inner"/>
+              <path d="M40 5v5M40 70v5M5 40h5M70 40h5" class="compass__tick-major"/>
+              <path d="M64.7 15.3l-3 3M18.3 61.7l-3 3M64.7 64.7l-3-3M18.3 18.3l-3-3" class="compass__tick"/>
+              <text x="40" y="18" text-anchor="middle" class="compass__cardinal">N</text>
+              <g id="compassNeedle" class="compass__needle" transform="rotate(0 40 40)">
+                <polygon points="40,14 43.2,40 40,37 36.8,40" class="compass__north"/>
+                <polygon points="40,66 43.2,40 40,43 36.8,40" class="compass__south"/>
+                <circle cx="40" cy="40" r="2.6" class="compass__pivot"/>
+              </g>
+            </svg>
+            <span class="compass__deg mono" id="compassDeg">000° N</span>
+          </div>
+        </div>
+      </div>
+
+      <ul class="iletisim-bilgi" id="iletisimBilgi">
+        <li class="ib ib--genis">
+          <span class="ib__etiket mono">E-posta</span>
+          <button class="ib__deger ib__kopya" id="copyEmail" data-email="efekalinci4@gmail.com">
+            <span id="copyEmailText">efekalinci4@gmail.com</span> <span class="ib__ikon" aria-hidden="true">⧉</span>
+          </button>
+          <span class="ib__not mono">Kopyalamak için bas</span>
+        </li>
+        <li class="ib">
+          <span class="ib__etiket mono">Telefon</span>
+          <a class="ib__deger" href="tel:+905464338448">0546 433 84 48</a>
+        </li>
+        <li class="ib">
+          <span class="ib__etiket mono" lang="en">GitHub</span>
+          <a class="ib__deger" href="https://github.com/Maraz95" target="_blank" rel="noopener">Maraz95 <span class="ib__ikon" aria-hidden="true">↗</span></a>
+        </li>
+        <li class="ib ib--genis">
+          <span class="ib__etiket mono">Adres</span>
+          <address class="ib__deger ib__deger--adres">Beşkavaklar Mah., Gazi Mustafa Kemal Bulvarı<br>Apt. No: 21, Daire No: 13 · Bolu / Merkez</address>
+        </li>
+      </ul>
+      <a class="btn ib__form" href="iletisim.html" data-magnetic>İletişim formu →</a>
       <footer class="footer mono">
         <span>© 2026 Ali Efe Kalinci</span>
         <span>Sahadan koda</span>
       </footer>
     </section>
+
+    <!-- 3B Kamp Ateşi Üstünde Yüzen Etkileşim Düğmesi -->
+    <button type="button" class="cf-prompt mono" id="campfirePrompt" aria-pressed="false" aria-label="Kamp ateşini yak veya söndür">
+      <span class="cf-btn__flame" aria-hidden="true"></span>
+      <span class="cf-btn__txt">Kamp ateşini yak</span>
+    </button>
+
+    <!-- HUD Bildirim Şeridi (kopyalama ve devre durumu için) -->
+    <div class="hud-toast mono" id="hudToast" role="status" aria-live="polite" aria-atomic="true"></div>
   </main>
 
   <!-- Kütüphaneler (CDN) -->
@@ -300,10 +907,14 @@
   <script src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js"></script>
 
   <!-- Kendi dosyalarımız: önce veri, sonra HTML'e basma, en son animasyonlar -->
-  <script src="js/data.js?v=2"></script>
-  <script src="js/render.js"></script>
-  <script src="js/projects.js?v=3"></script>
-  <script src="js/animations.js"></script>
+  <script src="js/data.js?v=6"></script>
+  <script src="js/i18n.js?v=20"></script>
+  <script src="js/render.js?v=5"></script>
+  <script src="js/projects.js?v=7"></script>
+  <script src="js/animations.js?v=22"></script>
+  <script src="js/galeri.js?v=5"></script>
+  <!-- Hakkımda & Projeler: kamera ilerlemesi + içerik animasyonları -->
+  <script src="js/about-scene.js?v=14"></script>
 
   <!-- Parçacık portre: Three.js (ES modülü, CDN). Import map modül adlarını adreslere bağlar. -->
   <script type="importmap">
@@ -314,7 +925,13 @@
       }
     }
   </script>
-  <script type="module" src="js/drift-particles.js?v=7"></script>
-  <script type="module" src="js/fiber-tunnel.js"></script>
+  <script type="module" src="js/drift-particles.js?v=9"></script>
+  <script type="module" src="js/fiber-tunnel.js?v=8"></script>
+  <!-- Tünel sonu → portal → Hakkımda + Projeler + Blog gece sahnesi geçişi -->
+  <script src="js/portal.js?v=9"></script>
+  <!-- Hakkımda + Projeler + Blog: canlı 3B Akdeniz sahnesi, 6 taş sütun ve yıldızlı gece gökyüzü -->
+  <script type="module" src="js/about-3d.js?v=19"></script>
+  <!-- Galeri + İletişim: canlı 3B kıyı mağarası galerisi ve etkileşimli kamp ateşi -->
+  <script type="module" src="js/cave-scene.js?v=9"></script>
 </body>
 </html>
