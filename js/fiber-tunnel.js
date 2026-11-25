@@ -35,11 +35,11 @@ const R = 2.0;                 // tünel kemerinin iç yarıçapı
 const FLOOR = -1.6;            // zemin, tünel eksenine göre
 const SPRING = 0.25;           // kemerin başladığı yükseklik (eksene göre)
 const RIB_T = 0.22;            // kemer kaburgasının kalınlığı
-const RIB_GAP = lowPower ? 3.0 : 2.4;  // kaburgalar arası mesafe
+const RIB_GAP = lowPower ? 3.4 : 2.8;  // kaburgalar arası mesafe
 const LENGTH = 78;             // tünel uzunluğu
 const PARALLAX = 0.35;         // animations.js: .hero__stage kaydırmanın %35'i kadar geri kalır
-const FIBERS = lowPower ? 56 : 110;
-const SAMPLES = lowPower ? 150 : 260;
+const FIBERS = lowPower ? 38 : 72;
+const SAMPLES = lowPower ? 68 : 116;
 
 const visH = (d) => 2 * d * Math.tan(THREE.MathUtils.degToRad(FOV / 2));
 // Gizli sekmede/önizlemede pencere 0 boyutlu olabilir: hesaplar NaN üretmesin
@@ -276,7 +276,7 @@ function init() {
     document.documentElement.classList.add('no-fiber');
     return;
   }
-  const dpr = Math.min(window.devicePixelRatio || 1, lowPower ? 1.35 : 1.75);
+  const dpr = Math.min(window.devicePixelRatio || 1, lowPower ? 1.0 : 1.35);
   renderer.setPixelRatio(dpr);
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   const BG = new THREE.Color('#04070C');
@@ -287,22 +287,32 @@ function init() {
   const camera = new THREE.PerspectiveCamera(FOV, 1, 0.05, 220);
   const resolution = new THREE.Vector2(1, 1);
 
+  // Ölçü önbelleği: her karede offsetTop/offsetHeight okuyarak layout reflow tetikleme
+  const metrics = { ih: viewH(), heroH: Math.max(1, hero.offsetHeight), tTop: tunnel.offsetTop, span: 1, tunnelEnd: 1 };
+  function measureDom() {
+    metrics.ih = viewH();
+    metrics.heroH = Math.max(1, hero.offsetHeight);
+    metrics.tTop = tunnel.offsetTop;
+    metrics.span = Math.max(1, tunnel.offsetHeight - metrics.ih);
+    metrics.tunnelEnd = metrics.tTop + metrics.span;
+  }
+  measureDom();
+
   // Tünel ekseninin yüksekliği: Hero bitince kameranın ineceği yer.
-  // (Kart kaydırmanın %65'i hızında yukarı kayar → kamera da o oranda iner.)
-  const heroRatio = () => Math.max(1, hero.offsetHeight) / viewH();
+  const heroRatio = () => metrics.heroH / metrics.ih;
   let axisY = -(1 - PARALLAX) * heroRatio() * visH(CARD_DEPTH);
 
   const world = new THREE.Group();      // tüm mimari bu grubun içinde; y = axisY
   scene.add(world);
 
-  /* ---------- Malzemeler: derin karanlık atmosfer + parlak ışığı yakalayan koyu metalik kaburgalar ---------- */
-  const concrete = new THREE.MeshStandardMaterial({ color: '#141A22', roughness: 0.42, metalness: 0.62 });
-  const skin = new THREE.MeshStandardMaterial({ color: '#03060A', emissive: '#03060A', emissiveIntensity: 0.08, roughness: 0.9, metalness: 0.15, side: THREE.DoubleSide });
-  // Zemin: koyu parlak obsidyen yansıma yüzeyi (derinlik yazmaz → yansıyan fiber ışıkları belirginleşir)
-  const floorMat = new THREE.MeshStandardMaterial({ color: '#05090F', emissive: '#04070C', emissiveIntensity: 0.12, roughness: 0.16, metalness: 0.78, depthWrite: false });
+  /* ---------- Malzemeler: hızlı GPU shader'lı koyu metalik kaburgalar ---------- */
+  const concrete = new THREE.MeshPhongMaterial({ color: '#141A22', specular: '#566A80', shininess: 42 });
+  const skin = new THREE.MeshBasicMaterial({ color: '#03060A', side: THREE.DoubleSide });
+  // Zemin: koyu parlak obsidyen yansıma yüzeyi
+  const floorMat = new THREE.MeshPhongMaterial({ color: '#05090F', specular: '#3A5068', shininess: 68, depthWrite: false });
 
   /* ---------- Karanlık atmosfer tozu (boşlukta yavaşça süzülen ince ışık parçacıkları) ---------- */
-  const dustCount = lowPower ? 80 : 190;
+  const dustCount = lowPower ? 44 : 110;
   const dustPos = new Float32Array(dustCount * 3);
   const dustSeed = new Float32Array(dustCount * 3);
   const dustRand = mulberry32(42);
@@ -352,7 +362,7 @@ function init() {
   /* ---------- Mimari: kemer kaburgaları + parlayan iç ışık şeritleri ---------- */
   const ribCount = Math.ceil(LENGTH / RIB_GAP);
   const ribGeo = new THREE.ExtrudeGeometry(archShape(R + RIB_T, true, R), {
-    depth: 0.26, bevelEnabled: true, bevelThickness: 0.025, bevelSize: 0.025, bevelSegments: 2, curveSegments: lowPower ? 16 : 24,
+    depth: 0.26, bevelEnabled: false, curveSegments: lowPower ? 14 : 20,
   });
   ribGeo.translate(0, 0, -0.26);
   const ribs = new THREE.InstancedMesh(ribGeo, concrete, ribCount);
@@ -367,12 +377,12 @@ function init() {
   let ringMat, mouthRingMat, mouthHaloMat;
   {
     const archPts = [];
-    for (let i = 0; i <= 48; i++) {
-      const p = profilePoint(i / 48, 0.025, R);
+    for (let i = 0; i <= 32; i++) {
+      const p = profilePoint(i / 32, 0.025, R);
       archPts.push(new THREE.Vector3(p.x, p.y, 0));
     }
     const archCurve = new THREE.CatmullRomCurve3(archPts);
-    const ringGeo = new THREE.TubeGeometry(archCurve, 48, 0.018, 6, false);
+    const ringGeo = new THREE.TubeGeometry(archCurve, 32, 0.018, 5, false);
     ringMat = new THREE.MeshBasicMaterial({
       color: '#E5B272', transparent: true, opacity: 0.52, blending: THREE.AdditiveBlending, depthWrite: false
     });
@@ -385,7 +395,7 @@ function init() {
     world.add(litRings);
 
     // Tünel ağzı (portal girişi) parlak ışık çerçevesi — karanlık atmosferde kapıyı öne çıkarır
-    const mouthRingGeo = new THREE.TubeGeometry(archCurve, 64, 0.042, 8, false);
+    const mouthRingGeo = new THREE.TubeGeometry(archCurve, 40, 0.042, 6, false);
     mouthRingMat = new THREE.MeshBasicMaterial({
       color: '#FFF2D8', transparent: true, opacity: 0.92, blending: THREE.AdditiveBlending, depthWrite: false
     });
@@ -393,7 +403,7 @@ function init() {
     mouthRing.position.z = -MOUTH_DEPTH + 0.06;
     world.add(mouthRing);
 
-    const mouthHaloGeo = new THREE.TubeGeometry(archCurve, 64, 0.14, 8, false);
+    const mouthHaloGeo = new THREE.TubeGeometry(archCurve, 40, 0.14, 6, false);
     mouthHaloMat = new THREE.MeshBasicMaterial({
       color: '#C88D48', transparent: true, opacity: 0.32, blending: THREE.AdditiveBlending, depthWrite: false
     });
@@ -404,7 +414,7 @@ function init() {
 
   // Ağız: daha kalın ve derin bir portal kaburgası
   const portalGeo = new THREE.ExtrudeGeometry(archShape(R + RIB_T * 2.2, true, R), {
-    depth: 0.9, bevelEnabled: true, bevelThickness: 0.04, bevelSize: 0.04, bevelSegments: 2, curveSegments: 40,
+    depth: 0.9, bevelEnabled: false, curveSegments: lowPower ? 18 : 26,
   });
   portalGeo.translate(0, 0, -MOUTH_DEPTH + 0.05);
   world.add(new THREE.Mesh(portalGeo, concrete));
@@ -472,11 +482,11 @@ function init() {
   ];
   lights.forEach(({ l }) => scene.add(l));
 
-  /* ---------- Fiber hatları: daha parlak çekirdek + geniş ışıklı hale + net zemin yansıması ---------- */
+  /* ---------- Fiber hatları: parlak çekirdek + dengeli hale + masaüstünde zemin yansıması ---------- */
   const fiberMats = {
-    core: fiberMaterial(lowPower ? 2.5 : 2.4, 1.0, false, resolution),
-    halo: fiberMaterial(lowPower ? 10 : 14, 0.42, true, resolution),
-    mirror: fiberMaterial(lowPower ? 5 : 8, 0.48, true, resolution),
+    core: fiberMaterial(lowPower ? 2.4 : 2.3, 1.0, false, resolution),
+    halo: fiberMaterial(lowPower ? 7.5 : 10.5, 0.40, true, resolution),
+    mirror: fiberMaterial(lowPower ? 4.5 : 7.0, 0.44, true, resolution),
   };
   const fiberGroup = new THREE.Group();
   world.add(fiberGroup);
@@ -568,19 +578,25 @@ function init() {
       }
     }
     const g = ribbonGeometry(lines);
-    const gm = ribbonGeometry(mirrors);
     const halo = new THREE.Mesh(g, fiberMats.halo);
     const core = new THREE.Mesh(g, fiberMats.core);
-    const mirror = new THREE.Mesh(gm, fiberMats.mirror);
-    [halo, core, mirror].forEach((m) => { m.frustumCulled = false; fiberGroup.add(m); });
-    core.renderOrder = 3; halo.renderOrder = 2; mirror.renderOrder = 1;
-    fiberMeshes = [halo, core, mirror];
+    core.renderOrder = 3; halo.renderOrder = 2;
+    const meshes = [halo, core];
+    if (!lowPower && mirrors.length) {
+      const gm = ribbonGeometry(mirrors);
+      const mirror = new THREE.Mesh(gm, fiberMats.mirror);
+      mirror.renderOrder = 1;
+      meshes.push(mirror);
+    }
+    meshes.forEach((m) => { m.frustumCulled = false; fiberGroup.add(m); });
+    fiberMeshes = meshes;
   }
 
   /* ---------- Boyut ---------- */
   let lastW = 0;
   function layout() {
     const w = viewW(), h = viewH();
+    measureDom();
     // Telefonda adres çubuğu açılıp kapanınca yalnızca yükseklik değişir: hatları yeniden kurma, sadece boyutla
     const rebuild = w !== lastW; lastW = w;
     renderer.setSize(w, h, false);
@@ -588,25 +604,23 @@ function init() {
     camera.updateProjectionMatrix();
     resolution.set(w * dpr, h * dpr);
     // Şerit genişliği piksel cinsinden: çizim tamponu dpr ile ölçekli
-    fiberMats.core.uniforms.uWidth.value = (lowPower ? 2.5 : 2.4) * dpr;
-    fiberMats.halo.uniforms.uWidth.value = (lowPower ? 10 : 14) * dpr;
-    fiberMats.mirror.uniforms.uWidth.value = (lowPower ? 5 : 8) * dpr;
+    fiberMats.core.uniforms.uWidth.value = (lowPower ? 2.4 : 2.3) * dpr;
+    fiberMats.halo.uniforms.uWidth.value = (lowPower ? 7.5 : 10.5) * dpr;
+    fiberMats.mirror.uniforms.uWidth.value = (lowPower ? 4.5 : 7.0) * dpr;
     axisY = -(1 - PARALLAX) * heroRatio() * visH(CARD_DEPTH);
     world.position.y = axisY;
     if (rebuild) buildFibers();
   }
 
-  /* ---------- Kaydırma → kamera ---------- */
+  /* ---------- Kaydırma → kamera (önbellekli DOM ölçüleriyle sıfır reflow) ---------- */
   const cam = { x: 0, y: 0, z: 0, lx: 0, ly: 0 };     // yumuşatılmış durum
   let mx = 0, my = 0;
   function targets() {
-    const ih = viewH();
+    const ih = metrics.ih;
     const y = window.scrollY;
-    const heroH = Math.max(1, hero.offsetHeight);
+    const heroH = metrics.heroH;
     const ph = THREE.MathUtils.clamp(y / heroH, 0, 1);
-    const tTop = tunnel.offsetTop;
-    const span = Math.max(1, tunnel.offsetHeight - ih);
-    const pt = THREE.MathUtils.clamp((y - tTop) / span, 0, 1);
+    const pt = THREE.MathUtils.clamp((y - metrics.tTop) / metrics.span, 0, 1);
     // Hero: kartın derinliğindeki noktalar kartla aynı hızda kaysın
     const ty = -ph * (1 - PARALLAX) * (heroH / ih) * visH(CARD_DEPTH);
     // Hero'nun son kısmında hafifçe ağza doğru yaklaş, sonra tünelde yumuşak ilerle
@@ -763,13 +777,13 @@ function init() {
     renderer.render(scene, camera);
   }
 
-  /* ---------- Yalnızca Hero veya tünel ekrandayken çiz ----------
-     Tünelin sabit (sticky) kısmı bittiği an (portaldan geçildi) çizim durur:
-     #about sahnesi ile fiber sahne asla aynı anda çizilmez. */
+  /* ---------- Yalnızca Hero veya tünel ekrandayken (ve loader kapandıktan sonra) çiz ----------
+     Loader arkada 3B döngüyle CPU/GPU yarışına girmez; tünel bitince çizim durur. */
   let running = false;
-  const tunnelEnd = () => tunnel.offsetTop + tunnel.offsetHeight - viewH();
+  const tunnelEnd = () => metrics.tunnelEnd;
   function shouldRun() {
-    return !document.hidden && window.scrollY < tunnelEnd();
+    const loading = document.body.classList.contains('is-loading');
+    return !document.hidden && !loading && window.scrollY < tunnelEnd();
   }
   function update() {
     const on = shouldRun();
@@ -780,6 +794,7 @@ function init() {
     if (on) clock.getDelta();
     renderer.setAnimationLoop(on ? frame : null);
   }
+  window.addEventListener('hero:intro', () => { measureDom(); update(); });
   window.addEventListener('scroll', update, { passive: true });
   document.addEventListener('visibilitychange', update);
 

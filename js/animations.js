@@ -159,12 +159,16 @@
 
     const sCtx = scopeCanvas ? scopeCanvas.getContext('2d') : null;
     const fxCtx = fxCanvas ? fxCanvas.getContext('2d') : null;
+    let barRect = null;
+    let scopeW = 460, scopeH = 76;
 
     function sizeCanvases() {
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const dpr = Math.min(window.devicePixelRatio || 1, touchOnly ? 1.25 : 1.5);
       if (scopeCanvas && sCtx) {
         const r = scopeCanvas.getBoundingClientRect();
         if (r.width > 0 && r.height > 0) {
+          scopeW = r.width;
+          scopeH = r.height;
           scopeCanvas.width = Math.round(r.width * dpr);
           scopeCanvas.height = Math.round(r.height * dpr);
           sCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
@@ -175,6 +179,7 @@
         fxCanvas.height = Math.round(window.innerHeight * dpr);
         fxCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
       }
+      if (bar && bar.parentElement) barRect = bar.parentElement.getBoundingClientRect();
     }
 
     // Midpoint displacement ile prosedürel elektrik arkı (ana kol + ince dallar)
@@ -205,29 +210,31 @@
 
       if (!fxCtx || reduce) return;
 
-      // Yukarıdan çarpma noktasına dev ana yıldırım kolu + geniş dallar
+      // Yukarıdan çarpma noktasına ana yıldırım kolu + dallar (mobilde daha hafif)
       const startX = sx + (Math.random() - 0.5) * Math.min(w * 0.28, 300);
-      const main = buildBolt(startX, -20, sx, sy, Math.min(w * 0.18, 175), 6);
+      const main = buildBolt(startX, -20, sx, sy, Math.min(w * 0.18, 175), touchOnly ? 5 : 6);
       const branches = [];
-      for (let i = 0; i < 9; i++) {
+      const branchN = touchOnly ? 5 : 8;
+      for (let i = 0; i < branchN; i++) {
         const idx = Math.floor(main.length * (0.12 + Math.random() * 0.76));
         const [bx, by] = main[idx];
         const dir = i % 2 === 0 ? -1 : 1;
         const dx = dir * (90 + Math.random() * 190);
         const dy = 70 + Math.random() * 180;
-        branches.push(buildBolt(bx, by, bx + dx, by + dy, 48, 4));
+        branches.push(buildBolt(bx, by, bx + dx, by + dy, 48, 3));
       }
       // Çarpma noktasından aşağı/yanlara sıçrayan ikincil ark kolları
       for (let i = 0; i < 3; i++) {
         const ang = (Math.PI * 0.2) + Math.random() * (Math.PI * 0.6);
         const len = 100 + Math.random() * 140;
-        branches.push(buildBolt(sx, sy, sx + Math.cos(ang) * len * (i === 1 ? -1 : 1), sy + Math.sin(ang) * len, 36, 4));
+        branches.push(buildBolt(sx, sy, sx + Math.cos(ang) * len * (i === 1 ? -1 : 1), sy + Math.sin(ang) * len, 36, 3));
       }
       arcBolt = { main, branches, impact: [sx, sy] };
       arcAlpha = 1;
 
-      // Çarpma noktasından her yöne yüksek enerjili kıvılcım patlaması
-      for (let i = 0; i < 64; i++) {
+      // Çarpma noktasından her yöne kıvılcım patlaması
+      const sparkN = touchOnly ? 28 : 48;
+      for (let i = 0; i < sparkN; i++) {
         const angle = Math.random() * Math.PI * 2;
         const speed = 3 + Math.random() * 9.5;
         sparks.push({
@@ -236,17 +243,16 @@
           vx: Math.cos(angle) * speed,
           vy: Math.sin(angle) * speed - 1.5,
           life: 0.9 + Math.random() * 0.5,
-          size: 1.8 + Math.random() * 3.2
+          size: 1.8 + Math.random() * 3.0
         });
       }
     }
 
-    // İlerleme çubuğu ucundan küçük bakır kıvılcımları üret
+    // İlerleme çubuğu ucundan küçük bakır kıvılcımları üret (önbellekli konum — layout reflow yok)
     function emitBarSpark(ratio) {
-      if (!bar || !fxCtx || reduce) return;
-      const r = bar.parentElement.getBoundingClientRect();
-      const x = r.left + r.width * ratio;
-      const y = r.top + r.height * 0.5;
+      if (!barRect || !fxCtx || reduce) return;
+      const x = barRect.left + barRect.width * ratio;
+      const y = barRect.top + barRect.height * 0.5;
       sparks.push({
         x, y,
         vx: (Math.random() - 0.25) * 2.4,
@@ -258,9 +264,10 @@
 
     function drawScope(p) {
       if (!scopeCanvas || !sCtx) return;
-      const w = scopeCanvas.clientWidth || 460;
-      const h = scopeCanvas.clientHeight || 76;
+      const w = scopeW;
+      const h = scopeH;
       const mid = h * 0.5;
+      const step = touchOnly ? 4 : 3;
       sCtx.clearRect(0, 0, w, h);
 
       // İnce osiloskop ızgarası
@@ -277,7 +284,7 @@
       sCtx.beginPath();
       sCtx.strokeStyle = 'rgba(22, 74, 112, 0.75)';
       sCtx.lineWidth = 1.2;
-      for (let x = 0; x <= w; x += 3) {
+      for (let x = 0; x <= w; x += step) {
         const t = (x / w) * Math.PI * (3 + p * 5) - phase * 0.85;
         const env = Math.sin((x / w) * Math.PI);
         const y = mid + Math.sin(t + 0.7) * amp * 0.65 * env;
@@ -285,88 +292,90 @@
       }
       sCtx.stroke();
 
-      // Ana bronz/taş AC sinüs dalgası
-      sCtx.save();
+      // Ana bronz/taş AC sinüs dalgası (shadowBlur yerine çift katmanlı hızlı çizim)
       sCtx.beginPath();
-      sCtx.strokeStyle = p >= 0.99 ? '#F5EBD6' : '#B8A58A';
-      sCtx.lineWidth = 1.8;
-      sCtx.shadowColor = '#8A6845';
-      sCtx.shadowBlur = 8;
-      for (let x = 0; x <= w; x += 2) {
+      for (let x = 0; x <= w; x += step) {
         const t = (x / w) * Math.PI * (4 + p * 6) - phase;
         const env = Math.sin((x / w) * Math.PI);
         const noise = p < 0.99 ? (Math.random() - 0.5) * (1.2 + (p > 0.85 ? 2.5 : 0)) : 0;
         const y = mid + Math.sin(t) * amp * env + noise + jitter * 0.3;
         if (x === 0) sCtx.moveTo(x, y); else sCtx.lineTo(x, y);
       }
+      sCtx.strokeStyle = 'rgba(138, 104, 69, 0.38)';
+      sCtx.lineWidth = 5;
       sCtx.stroke();
-      sCtx.restore();
+      sCtx.strokeStyle = p >= 0.99 ? '#F5EBD6' : '#B8A58A';
+      sCtx.lineWidth = 1.8;
+      sCtx.stroke();
     }
 
     function drawFx() {
       if (!fxCtx) return;
+      if (!sparks.length && (!arcBolt || arcAlpha <= 0.01)) return;
       const w = window.innerWidth, h = window.innerHeight;
       fxCtx.clearRect(0, 0, w, h);
 
-      // Kıvılcımlar
+      // Kıvılcımlar (shadowBlur'suz yüksek FPS çizim)
       for (let i = sparks.length - 1; i >= 0; i--) {
         const s = sparks[i];
         s.x += s.vx;
         s.y += s.vy;
-        s.vy += 0.08; // hafif yerçekimi
-        s.life -= 0.032;
+        s.vy += 0.08;
+        s.life -= 0.036;
         if (s.life <= 0) { sparks.splice(i, 1); continue; }
-        fxCtx.save();
-        fxCtx.globalAlpha = Math.max(0, s.life);
+        const a = Math.max(0, s.life);
+        fxCtx.globalAlpha = a * 0.32;
+        fxCtx.fillStyle = '#C49662';
+        fxCtx.beginPath();
+        fxCtx.arc(s.x, s.y, s.size * 2.3, 0, Math.PI * 2);
+        fxCtx.fill();
+        fxCtx.globalAlpha = a;
         fxCtx.fillStyle = s.life > 0.55 ? '#F5EBD6' : '#8A6845';
-        fxCtx.shadowColor = '#8A6845';
-        fxCtx.shadowBlur = 8;
         fxCtx.beginPath();
         fxCtx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
         fxCtx.fill();
-        fxCtx.restore();
       }
+      fxCtx.globalAlpha = 1;
 
-      // %100 Yıldırım çarpması (ana kol beyaz-taş, dallar bronz/deniz mavisi aura)
+      // %100 Yıldırım çarpması (shadowBlur olmadan katmanlı parlama → 60fps akıcı)
       if (arcBolt && arcAlpha > 0.01) {
-        const strokePts = (pts, width, color, shadowColor, blur) => {
-          fxCtx.save();
-          fxCtx.globalAlpha = arcAlpha;
+        fxCtx.lineCap = 'round';
+        fxCtx.lineJoin = 'round';
+        const strokePts = (pts, width, color, alphaMult) => {
+          fxCtx.globalAlpha = arcAlpha * alphaMult;
           fxCtx.strokeStyle = color;
           fxCtx.lineWidth = width;
-          fxCtx.lineCap = 'round';
-          fxCtx.lineJoin = 'round';
-          fxCtx.shadowColor = shadowColor;
-          fxCtx.shadowBlur = blur;
           fxCtx.beginPath();
           pts.forEach(([px, py], i) => (i === 0 ? fxCtx.moveTo(px, py) : fxCtx.lineTo(px, py)));
           fxCtx.stroke();
-          fxCtx.restore();
         };
-        strokePts(arcBolt.main, 28, 'rgba(22, 74, 112, 0.55)', '#164A70', 75);
-        strokePts(arcBolt.main, 12, 'rgba(138, 104, 69, 0.9)', '#8A6845', 44);
-        strokePts(arcBolt.main, 5.2, '#FFFFFF', '#F5EBD6', 24);
+        strokePts(arcBolt.main, 34, '#164A70', 0.22);
+        strokePts(arcBolt.main, 18, '#8A6845', 0.45);
+        strokePts(arcBolt.main, 9, '#F5EBD6', 0.72);
+        strokePts(arcBolt.main, 4, '#FFFFFF', 1.0);
         arcBolt.branches.forEach((b) => {
-          strokePts(b, 5, 'rgba(138, 104, 69, 0.78)', '#8A6845', 26);
-          strokePts(b, 2.1, 'rgba(255, 252, 245, 0.95)', '#FFFFFF', 14);
+          strokePts(b, 8, '#8A6845', 0.34);
+          strokePts(b, 2.2, '#FFFDF7', 0.92);
         });
 
-        // Çarpma noktasında geniş, yoğun ışık patlaması
+        // Çarpma noktasında yumuşak radyal parlama
         if (arcBolt.impact) {
           const [ix, iy] = arcBolt.impact;
-          const R = Math.min(window.innerWidth, window.innerHeight) * 0.36;
+          const R = Math.min(w, h) * 0.34;
           const grad = fxCtx.createRadialGradient(ix, iy, 0, ix, iy, R);
           grad.addColorStop(0, `rgba(255, 255, 255, ${arcAlpha})`);
-          grad.addColorStop(0.22, `rgba(255, 248, 232, ${arcAlpha * 0.88})`);
-          grad.addColorStop(0.5, `rgba(138, 104, 69, ${arcAlpha * 0.5})`);
-          grad.addColorStop(0.78, `rgba(22, 74, 112, ${arcAlpha * 0.24})`);
+          grad.addColorStop(0.24, `rgba(255, 248, 232, ${arcAlpha * 0.85})`);
+          grad.addColorStop(0.52, `rgba(138, 104, 69, ${arcAlpha * 0.45})`);
+          grad.addColorStop(0.8, `rgba(22, 74, 112, ${arcAlpha * 0.2})`);
           grad.addColorStop(1, 'rgba(22, 74, 112, 0)');
+          fxCtx.globalAlpha = 1;
           fxCtx.fillStyle = grad;
           fxCtx.beginPath();
           fxCtx.arc(ix, iy, R, 0, Math.PI * 2);
           fxCtx.fill();
         }
-        arcAlpha *= 0.92;
+        fxCtx.globalAlpha = 1;
+        arcAlpha *= 0.9;
       }
     }
 
@@ -454,37 +463,26 @@
       return tl;
     }
 
-    // %100 anı: yıldırım çarpar → kısa flaş & sarsıntı → çarpma noktasından dairesel olarak site açılır
-    const reveal = { r: 0 };
+    // %100 anı: yıldırım çarpar → kısa flaş & sarsıntı → GPU hızlandırmalı açılış
     tl.addLabel('strike')
       .call(() => {
         if (ledEl) ledEl.classList.add('is-ready');
         if (countWrap) countWrap.classList.add('is-charged');
         triggerLightning();
       }, null, 'strike')
-      // Kontrollü flaş (ışığa duyarlılar için ≤ 0.85 opaklık, geniş ışık yayılımı) + anında sarsıntı
-      .to(flashEl, { opacity: 0.84, duration: 0.07, ease: 'power4.out' }, 'strike')
+      .to(flashEl, { opacity: 0.82, duration: 0.07, ease: 'power4.out' }, 'strike')
       .to(flashEl, { opacity: 0.35, duration: 0.05 })
-      .to(flashEl, { opacity: 0.68, duration: 0.05 })
-      .to(flashEl, { opacity: 0, duration: 0.38, ease: 'power2.out' })
-      .to(surface, { x: 6, y: -3, duration: 0.04, repeat: 4, yoyo: true, clearProps: 'x,y' }, 'strike')
-      // Çarpma noktasından dairesel açıklık ve şok dalgası halkası dışa doğru büyür → Hero ortaya çıkar
+      .to(flashEl, { opacity: 0.65, duration: 0.05 })
+      .to(flashEl, { opacity: 0, duration: 0.35, ease: 'power2.out' })
+      .to(surface, { x: 5, y: -2, duration: 0.04, repeat: 3, yoyo: true, clearProps: 'x,y' }, 'strike')
       .call(() => {
         if (surface) surface.classList.add('is-opening');
-      }, null, 'strike+=0.16')
+      }, null, 'strike+=0.14')
       .fromTo(shockEl,
-        { scale: 0, opacity: 0.95 },
-        { scale: 1.05, opacity: 0, duration: 0.9, ease: 'power3.inOut' },
-        'strike+=0.16'
+        { scale: 0, opacity: 0.9 },
+        { scale: 1.05, opacity: 0, duration: 0.65, ease: 'power3.out' },
+        'strike+=0.14'
       )
-      .to(reveal, {
-        r: 115,
-        duration: 0.9,
-        ease: 'power3.inOut',
-        onUpdate() {
-          if (surface) surface.style.setProperty('--hole', `${reveal.r.toFixed(2)}vmax`);
-        }
-      }, 'strike+=0.16')
       .call(stopLoaderFx);
 
     return tl;

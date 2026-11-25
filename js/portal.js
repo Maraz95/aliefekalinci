@@ -74,13 +74,13 @@
       endEl.style.transform = reduce ? 'none' : `scale(${1 - 0.6 * textOut})`;
     }
 
-    // 3) Portal halkası: açılır, sonra kameranın içinden geçecek kadar büyür
+    // 3) Portal halkası: açılır, sonra kameranın içinden geçecek kadar büyür (GPU taşmasın diye 5.5x ile sınırlı)
     if (portal) {
       const open = smooth(0.84, 0.92, pt);
       const dive = smooth(0.92, 0.985, pt);
-      const scale = reduce ? 1 : open * (1 + dive * dive * 9);
+      const scale = reduce ? 1 : open * (1 + dive * dive * 4.5);
       portal.style.opacity = String(open * (1 - smooth(0.96, 0.985, pt)));
-      portal.style.transform = `scale(${scale})`;
+      portal.style.transform = `scale(${scale.toFixed(3)})`;
     }
 
     // 4) Parlama: tek sefer, en fazla 0.85 (hareketi azaltta hiç yok)

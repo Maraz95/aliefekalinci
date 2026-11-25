@@ -1688,7 +1688,7 @@ async function build() {
   scene.add(sun, sun.target);
   if (!lowPower) {
     sun.castShadow = true;
-    sun.shadow.mapSize.set(2048, 2048);
+    sun.shadow.mapSize.set(1024, 1024);
     const s = sun.shadow.camera; s.left = -75; s.right = 75; s.top = 75; s.bottom = -75; s.near = 20; s.far = 400;
     sun.shadow.bias = -0.0004; sun.shadow.normalBias = 0.06;
   }
@@ -1901,10 +1901,10 @@ function init() {
       if (window.__fallback2DPillars) window.__fallback2DPillars();
     });
   }
-  // Tünelin sonuna ~3 ekran kala yüklemeye başla
+  // Tünelin sonuna ~1.1 ekran kala yüklemeye başla (tünel başında/ortasında CPU-GPU takılması yapmasın)
   const io = new IntersectionObserver((ents) => {
     if (ents.some((e) => e.isIntersecting)) { load(); io.disconnect(); }
-  }, { rootMargin: '300% 0px 300% 0px' });
+  }, { rootMargin: '110% 0px 110% 0px' });
   io.observe(about);
   const projectsEl = document.getElementById('projects');
   if (projectsEl) io.observe(projectsEl);
