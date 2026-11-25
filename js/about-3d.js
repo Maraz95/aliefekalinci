@@ -1338,7 +1338,7 @@ function createPillars(uTime, uPx, uNight, count = 6) {
     emissiveIntensity: 0.08
   });
 
-  const shaftGeo = createFlutedShaftGeometry(2.55, 3.15, 28, 18);
+  const shaftGeo = createFlutedShaftGeometry(2.55, 3.15, 28, lowPower ? 12 : 18);
   const capGeo = createCapitalGeometry();
   const abacusGeo = new THREE.BoxGeometry(8.3, 1.15, 8.3);
   const trimGeo = new THREE.BoxGeometry(8.5, 0.22, 8.5);
@@ -1347,10 +1347,8 @@ function createPillars(uTime, uPx, uNight, count = 6) {
   foamGeo.rotateX(-Math.PI / 2);
   const haloGeo = new THREE.PlaneGeometry(28, 28);
 
-  // Ortadan dışa simetrik "Tapınak / Amfitiyatro" koreografisi:
-  // Projeler tam ekrana oturana kadar (p <= 0.22) sütunlar tamamen su altında gizli kalır;
-  // ardından önce ortadaki 2 ana sütun (3-4), sonra yan çiftler (2-5), en son dış sütunlar (1-6) yükselir
-  const layout = [
+  // Masaüstü: ortadan dışa simetrik 6'lı amfitiyatro dizilimi
+  const desktopLayout = [
     { lateral: -33.0, dist: 56.0, topY: 12.6, startAt: 0.48, endAt: 0.88 },
     { lateral: -19.8, dist: 61.0, topY: 16.4, startAt: 0.36, endAt: 0.76 },
     { lateral:  -6.6, dist: 64.0, topY: 13.4, startAt: 0.24, endAt: 0.62 },
@@ -1358,9 +1356,19 @@ function createPillars(uTime, uPx, uNight, count = 6) {
     { lateral:  19.8, dist: 61.0, topY: 13.2, startAt: 0.39, endAt: 0.79 },
     { lateral:  33.0, dist: 56.0, topY: 15.8, startAt: 0.51, endAt: 0.91 },
   ];
+  // Mobil/dikey ekran: 2 sütun × 3 kademeli derinlik amfitiyatrosu (6 sütun + 1-6 kartları ekrana tam sığar)
+  const mobileLayout = [
+    { side: -1, dist: 72.0, topY: 22.8, startAt: 0.24, endAt: 0.60 },
+    { side:  1, dist: 72.0, topY: 22.8, startAt: 0.27, endAt: 0.63 },
+    { side: -1, dist: 62.0, topY: 13.0, startAt: 0.36, endAt: 0.73 },
+    { side:  1, dist: 62.0, topY: 13.0, startAt: 0.39, endAt: 0.76 },
+    { side: -1, dist: 52.0, topY:  4.2, startAt: 0.48, endAt: 0.86 },
+    { side:  1, dist: 52.0, topY:  4.2, startAt: 0.51, endAt: 0.89 },
+  ];
+  const layout = desktopLayout;
 
   // Tek çizim çağrılı (GPU dostu) güneşli deniz spreyi & su damlacıkları sistemi
-  const SPRAY_N = lowPower ? 90 : 260;
+  const SPRAY_N = lowPower ? 52 : 240;
   const sprayPos = new Float32Array(SPRAY_N * 3);
   const sprayLife = new Float32Array(SPRAY_N);
   const spraySize = new Float32Array(SPRAY_N);
@@ -1636,7 +1644,7 @@ function createPillars(uTime, uPx, uNight, count = 6) {
       const cr = canvas.getBoundingClientRect();
       const coords = items.map((it, idx) => {
         _v.copy(it.topWorld);
-        _v.y += 0.9; // büyük başlık abaküsünün hemen üstü
+        _v.y += window.innerWidth < 900 ? 0.65 : 0.9; // büyük başlık abaküsünün hemen üstü
         _v.project(camera);
         // Kartın görünürlüğü sütunun gerçek yükselmesine bağlı; geceye geçerken (kamera yukarı kalkarken) yumuşakça söner
         const nightFade = THREE.MathUtils.clamp(1 - (nightBlend - 0.04) / 0.28, 0, 1);
@@ -1654,7 +1662,55 @@ function createPillars(uTime, uPx, uNight, count = 6) {
     return moved;
   }
 
-  return { group, update };
+  // Ekran genişliğine göre 6 sütunu masaüstü (yatay) veya mobil (2×3 kademeli) yerleşime dinamik oturt
+  function reposition(viewMeta) {
+    const narrow = window.innerWidth < 900;
+    const tanHalfFov = Math.tan(THREE.MathUtils.degToRad(47.52 * 0.5));
+    const fullAspect = (viewMeta && viewMeta.fw && viewMeta.h) ? (viewMeta.fw / viewMeta.h) : (16 / 9);
+    const centerNdc = (viewMeta && viewMeta.fw) ? (((viewMeta.x0 + viewMeta.w * 0.5) / viewMeta.fw) * 2 - 1) : 0;
+    const visRatio = (viewMeta && viewMeta.fw) ? (viewMeta.w / viewMeta.fw) : 1;
+
+    for (let i = 0; i < items.length; i++) {
+      const it = items[i];
+      let dist, lateral, topY, startAt, endAt, colScale;
+      if (narrow) {
+        const m = mobileLayout[i] || mobileLayout[mobileLayout.length - 1];
+        dist = m.dist;
+        const fullHalfW = dist * tanHalfFov * fullAspect;
+        const visHalfW = fullHalfW * visRatio;
+        const centerLat = centerNdc * fullHalfW;
+        lateral = centerLat + m.side * visHalfW * 0.46;
+        topY = m.topY;
+        startAt = m.startAt;
+        endAt = m.endAt;
+        colScale = 0.64;
+      } else {
+        const d = desktopLayout[i] || desktopLayout[desktopLayout.length - 1];
+        dist = d.dist;
+        lateral = d.lateral;
+        topY = d.topY;
+        startAt = d.startAt;
+        endAt = d.endAt;
+        colScale = 1.0;
+      }
+      const baseXZ = new THREE.Vector3()
+        .copy(PROJ_CAM_POS)
+        .addScaledVector(fwd, dist)
+        .addScaledVector(right, lateral);
+      it.col.position.x = baseXZ.x;
+      it.col.position.z = baseXZ.z;
+      it.col.scale.setScalar(colScale);
+      it.foam.position.x = baseXZ.x;
+      it.foam.position.z = baseXZ.z;
+      it.foam.scale.setScalar(colScale);
+      it.topY = topY;
+      it.startAt = startAt;
+      it.endAt = endAt;
+      it.topWorld.set(baseXZ.x, it.curY, baseXZ.z);
+    }
+  }
+
+  return { group, update, reposition };
 }
 
 /* ---------------------------------------------------------
@@ -1760,9 +1816,7 @@ async function build() {
 
   const projectCount = (window.DATA && Array.isArray(window.DATA.projects) && window.DATA.projects.length) || 6;
   const pillars = createPillars(uTime, uPx, uNight, projectCount);
-  const desktopMq = window.matchMedia('(min-width: 900px)');
   pillars.group.visible = false;
-  desktopMq.addEventListener('change', (e) => { if (!e.matches) pillars.group.visible = false; });
   scene.add(pillars.group);
 
   // Görsel kutusu ekrandan geniş olabilir (telefonda dikey ekranda ~4 kat).
@@ -1786,6 +1840,7 @@ async function build() {
     camera.setViewOffset(fw, h, x0, 0, w, h);
     camera.updateProjectionMatrix();
     uPx.value = (h * dpr) / (2 * Math.tan(THREE.MathUtils.degToRad(camera.fov) / 2));
+    pillars.reposition({ fw, h, x0, w });
   }
   resize(true);
 
@@ -1863,8 +1918,8 @@ async function build() {
 
     life.update(time);
     nightSky.update(camera, time, nightEase);
-    // Sütunların gizlenmesi yalnızca kamera Blog gökyüzüne kalkarken (blEase) olur; mobilde 2B kaide kullanıldığı için 3B sütun çizilmez
-    const pillarsMoved = desktopMq.matches ? pillars.update(pj, hoveredIndex, time, dt, camera, blEase) : false;
+    // Sütunlar hem masaüstünde hem telefonda canlı 3B olarak yükselir; yalnızca Blog gökyüzüne geçerken (blEase) gizlenir
+    const pillarsMoved = pillars.update(pj, hoveredIndex, time, dt, camera, blEase);
     if (!lowPower && pillarsMoved) renderer.shadowMap.needsUpdate = true;
     renderer.render(scene, camera);
   }

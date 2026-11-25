@@ -94,7 +94,7 @@
       e.preventDefault();
       setMobileNav(false);
       let dest = target;
-      if (href === '#projects' && window.innerWidth >= 900 && !reduce) {
+      if (href === '#projects' && !reduce) {
         dest = Math.max(target.offsetTop, target.offsetTop + target.offsetHeight - window.innerHeight);
       } else if (href === '#hero') {
         dest = 0;

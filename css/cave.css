@@ -399,9 +399,59 @@ body.has-cave-3d .blog { background: transparent; }
   box-shadow: 0 0 24px -6px rgba(255, 142, 48, .65);
 }
 .contact.is-cave-contact .cf-mobile-btn { display: none; }
+@supports (height: 100lvh) {
+  @media (max-width: 899px) {
+    .cave-stage { height: 100lvh; bottom: auto; }
+  }
+}
 @media (max-width: 899px) {
+  .gallery.is-cave-3d { min-height: 380svh; }
+  .gallery.is-cave-3d .cave-hud {
+    padding: calc(66px + env(safe-area-inset-top, 0px)) var(--pad) calc(58px + env(safe-area-inset-bottom, 0px));
+  }
+  .cave-hud__top {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .cave-hud__title { font-size: clamp(30px, 9vw, 44px); }
+  .cave-hud__sub { font-size: 12.5px; line-height: 1.45; margin-top: 4px; max-width: 34ch; }
+  .cave-hud__actions { flex-wrap: wrap; gap: 8px; }
+  .cave-hud__btn {
+    min-height: 36px;
+    padding: 7px 12px;
+    font-size: 10px;
+    letter-spacing: .07em;
+  }
+  .cave-hover-tip { display: none; }
+  .cave-hud__bar { flex-wrap: wrap; gap: 6px 12px; }
+  .cave-hud__progress { min-width: 90px; max-width: none; }
+  .cave-hud__count { font-size: 11px; }
+  .cave-hud__guide {
+    flex-basis: 100%;
+    font-size: 10.5px;
+    line-height: 1.35;
+    color: rgba(245, 235, 214, .88);
+  }
+  .gallery.is-cave-3d.is-mosaic-overlay {
+    min-height: auto;
+    padding: calc(74px + env(safe-area-inset-top, 0px)) var(--pad) 56px;
+  }
+  .gallery.is-cave-3d.is-mosaic-overlay .cave-hud { padding: 0 0 18px; }
+  .cf-prompt {
+    padding: 8px 14px;
+    font-size: 10.5px;
+    letter-spacing: .08em;
+    white-space: nowrap;
+  }
+  .contact.is-cave-contact {
+    padding-top: 44svh;
+  }
   .contact:not(.is-fire-lit) .iletisim-bilgi { opacity: .76; filter: brightness(.88); }
   .contact:not(.is-fire-lit) .ib__form { opacity: .82; filter: brightness(.92); }
+}
+@media (max-width: 600px) {
+  .cave-hud__sub { display: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -122,12 +122,12 @@
       });
     }
   }
-  // Masaüstünde 3B sahne aktif olacağı için baştan .is-3d modunda başla → Hakkımda'dan inerken 2B yedek sütunlar aradan görünmez
-  set3DMode(desktopMq.matches && !reduced());
+  // Hem masaüstünde hem telefonda canlı 3B sütun modunda başla (WebGL hata verirse __fallback2DPillars 2B'ye döner)
+  set3DMode(!reduced());
   window.__fallback2DPillars = () => { force2DFallback = true; set3DMode(false); };
 
   window.__onPillarProject = (coords, sectionProgress) => {
-    const use3D = !force2DFallback && desktopMq.matches && !reduced();
+    const use3D = !force2DFallback && !reduced();
     set3DMode(use3D);
     if (!use3D || !els.stage) return;
 
@@ -151,8 +151,8 @@
     }
   };
 
-  desktopMq.addEventListener('change', () => {
-    set3DMode(!force2DFallback && desktopMq.matches && !reduced());
+  reduceMq.addEventListener('change', () => {
+    set3DMode(!force2DFallback && !reduced());
   });
 
   /* ---------- 3) Detay Paneli (Modal) ---------- */

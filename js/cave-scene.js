@@ -20,8 +20,8 @@ const galleryEl = document.getElementById('galeri');
 const contactEl = document.getElementById('contact');
 
 const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-const desktopMq = window.matchMedia('(min-width: 900px)');
 const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+const lowPower = window.matchMedia('(hover: none) and (pointer: coarse)').matches || window.innerWidth < 768;
 const isEn = document.documentElement.lang === 'en';
 
 /* ---------- Ortak kamp ateşi durumu (masaüstü 3B + mobil 2B ortak) ---------- */
@@ -115,7 +115,7 @@ function createTravertineMaterial({ blocks = false, tone = 1.0, roughness = 0.84
          }
          float tFbm(vec3 p) {
            float s = 0.0, a = 0.52;
-           for (int i = 0; i < 4; i++) {
+           for (int i = 0; i < ${lowPower ? 2 : 4}; i++) {
              s += a * tNoise(p);
              p = p * 2.02 + vec3(7.3, 4.1, 9.7);
              a *= 0.48;
@@ -223,7 +223,7 @@ function createColumnCapitalGeo() {
     new THREE.Vector2(0.57, 0.36),
     new THREE.Vector2(0.60, 0.44),
   ];
-  const geo = new THREE.LatheGeometry(pts, 32);
+  const geo = new THREE.LatheGeometry(pts, lowPower ? 18 : 32);
   geo.computeVertexNormals();
   return geo;
 }
@@ -231,8 +231,8 @@ function createColumnCapitalGeo() {
 function createColumnFactory(stoneMat, bronzeMat) {
   // Tek seferde üretilen paylaşımlı sütun geometrileri (10 sütunda 10x daha az GPU belleği)
   const plinthGeo = new THREE.BoxGeometry(1.16, 0.26, 1.16);
-  const torusGeo = new THREE.CylinderGeometry(0.46, 0.53, 0.20, 28);
-  const shaftGeo = createFlutedShaftGeo(0.37, 0.44, 4.30, 16);
+  const torusGeo = new THREE.CylinderGeometry(0.46, 0.53, 0.20, lowPower ? 16 : 28);
+  const shaftGeo = createFlutedShaftGeo(0.37, 0.44, 4.30, lowPower ? 10 : 16);
   const capGeo = createColumnCapitalGeo();
   const trimGeo = new THREE.BoxGeometry(1.24, 0.055, 1.24);
   const abacusGeo = new THREE.BoxGeometry(1.22, 0.22, 1.22);
@@ -400,7 +400,8 @@ function createGrottoSea(uTime, uNight) {
         gl_FragColor = vec4(col, 1.0);
       }`
   });
-  const g = new THREE.PlaneGeometry(420, 420, 72, 72);
+  const seaSeg = lowPower ? 32 : 72;
+  const g = new THREE.PlaneGeometry(420, 420, seaSeg, seaSeg);
   g.rotateX(-Math.PI / 2);
   const m = new THREE.Mesh(g, mat);
   m.position.set(-80, -2.55, -90);
@@ -531,7 +532,7 @@ function createCampfire(pos) {
     color: 0x1A1513, roughness: 0.95, metalness: 0.04,
     emissive: new THREE.Color(0xFF3E0A), emissiveIntensity: 0.55
   });
-  const coalCount = 28;
+  const coalCount = lowPower ? 16 : 28;
   const coals = new THREE.InstancedMesh(coalGeo, coalMat, coalCount);
   for (let i = 0; i < coalCount; i++) {
     const a = i * 2.39996;
@@ -612,7 +613,7 @@ function createCampfire(pos) {
       }
       float fbm(vec2 p){
         float v = 0.0, a = 0.52;
-        for (int i = 0; i < 5; i++) { v += noise(p) * a; p = p * 2.04 + vec2(3.7, 1.9); a *= 0.48; }
+        for (int i = 0; i < ${lowPower ? 3 : 5}; i++) { v += noise(p) * a; p = p * 2.04 + vec2(3.7, 1.9); a *= 0.48; }
         return v;
       }
       void main() {
@@ -659,9 +660,14 @@ function createCampfire(pos) {
   const flCenter = new THREE.Mesh(mainFlameGeo, makeFlameMat(0.0, 0.94));
   const flLeft = new THREE.Mesh(sideFlameGeo, makeFlameMat(2.7, 0.62));
   flLeft.position.set(-0.28, -0.02, -0.06);
-  const flRight = new THREE.Mesh(sideFlameGeo, makeFlameMat(5.4, 0.62));
-  flRight.position.set(0.26, -0.02, 0.06);
-  [flCenter, flLeft, flRight].forEach((m) => { m.renderOrder = 4; flameBillboard.add(m); });
+  flCenter.renderOrder = 4; flLeft.renderOrder = 4;
+  flameBillboard.add(flCenter, flLeft);
+  if (!lowPower) {
+    const flRight = new THREE.Mesh(sideFlameGeo, makeFlameMat(5.4, 0.62));
+    flRight.position.set(0.26, -0.02, 0.06);
+    flRight.renderOrder = 4;
+    flameBillboard.add(flRight);
+  }
 
   // Alev üstünde çok hafif yükselen sıcak duman sütunu
   const smokeUniforms = { uTime: flameUniforms.uTime, uFire: flameUniforms.uFire };
@@ -697,8 +703,8 @@ function createCampfire(pos) {
   flameBillboard.add(smokeMesh);
   group.add(flameBillboard);
 
-  // 160 adet yükselen kor & kıvılcım parçacığı
-  const SPARK_N = 160;
+  // Yükselen kor & kıvılcım parçacıkları (mobilde optimize)
+  const SPARK_N = lowPower ? 72 : 160;
   const spPos = new Float32Array(SPARK_N * 3);
   const spSeed = new Float32Array(SPARK_N * 3);
   for (let i = 0; i < SPARK_N; i++) {
@@ -808,13 +814,13 @@ function createCampfire(pos) {
   return { group, hitSphere, triggerFlash: () => { igniteFlash = 1; }, getLevel: () => fireLevel, update };
 }
 
-/* ---------- Ana 3B Antik Akdeniz Sütunlu Kıyı Galerisi Kurulumu ---------- */
+/* ---------- Ana 3B Antik Akdeniz Sütunlu Kıyı Galerisi Kurulumu (Masaüstü + Mobil Optimize) ---------- */
 function initCave3D() {
-  if (reduce || !desktopMq.matches || !stage || !canvas || !galleryEl || !contactEl || !window.gsap) return;
+  if (reduce || !stage || !canvas || !galleryEl || !contactEl || !window.gsap) return;
 
   let renderer;
   try {
-    renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false, powerPreference: 'high-performance' });
+    renderer = new THREE.WebGLRenderer({ canvas, antialias: !lowPower, alpha: false, powerPreference: 'high-performance' });
   } catch (e) {
     document.body.classList.remove('has-cave-3d');
     galleryEl.classList.remove('is-cave-3d');
@@ -822,7 +828,7 @@ function initCave3D() {
     return;
   }
 
-  const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+  const dpr = Math.min(window.devicePixelRatio || 1, lowPower ? 1.0 : 1.45);
   renderer.setPixelRatio(dpr);
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.AgXToneMapping;
@@ -998,7 +1004,7 @@ function initCave3D() {
   // ---------- 12 Galeri Fotoğrafı (Sağ traverten duvarından net öne çıkıntılı, bronz ayaklı, sıfır çakışma) ----------
   const domItems = [...galleryEl.querySelectorAll('.mozaik .mz-item')];
   const texLoader = new THREE.TextureLoader();
-  const maxAniso = Math.min(8, renderer.capabilities.getMaxAnisotropy());
+  const maxAniso = lowPower ? 2 : Math.min(8, renderer.capabilities.getMaxAnisotropy());
   const frameMat = new THREE.MeshStandardMaterial({ color: 0x231E18, roughness: 0.44, metalness: 0.68 });
   const trimMatBase = new THREE.MeshStandardMaterial({
     color: 0xC49662, roughness: 0.40, metalness: 0.76,
@@ -1199,17 +1205,24 @@ function initCave3D() {
     }
   });
 
-  // ---------- Boyutlandırma ----------
+  // ---------- Boyutlandırma (dikey telefonda geniş açılı portre kadrajı + adres çubuğu zıplama koruması) ----------
   let uPxVal = 600;
-  function resize() {
+  let isPortrait = false;
+  let lastRW = 0, lastRH = 0;
+  function resize(force = false) {
     const w = Math.max(1, window.innerWidth), h = Math.max(1, window.innerHeight);
+    if (!force && lowPower && w === lastRW && Math.abs(h - lastRH) < 90) return;
+    lastRW = w; lastRH = h;
+    const aspect = w / h;
+    isPortrait = aspect < 0.85;
     renderer.setSize(w, h, false);
-    camera.aspect = w / h;
+    camera.aspect = aspect;
+    camera.fov = isPortrait ? Math.min(72, 50 + (0.95 - aspect) * 42) : 50;
     camera.updateProjectionMatrix();
     uPxVal = (h * dpr) / (2 * Math.tan(THREE.MathUtils.degToRad(camera.fov) / 2));
   }
-  resize();
-  window.addEventListener('resize', resize);
+  resize(true);
+  window.addEventListener('resize', () => resize(false));
 
   // ---------- Görünürlük hesabı ----------
   function syncVisibility() {
@@ -1249,9 +1262,16 @@ function initCave3D() {
   camera.position.copy(camPos);
   camera.lookAt(camLook);
 
+  const hudGuide = document.querySelector('.cave-hud__guide');
+  const minStep = lowPower ? 1 / 31 : 0;
+  let acc = 0;
+
   window.gsap.ticker.add((_, deltaMs) => {
     if (!running) return;
-    const dt = Math.min(deltaMs / 1000, 0.05);
+    const rawDt = Math.min(deltaMs / 1000, 0.05);
+    acc += rawDt;
+    if (acc < minStep) return;
+    const dt = acc; acc = 0;
     time += dt;
     uTime.value = time;
 
@@ -1259,19 +1279,27 @@ function initCave3D() {
     const enterCove = smoothstep(0.84, 1.0, galProg);
     const turnRight = contactProg * contactProg * (3 - 2 * contactProg);
 
-    // Galeri yürüyüşü: solda yivli Akdeniz sütunları + açık deniz, sağda kesme traverten duvar + 12 fotoğraf
+    // Galeri yürüyüşü: masaüstünde geniş 16:9 kadraj, dikey telefonda fotoğrafları & sütunları net gösteren açılı kadraj
     const walkZ = THREE.MathUtils.lerp(4.6, -45.5, walkT);
-    const gPosX = THREE.MathUtils.lerp(-0.65, -1.55, enterCove);
+    const gPosX = isPortrait
+      ? THREE.MathUtils.lerp(-1.55, -1.95, enterCove)
+      : THREE.MathUtils.lerp(-0.65, -1.55, enterCove);
     const gPosY = THREE.MathUtils.lerp(0.35, 0.05, enterCove);
     const gPosZ = THREE.MathUtils.lerp(walkZ, -52.2, enterCove);
 
-    const gLookX = THREE.MathUtils.lerp(1.20, 0.35, enterCove);
-    const gLookY = 0.25;
-    const gLookZ = gPosZ - 9.0;
+    const gLookX = isPortrait
+      ? THREE.MathUtils.lerp(2.15, 0.85, enterCove)
+      : THREE.MathUtils.lerp(1.20, 0.35, enterCove);
+    const gLookY = isPortrait ? 0.30 : 0.25;
+    const gLookZ = gPosZ - (isPortrait ? 6.8 : 9.0);
 
-    // Sağa dönmüş Kamp Ateşi & İletişim kamera hedefi
-    const cPosX = -1.70, cPosY = 0.02, cPosZ = -52.4;
-    const cLookX = 5.15, cLookY = -0.62, cLookZ = -54.0;
+    // Sağa dönmüş Kamp Ateşi & İletişim kamera hedefi (telefonda kamp ateşi üst yarıda net görünür, kartlar altta akar)
+    const cPosX = isPortrait ? -1.45 : -1.70;
+    const cPosY = isPortrait ? 0.55 : 0.02;
+    const cPosZ = isPortrait ? -51.0 : -52.4;
+    const cLookX = isPortrait ? 4.35 : 5.15;
+    const cLookY = isPortrait ? -2.75 : -0.62;
+    const cLookZ = isPortrait ? -55.4 : -54.0;
 
     tgtPos.set(
       THREE.MathUtils.lerp(gPosX, cPosX, turnRight),
@@ -1372,6 +1400,10 @@ function initCave3D() {
     if (hudCount && photoFrames.length) {
       const curIdx = Math.min(photoFrames.length, Math.max(1, Math.round(walkT * (photoFrames.length - 1)) + 1));
       hudCount.textContent = `${String(curIdx).padStart(2, '0')} / ${String(photoFrames.length).padStart(2, '0')}`;
+      // Dokunmatik telefonda hover olmadığı için geçilen fotoğrafın adını alt çubukta göster
+      if (!finePointer && hudGuide && photoFrames[curIdx - 1]) {
+        hudGuide.textContent = `${photoFrames[curIdx - 1].title} · ${isEn ? 'Tap photo' : 'Fotoğrafa dokun'}`;
+      }
     }
     if (hudBar) hudBar.style.transform = `scaleX(${walkT.toFixed(3)})`;
 
@@ -1410,9 +1442,9 @@ function initCave3D() {
 
 applyFireUI(false, false);
 
-// Masaüstünde yerleşimi hemen rezerve et (sıfır CLS), ama 3B WebGL + 12 fotoğraf dokusunu yalnızca
+// Hem masaüstünde hem telefonda yerleşimi hemen rezerve et (sıfır CLS), ama 3B WebGL + 12 fotoğraf dokusunu yalnızca
 // Blog/Galeri'ye yaklaşırken yükle → ilk açılış ve Fiber Tünel hiç etkilenmez!
-if (!reduce && desktopMq.matches && stage && canvas && galleryEl && contactEl && window.gsap) {
+if (!reduce && stage && canvas && galleryEl && contactEl && window.gsap) {
   document.body.classList.add('has-cave-3d');
   galleryEl.classList.add('is-cave-3d');
   contactEl.classList.add('is-cave-contact');
