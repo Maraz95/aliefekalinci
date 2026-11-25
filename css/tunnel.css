@@ -86,7 +86,7 @@
 /* ---------- Ekran yazıları (HUD) ---------- */
 .tunnel__hud {
   position: absolute; inset: 0; pointer-events: none;
-  padding: 96px var(--pad, 48px) 40px;
+  padding: 96px var(--pad, 48px) 82px;
   display: flex; flex-direction: column; justify-content: space-between;
   font: 500 12px/1.6 var(--f-mono, monospace); letter-spacing: .1em; text-transform: uppercase;
   color: #B8A58A;
