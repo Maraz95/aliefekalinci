@@ -867,11 +867,16 @@ function weldLatheSeamNormals(geo, segs, ptCount) {
   n.needsUpdate = true;
 }
 
+// Ana iş parçacığını kilitlememek için uzun işleri ~5ms'lik kare dilimlerine böl
+const yieldFrame = () => new Promise((r) => (
+  document.hidden ? setTimeout(r, 16) : requestAnimationFrame(() => r())
+));
+
 /* Prosedürel PBR Antik Akdeniz Traverten / Kireçtaşı doku üretici (dikişsiz 512×512):
    - Albedo (renk): traverten katmanları, taş tambur derzleri, gözenekler, ince çatlaklar, yağmur izleri
    - Normal Map: Sobel 3×3 ile gerçek 3B yüzey kabartması (güneş her çukura ve derze gölge düşürür)
    - Roughness Map: gözenek ve derzler mat, aşınmış kireçtaşı sırtları hafif ipeksi */
-function createTravertinePBR() {
+async function createTravertinePBR() {
   // Mobilde 256×256 (4x daha hızlı üretim + 4x az VRAM), masaüstünde 512×512 yüksek detay
   const S = lowPower ? 256 : 512;
   const height = new Float32Array(S * S);
@@ -950,7 +955,12 @@ function createTravertinePBR() {
   // Yatay tambur blok derzleri (antik sütunlar üst üste blok taşlardan oluşur)
   const joints = [0.24, 0.51, 0.77];
 
+  let tSlice = performance.now();
   for (let y = 0; y < S; y++) {
+    if (y > 0 && (y & 7) === 0 && performance.now() - tSlice > 5) {
+      await yieldFrame();
+      tSlice = performance.now();
+    }
     const v = y / S;
     // Hangi taş tambur bloğunda olduğuna göre çok hafif ton farkı
     const drumId = v < joints[0] ? 0 : v < joints[1] ? 1 : v < joints[2] ? 2 : 3;
@@ -1022,6 +1032,7 @@ function createTravertinePBR() {
   }
   colCtx.putImageData(colImg, 0, 0);
   roughCtx.putImageData(roughImg, 0, 0);
+  await yieldFrame();
 
   // Sobel 3×3 ile gerçek Tangent-Space Normal Map üret
   const normCv = document.createElement('canvas'); normCv.width = S; normCv.height = S;
@@ -1030,7 +1041,12 @@ function createTravertinePBR() {
   const strength = 3.4;
   const at = (x, y) => height[((y + S) % S) * S + ((x + S) % S)];
 
+  tSlice = performance.now();
   for (let y = 0; y < S; y++) {
+    if (y > 0 && (y & 31) === 0 && performance.now() - tSlice > 5) {
+      await yieldFrame();
+      tSlice = performance.now();
+    }
     for (let x = 0; x < S; x++) {
       const tl = at(x - 1, y - 1), t = at(x, y - 1), tr = at(x + 1, y - 1);
       const l  = at(x - 1, y),                        r  = at(x + 1, y);
@@ -1278,7 +1294,7 @@ function createHaloMaterial() {
   });
 }
 
-function createPillars(uTime, uPx, uNight, count = 6) {
+async function createPillars(uTime, uPx, uNight, count = 6) {
   const group = new THREE.Group();
   group.visible = false;
 
@@ -1287,7 +1303,8 @@ function createPillars(uTime, uPx, uNight, count = 6) {
   const right = new THREE.Vector3().crossVectors(fwd, new THREE.Vector3(0, 1, 0)).normalize();
 
   // Gerçekçi PBR Traverten + Normal Map + Roughness Map + dünya-uzayı deniz yosunu/süzülen ıslaklık
-  const travPBR = createTravertinePBR();
+  const travPBR = await createTravertinePBR();
+  await yieldFrame();
   travPBR.map.repeat.set(2.5, 2.2);
   travPBR.normalMap.repeat.set(2.5, 2.2);
   travPBR.roughnessMap.repeat.set(2.5, 2.2);
@@ -1324,6 +1341,7 @@ function createPillars(uTime, uPx, uNight, count = 6) {
   );
 
   const bronzePBR = createBronzePBR();
+  await yieldFrame();
   bronzePBR.map.repeat.set(2, 2);
   bronzePBR.roughnessMap.repeat.set(2, 2);
   const bronzeTrimMat = new THREE.MeshStandardMaterial({
@@ -1760,6 +1778,7 @@ async function build() {
   const nightSky = createNightSky(uTime, uPx, uNight);
   scene.add(nightSky.group);
   scene.add(createSea(uTime, uNight));
+  await yieldFrame();
 
   // Model, bulut dokusu ve camera.json'ı birlikte yükle
   const draco = new DRACOLoader().setDecoderPath('https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/libs/draco/gltf/');
@@ -1807,15 +1826,17 @@ async function build() {
   });
   junk.forEach((o) => o.parent.remove(o));
   scene.add(model);
+  await yieldFrame();
 
   const clouds = createClouds(cloudTex);
   clouds.forEach((c) => { c.userData.op0 = c.material.opacity; scene.add(c); });
 
   const life = createLife(data, uTime, uPx);
   scene.add(life.group);
+  await yieldFrame();
 
   const projectCount = (window.DATA && Array.isArray(window.DATA.projects) && window.DATA.projects.length) || 6;
-  const pillars = createPillars(uTime, uPx, uNight, projectCount);
+  const pillars = await createPillars(uTime, uPx, uNight, projectCount);
   pillars.group.visible = false;
   scene.add(pillars.group);
 
@@ -1924,9 +1945,16 @@ async function build() {
     renderer.render(scene, camera);
   }
 
-  // Gölgeleri ve shader'ları ilk görünmeden önce derle (ilk karede takılmasın)
+  // Önce tüm shader'ları arka planda asenkron derle (ana iş parçacığında donma/takılma olmasın)
+  PATH.getPointAt(0, _p); LOOK.getPointAt(0, _l);
+  camera.position.copy(_p); camera.lookAt(_l); camera.updateMatrixWorld();
+  if (renderer.compileAsync) {
+    pillars.group.visible = true;
+    await renderer.compileAsync(scene, camera);
+    pillars.group.visible = false;
+    await yieldFrame();
+  }
   render(0, 0, 0, false, -1, 0, 0.016);
-  if (renderer.compileAsync) await renderer.compileAsync(scene, camera);
 
   return { render, resize, renderer };
 }
@@ -1963,10 +1991,24 @@ function init() {
       if (window.__fallback2DPillars) window.__fallback2DPillars();
     });
   }
-  // Tünelin sonuna ~1.1 ekran kala yüklemeye başla (tünel başında/ortasında CPU-GPU takılması yapmasın)
+  // Açılış loader'ı biter bitmez Hero'da sakince boş zaman dilimlerinde ön-ısın:
+  // kullanıcı "Sahadan → Koda" yazısına ulaştığında sahne, dokular ve shader'lar çoktan hazır olur (sıfır takılma).
+  function schedulePrewarm() {
+    if (loading) return;
+    const kick = () => {
+      if (loading) return;
+      if ('requestIdleCallback' in window) requestIdleCallback(() => load(), { timeout: 2200 });
+      else setTimeout(() => load(), 250);
+    };
+    setTimeout(kick, 1200);
+  }
+  if (!document.body.classList.contains('is-loading')) schedulePrewarm();
+  else window.addEventListener('hero:intro', schedulePrewarm, { once: true });
+
+  // Kullanıcı açılışta hemen aşağı atlarsa yedek tetikleyici
   const io = new IntersectionObserver((ents) => {
     if (ents.some((e) => e.isIntersecting)) { load(); io.disconnect(); }
-  }, { rootMargin: '110% 0px 110% 0px' });
+  }, { rootMargin: '180% 0px 180% 0px' });
   io.observe(about);
   const projectsEl = document.getElementById('projects');
   if (projectsEl) io.observe(projectsEl);

@@ -94,8 +94,8 @@
 }
 .tunnel__row { display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; }
 .tunnel__label b { color: #B8A58A; font-weight: 500; }
-.tunnel__meter { width: 180px; height: 2px; background: rgba(184, 165, 138, .2); margin-top: 10px; }
-.tunnel__meter i { display: block; height: 100%; width: 0; background: #8A6845; box-shadow: 0 0 8px #8A6845; }
+.tunnel__meter { width: 180px; height: 2px; background: rgba(184, 165, 138, .2); margin-top: 10px; overflow: hidden; }
+.tunnel__meter i { display: block; height: 100%; width: 100%; transform-origin: left; transform: scaleX(0); will-change: transform; background: #8A6845; box-shadow: 0 0 8px #8A6845; }
 .tunnel__code {
   align-self: center; text-align: center;
   font-size: clamp(14px, 1.6vw, 20px); letter-spacing: .14em; color: #B8A58A; text-transform: none;

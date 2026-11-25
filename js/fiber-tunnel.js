@@ -681,6 +681,7 @@ function init() {
     'class RMSA { control() {} }',
     'function automation() { return true; }',
   ];
+  let lastZStr = '';
   let lastLine = -1;
   let scrambleTimer = 0;
   function scrambleTo(text) {
@@ -771,11 +772,14 @@ function init() {
       m.uniforms.uSurge.value = Math.min(1, surgeTotal);
     }
 
-    // HUD
-    if (meter) meter.style.width = (t.pt * 100).toFixed(1) + '%';
-    if (zEl) zEl.textContent = String(Math.max(0, Math.round(-cam.z * 10))).padStart(3, '0');
+    // HUD (yalnızca GPU transform + değiştiğinde metin güncellemesi: sıfır layout reflow)
+    if (meter) meter.style.transform = 'scaleX(' + t.pt.toFixed(3) + ')';
+    if (zEl) {
+      const zStr = String(Math.max(0, Math.round(-cam.z * 10))).padStart(3, '0');
+      if (zStr !== lastZStr) { lastZStr = zStr; zEl.textContent = zStr; }
+    }
     const idx = Math.min(lines.length - 1, Math.floor(t.pt * lines.length));
-    if (idx !== lastLine && t.pt > 0) { lastLine = idx; scrambleTo(lines[idx]); }
+    if (idx !== lastLine && t.pt > 0 && t.pt < 0.72) { lastLine = idx; scrambleTo(lines[idx]); }
     // Kod satırı, "SAHADAN → KODA" yazısı, portal, parlama ve tuvalin sönmesi
     // kaydırmaya bağlı olarak js/portal.js'te yönetilir (döngü dururken de çalışsın diye).
 
