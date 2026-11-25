@@ -1013,17 +1013,15 @@ function initCave3D() {
     trimBox.position.z = 0.06;
     holder.add(trimBox);
 
-    // Fotoğraf yüzeyi
+    // Fotoğraf yüzeyi: sis, AgX beyazlaşması ve parlama olmadan gerçek canlı renkler
     const tex = texLoader.load(src);
     tex.colorSpace = THREE.SRGBColorSpace;
     tex.anisotropy = maxAniso;
-    const photoMat = new THREE.MeshStandardMaterial({
+    const photoMat = new THREE.MeshBasicMaterial({
       map: tex,
-      emissive: new THREE.Color(0xFFF6E8),
-      emissiveMap: tex,
-      emissiveIntensity: 0.28,
-      roughness: 0.50,
-      metalness: 0.04
+      color: new THREE.Color(0xF5F5F5),
+      toneMapped: false,
+      fog: false
     });
     const photoMesh = new THREE.Mesh(new THREE.PlaneGeometry(fw, fh), photoMat);
     photoMesh.position.z = 0.092;
@@ -1296,7 +1294,9 @@ function initCave3D() {
       const on = i === hoveredPhoto ? 1 : 0;
       f.hover += (on - f.hover) * hk;
       f.holder.position.x = f.baseX - f.hover * 0.14;
-      f.photoMat.emissiveIntensity = 0.26 + f.hover * 0.24;
+      const baseBri = THREE.MathUtils.lerp(0.96, 0.88, nEase);
+      const bri = Math.min(1.06, baseBri + f.hover * 0.12);
+      f.photoMat.color.setRGB(bri, bri * (1 - nEase * 0.02), bri * (1 - nEase * 0.05));
       f.trimMat.emissiveIntensity = 0.16 + f.hover * 1.15;
     }
 

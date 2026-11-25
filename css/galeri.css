@@ -122,13 +122,13 @@
 }
 .mz-btn img {
   width: 100%; height: 100%; object-fit: cover;
-  filter: saturate(1.05) contrast(1.02) brightness(.94);
+  filter: saturate(1.10) contrast(1.04) brightness(1);
   transition: transform .75s var(--ease), filter .5s var(--ease);
 }
 .mz-btn::before {
   content: ''; position: absolute; inset: 0; z-index: 1; pointer-events: none;
-  background: linear-gradient(180deg, rgba(10, 18, 26, .22) 0%, transparent 40%, rgba(10, 18, 26, .82) 100%);
-  opacity: .58; transition: opacity .45s var(--ease);
+  background: linear-gradient(180deg, rgba(10, 18, 26, .12) 0%, transparent 45%, rgba(10, 18, 26, .72) 100%);
+  opacity: .42; transition: opacity .45s var(--ease);
 }
 .mz-btn::after {          /* seçili / üzerine gelince sıcak bronz iç çerçeve */
   content: ''; position: absolute; inset: 0; z-index: 2; pointer-events: none;
