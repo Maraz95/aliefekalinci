@@ -39,14 +39,14 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=Inter+Tight:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-  <!-- Kimlik kartındaki vesikalık fotoğraf erken insin -->
-  <link rel="preload" as="image" href="assets/images/vesikalik-hd.webp">
+  <!-- Kimlik kartındaki vesikalık fotoğraf erken ve yüksek öncelikle insin -->
+  <link rel="preload" as="image" href="assets/images/vesikalik-hd.webp" fetchpriority="high">
   <link rel="stylesheet" href="css/base.css?v=3">
-  <link rel="stylesheet" href="css/main.css?v=20">
+  <link rel="stylesheet" href="css/main.css?v=21">
   <link rel="stylesheet" href="css/hero.css?v=12">
-  <link rel="stylesheet" href="css/tunnel.css?v=4">
+  <link rel="stylesheet" href="css/tunnel.css?v=5">
   <link rel="stylesheet" href="css/projects.css?v=13">
-  <link rel="stylesheet" href="css/about.css?v=17">
+  <link rel="stylesheet" href="css/about.css?v=18">
   <link rel="stylesheet" href="css/galeri.css?v=9">
   <link rel="stylesheet" href="css/cave.css?v=5">
 </head>
@@ -220,7 +220,7 @@
               <span class="idcard__mark idcard__mark--tl"></span><span class="idcard__mark idcard__mark--tr"></span>
               <span class="idcard__mark idcard__mark--bl"></span><span class="idcard__mark idcard__mark--br"></span>
               <div class="idcard__body">
-                <img class="idcard__photo" src="assets/images/vesikalik-hd.webp" alt="Ali Efe Kalinci vesikalık fotoğrafı" width="810" height="1040">
+                <img class="idcard__photo" src="assets/images/vesikalik-hd.webp" alt="Ali Efe Kalinci vesikalık fotoğrafı" width="810" height="1040" fetchpriority="high" decoding="async">
               </div>
             </div>
           </div>
@@ -321,7 +321,7 @@
   <!-- ===================== GİRİŞ + VESİKALIK + ÖZGEÇMİŞ ===================== -->
   <section class="ab-bolum" id="ab-ozgecmis" aria-labelledby="ab-ozgecmis-baslik">
     <figure class="vesikalik">
-      <img src="assets/images/vesikalik-hd.webp" width="810" height="1040"
+      <img src="assets/images/vesikalik-hd.webp" width="810" height="1040" loading="lazy" decoding="async"
            alt="Ali Efe Kalinci'nin vesikalık fotoğrafı">
       <figcaption>Ali Efe Kalinci</figcaption>
     </figure>
@@ -926,12 +926,12 @@
     }
   </script>
   <script type="module" src="js/drift-particles.js?v=9"></script>
-  <script type="module" src="js/fiber-tunnel.js?v=9"></script>
+  <script type="module" src="js/fiber-tunnel.js?v=10"></script>
   <!-- Tünel sonu → portal → Hakkımda + Projeler + Blog gece sahnesi geçişi -->
   <script src="js/portal.js?v=10"></script>
   <!-- Hakkımda + Projeler + Blog: canlı 3B Akdeniz sahnesi, 6 taş sütun ve yıldızlı gece gökyüzü -->
-  <script type="module" src="js/about-3d.js?v=21"></script>
+  <script type="module" src="js/about-3d.js?v=22"></script>
   <!-- Galeri + İletişim: canlı 3B kıyı mağarası galerisi ve etkileşimli kamp ateşi -->
-  <script type="module" src="js/cave-scene.js?v=10"></script>
+  <script type="module" src="js/cave-scene.js?v=11"></script>
 </body>
 </html>

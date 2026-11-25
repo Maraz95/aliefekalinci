@@ -489,6 +489,7 @@ section { position: relative; padding: clamp(96px, 14vh, 160px) var(--pad); }
 .topo-bg--contact .topo-bg__major path { stroke: rgba(196, 150, 98, .17); }
 .gallery {
   background:
+    linear-gradient(180deg, rgba(7, 11, 18, .92) 0%, transparent 12%, transparent 88%, rgba(16, 24, 32, .96) 100%),
     radial-gradient(ellipse 65% 45% at 80% 18%, rgba(22, 74, 112, .18), transparent 70%),
     radial-gradient(ellipse 55% 45% at 18% 82%, rgba(138, 104, 69, .12), transparent 68%),
     var(--bg);
@@ -665,7 +666,7 @@ section { position: relative; padding: clamp(96px, 14vh, 160px) var(--pad); }
   gap: 1px; margin-top: 8px;
   background: rgba(214, 199, 176, .2);
   border: 1px solid rgba(214, 199, 176, .24); border-radius: 18px; overflow: hidden;
-  box-shadow: 0 28px 72px -24px rgba(0, 0, 0, .6);
+  box-shadow: 0 28px 72px -24px rgba(0, 0, 0, .6), inset 0 1px 0 rgba(255, 248, 232, .12);
   transition: border-color .45s, box-shadow .5s;
 }
 .iletisim-bilgi::after {

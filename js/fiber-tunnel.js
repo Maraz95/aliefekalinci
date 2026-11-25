@@ -151,19 +151,21 @@ void main() {
   float dots = step(0.58, fract(vDist * 8.0 + vSeed * 5.0));
   float body = mix(dots, 1.0, solid) * smoothstep(0.0, 0.3, vDist);
 
-  // Hat boyunca tünele doğru akan ışık darbeleri (kuyruklu) + enerji hızlanmasında ikincil darbe
-  float ph = fract(vDist * 0.09 - uFlow * (0.55 + 0.9 * vSeed) + vSeed * 13.0);
-  float pulse = smoothstep(0.0, 0.015, ph) * (1.0 - smoothstep(0.015, 0.2 + uSurge * 0.09, ph));
-  float ph2 = fract(vDist * 0.16 - uFlow * (1.1 + 0.8 * vSeed) + vSeed * 7.3);
-  float surgePulse = smoothstep(0.0, 0.014, ph2) * (1.0 - smoothstep(0.014, 0.16, ph2)) * uSurge;
-  float pTot = min(1.35, pulse + surgePulse * 0.85);
+  // Hat boyunca tünele doğru akan keskin ışık darbeleri (kuyruklu) + enerji hızlanmasında ikincil darbe
+  float ph = fract(vDist * 0.092 - uFlow * (0.58 + 0.92 * vSeed) + vSeed * 13.0);
+  float pulse = smoothstep(0.0, 0.012, ph) * (1.0 - smoothstep(0.012, 0.17 + uSurge * 0.08, ph));
+  float ph2 = fract(vDist * 0.165 - uFlow * (1.12 + 0.82 * vSeed) + vSeed * 7.3);
+  float surgePulse = smoothstep(0.0, 0.012, ph2) * (1.0 - smoothstep(0.012, 0.14, ph2)) * (0.22 + uSurge * 0.95);
+  float pTot = min(1.45, pulse + surgePulse * 0.78);
 
-  vec3 col = mix(uDeep, uCyan, clamp(0.42 + 0.58 * vSeed + uSurge * 0.22, 0.0, 1.0));
-  col = mix(col, uWhite, clamp(pTot * 0.92 + uSurge * 0.16, 0.0, 1.0));
-  float a = (0.38 + 0.24 * vSeed + uSurge * 0.16 + pTot * (2.55 + uSurge * 1.15)) * body * profile;
+  // Derinliğe göre soğuk deniz mavisinden sıcak bronz-altına sinematik geçiş
+  float depthWarm = smoothstep(4.0, 38.0, vDepth);
+  vec3 col = mix(uDeep, uCyan, clamp(0.38 + 0.56 * vSeed + depthWarm * 0.16 + uSurge * 0.20, 0.0, 1.0));
+  col = mix(col, uWhite, clamp(pTot * 0.95 + uSurge * 0.14, 0.0, 1.0));
+  float a = (0.36 + 0.24 * vSeed + uSurge * 0.16 + pTot * (2.75 + uSurge * 1.15)) * body * profile;
 
   // Uzaklık: derinlikte parlamasını korur → karanlık atmosferde tünel ışıl ışıl öne çıkar
-  a *= mix(0.45, 1.0, exp(-vDepth * 0.022));
+  a *= mix(0.48, 1.0, exp(-vDepth * 0.020));
   a *= smoothstep(0.15, 1.0, vDepth);
 
   // Uzayan ucun parlak başı
@@ -736,21 +738,24 @@ function init() {
     const rollAmt = -cam.lx * 0.012 * heroDepth;
     camera.rotation.set(-cam.ly * pitchAmt, -cam.lx * yawAmt, Math.sin(cam.z * 0.05) * 0.006 + rollAmt);
 
-    // "Projeler" hover enerji hızlanması + giriş darbesi
+    // "Projeler" hover enerji hızlanması + portal ağzı canlı nefes alma parlaması
     ctaSurge += (ctaSurgeTarget - ctaSurge) * (1 - Math.exp(-dt * (ctaSurgeTarget ? 5.5 : 3.2)));
     surgeKick *= Math.exp(-dt * 4.2);
     const surgeTotal = Math.min(1.25, ctaSurge + surgeKick * 0.55);
+    const breath = 0.5 + 0.5 * Math.sin(flow * 1.45);
 
     lights.forEach(({ l, base, off }) => {
       l.position.set(off.x, axisY + off.y, cam.z + off.z);
-      l.intensity = base * (1 + surgeTotal * 0.42);
+      l.intensity = base * (0.94 + 0.08 * breath + surgeTotal * 0.42);
     });
-    if (ringMat) ringMat.opacity = 0.52 + surgeTotal * 0.28;
-    if (mouthRingMat) mouthRingMat.opacity = Math.min(1, 0.92 + surgeTotal * 0.08);
-    if (mouthHaloMat) mouthHaloMat.opacity = 0.32 + surgeTotal * 0.30;
-    mouthGlow.material.opacity = 0.38 + surgeTotal * 0.28;
-    const mgScale = 1 + surgeTotal * 0.14;
+    if (ringMat) ringMat.opacity = 0.48 + 0.08 * breath + surgeTotal * 0.28;
+    if (mouthRingMat) mouthRingMat.opacity = Math.min(1, 0.88 + 0.07 * breath + surgeTotal * 0.08);
+    if (mouthHaloMat) mouthHaloMat.opacity = 0.30 + 0.07 * breath + surgeTotal * 0.30;
+    mouthGlow.material.opacity = 0.36 + 0.07 * breath + surgeTotal * 0.28;
+    const mgScale = 1 + 0.03 * breath + surgeTotal * 0.14;
     mouthGlow.scale.set(11 * mgScale, 9 * mgScale, 1);
+    const endScale = 9.5 * (1 + 0.05 * breath + t.pt * 0.35);
+    glow.scale.set(endScale, endScale, 1);
 
     // Işık akışı: sabit hız + kaydırma hızı + "Projeler" hover enerji hızlanması
     const sv = Math.abs(window.scrollY - lastScroll) / Math.max(1, window.innerHeight) / Math.max(dt, 1e-3);
@@ -797,6 +802,7 @@ function init() {
   window.addEventListener('hero:intro', () => { measureDom(); update(); });
   window.addEventListener('scroll', update, { passive: true });
   document.addEventListener('visibilitychange', update);
+  if (window.ScrollTrigger) window.ScrollTrigger.addEventListener('refresh', measureDom);
 
   let resizeTimer = 0;
   window.addEventListener('resize', () => {

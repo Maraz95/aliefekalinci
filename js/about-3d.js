@@ -652,33 +652,36 @@ function createSea(uTime, uNight) {
         vec3 skyRefl = sampleSkyReflect(R, dusk);
 
         // 2) Derin Akdeniz su gövdesi + canlı doğal turkuaz-kobalt akıntı derinliği
-        vec3 deepCol = mix(vec3(0.06, 0.24, 0.46), vec3(0.014, 0.038, 0.082), uNight);
-        vec3 shalCol = mix(vec3(0.08, 0.44, 0.54), vec3(0.03, 0.078, 0.145), uNight);
+        vec3 deepCol = mix(vec3(0.05, 0.22, 0.45), vec3(0.011, 0.032, 0.074), uNight);
+        vec3 shalCol = mix(vec3(0.07, 0.47, 0.57), vec3(0.026, 0.072, 0.138), uNight);
         float patchN = vnoise(vW.xz * 0.014 + vec2(uTime * 0.008, -uTime * 0.006)) * 0.65
                      + vnoise(vW.xz * 0.032 - vec2(uTime * 0.005, uTime * 0.007)) * 0.35;
-        vec3 waterCol = mix(deepCol, shalCol, 0.24 + 0.48 * patchN);
+        vec3 waterCol = mix(deepCol, shalCol, 0.24 + 0.50 * patchN);
 
         // 3) Alt-yüzey saçılması (SSS): dalga tepelerinden sızan doğal Akdeniz zümrüt-turkuaz güneş ışığı
         vec3 lightDir = normalize(mix(uSun, uMoon, smoothstep(0.45, 0.85, uNight)));
         float backLight = pow(clamp(dot(V, -lightDir + N * 0.48), 0.0, 1.0), 3.0);
-        float crestFactor = smoothstep(0.28, 0.90, wv.z + vSwell * 0.45);
-        vec3 sssCol = mix(vec3(0.07, 0.66, 0.62), vec3(0.04, 0.19, 0.30), uNight);
-        waterCol += sssCol * (crestFactor * 0.34 + backLight * crestFactor * 0.62) * (1.0 - uNight * 0.72) * swellFade;
+        float crestFactor = smoothstep(0.26, 0.88, wv.z + vSwell * 0.48);
+        vec3 sssCol = mix(vec3(0.06, 0.70, 0.65), vec3(0.04, 0.21, 0.34), uNight);
+        waterCol += sssCol * (crestFactor * 0.38 + backLight * crestFactor * 0.66) * (1.0 - uNight * 0.72) * swellFade;
 
         vec3 c = mix(waterCol, skyRefl, clamp(fres * 0.92, 0.04, 0.95));
 
-        // 4) Çift katmanlı güneş parıltısı / gece ay yakamozu
-        float specBroad = pow(max(dot(R, lightDir), 0.0), 36.0);
-        float specSharp = pow(max(dot(R, lightDir), 0.0), 540.0);
-        vec3 specCol = mix(uSunCol, vec3(0.76, 0.87, 1.0), smoothstep(0.35, 0.85, uNight));
+        // 4) Üç katmanlı gerçekçi güneş parıltısı / gece gümüş ay yakamozu
+        float rDotL = max(dot(R, lightDir), 0.0);
+        float specBroad = pow(rDotL, 30.0);
+        float specSharp = pow(rDotL, 260.0);
+        float specGlint = pow(rDotL, 720.0) * detail;
+        vec3 specCol = mix(uSunCol, vec3(0.78, 0.89, 1.0), smoothstep(0.35, 0.85, uNight));
         specCol = mix(specCol, vec3(1.0, 0.66, 0.42), dusk * 0.55);
-        c += specCol * (specBroad * mix(0.28, 0.14, uNight) + specSharp * mix(2.4, 1.35, uNight));
+        c += specCol * (specBroad * mix(0.26, 0.15, uNight) + specSharp * mix(1.45, 0.95, uNight) + specGlint * mix(2.2, 1.4, uNight));
 
-        // 5) Rüzgârlı dalga sırtlarında ince dantel deniz köpüğü (yakın/orta mesafe)
-        float foamNoise = fbm(vW.xz * 0.34 + vec2(uTime * 0.18, -uTime * 0.12));
-        float whitecap = smoothstep(0.76, 1.05, wv.z + foamNoise * 0.34) * detail * 0.45;
-        vec3 foamCol = mix(vec3(0.92, 0.96, 0.98), vec3(0.32, 0.42, 0.54), uNight);
-        c = mix(c, foamCol, clamp(whitecap, 0.0, 0.55));
+        // 5) Rüzgârlı dalga sırtlarında hızlı 2-oktav dantel deniz köpüğü
+        vec2 fp = vW.xz * 0.34 + vec2(uTime * 0.18, -uTime * 0.12);
+        float foamNoise = vnoise(fp) * 0.62 + vnoise(fp * 2.15 + 3.4) * 0.38;
+        float whitecap = smoothstep(0.74, 1.02, wv.z + foamNoise * 0.36) * detail * 0.48;
+        vec3 foamCol = mix(vec3(0.94, 0.97, 0.99), vec3(0.30, 0.42, 0.56), uNight);
+        c = mix(c, foamCol, clamp(whitecap, 0.0, 0.58));
 
         // 6) Ufuk sisi: gökyüzünün ufuk rengiyle birebir kaynaşır (çizgi bırakmaz)
         vec3 dayFog = mix(uFog, vec3(0.70, 0.78, 0.85), 0.38);
@@ -1207,11 +1210,12 @@ function createPlinthGeometry() {
   return g;
 }
 
-function createFoamRingMaterial(uTime) {
+function createFoamRingMaterial(uTime, uNight) {
   return new THREE.ShaderMaterial({
     transparent: true, depthWrite: false, toneMapped: false, side: THREE.DoubleSide,
     uniforms: {
       uTime,
+      uNight,
       uSurge: { value: 0 },     // yükselirken yoğunlaşan dalga köpüğü
       uBreach: { value: 0 },    // suyu ilk deldiğinde dışa doğru genişleyen dalga halkası (0 → 1)
       uVis: { value: 0 },       // sütun suya değince görünür
@@ -1220,28 +1224,31 @@ function createFoamRingMaterial(uTime) {
       varying vec2 vUv;
       void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }`,
     fragmentShader: /* glsl */`
-      uniform float uTime, uSurge, uBreach, uVis;
+      uniform float uTime, uNight, uSurge, uBreach, uVis;
       varying vec2 vUv;
       ${NOISE_GLSL}
       void main(){
         vec2 p = (vUv - 0.5) * 2.0;
         float r = length(p);
         if (r > 1.0 || uVis < 0.01) discard;
-        // Organik parçalı deniz köpüğü (düz beyaz disk yerine dantel gibi dağılan köpük dilleri)
-        float n1 = fbm(p * 5.2 + vec2(uTime * 0.24, -uTime * 0.19));
-        float n2 = fbm(p * 11.5 - vec2(uTime * 0.35, uTime * 0.28));
-        float lace = smoothstep(0.36, 0.72, n1 * 0.65 + n2 * 0.45);
-        float collar = smoothstep(0.44 + uSurge * 0.16, 0.22, r + (n1 - 0.5) * 0.22) * smoothstep(0.16, 0.24, r);
-        float innerFoam = collar * (0.35 + 0.65 * lace);
+        // Hızlı 2-oktav dantel deniz köpüğü (gündüz beyaz-turkuaz, gece gümüş ay ışığı tonlu)
+        vec2 p1 = p * 5.2 + vec2(uTime * 0.24, -uTime * 0.19);
+        vec2 p2 = p * 11.2 - vec2(uTime * 0.35, uTime * 0.28);
+        float n1 = vnoise(p1) * 0.65 + vnoise(p1 * 2.05 + 3.1) * 0.35;
+        float n2 = vnoise(p2) * 0.62 + vnoise(p2 * 2.1 + 5.7) * 0.38;
+        float lace = smoothstep(0.34, 0.70, n1 * 0.64 + n2 * 0.46);
+        float collar = smoothstep(0.45 + uSurge * 0.16, 0.22, r + (n1 - 0.5) * 0.22) * smoothstep(0.16, 0.24, r);
+        float innerFoam = collar * (0.38 + 0.62 * lace);
         float ripple = smoothstep(0.045, 0.0, abs(fract(r * 2.4 - uTime * 0.38 + n1 * 0.18) - 0.5) - 0.44);
         float radialFade = (1.0 - smoothstep(0.32, 0.96, r)) * smoothstep(0.20, 0.28, r);
-        // Suyu delme dalga halkası: 0.24'ten 0.96'ya doğru dışa yayılır ve yumuşakça sönümlenir
         float breachR = 0.24 + uBreach * 0.72;
         float breachFade = sin(clamp(uBreach, 0.0, 1.0) * 3.14159);
-        float breachWave = smoothstep(0.085, 0.0, abs(r - breachR + (n1 - 0.5) * 0.09)) * breachFade * (0.55 + 0.45 * lace);
-        float alpha = (innerFoam * 0.68 + ripple * radialFade * (0.24 + 0.25 * n2) + breachWave * 0.78) * uVis;
-        vec3 col = mix(vec3(0.72, 0.88, 0.94), vec3(0.98, 0.99, 0.98), clamp(innerFoam + breachWave * 0.5, 0.0, 1.0));
-        gl_FragColor = vec4(col, clamp(alpha, 0.0, 0.84));
+        float breachWave = smoothstep(0.088, 0.0, abs(r - breachR + (n1 - 0.5) * 0.09)) * breachFade * (0.58 + 0.42 * lace);
+        float alpha = (innerFoam * 0.72 + ripple * radialFade * (0.26 + 0.25 * n2) + breachWave * 0.82) * uVis;
+        vec3 dayFoam = mix(vec3(0.68, 0.89, 0.95), vec3(0.99, 1.0, 0.99), clamp(innerFoam + breachWave * 0.55, 0.0, 1.0));
+        vec3 nightFoam = mix(vec3(0.22, 0.34, 0.48), vec3(0.56, 0.68, 0.82), clamp(innerFoam + breachWave * 0.5, 0.0, 1.0));
+        vec3 col = mix(dayFoam, nightFoam, uNight);
+        gl_FragColor = vec4(col, clamp(alpha, 0.0, 0.86));
       }`
   });
 }
@@ -1463,7 +1470,7 @@ function createPillars(uTime, uPx, uNight, count = 6) {
     group.add(col);
 
     // Su yüzeyinde (y = 0.24) dev sütunu saran köpük & genişleyen dalga halkası
-    const foamMat = createFoamRingMaterial(uTime);
+    const foamMat = createFoamRingMaterial(uTime, uNight);
     const foam = new THREE.Mesh(foamGeo, foamMat);
     foam.position.set(baseXZ.x, 0.24, baseXZ.z);
     foam.renderOrder = 2;

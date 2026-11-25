@@ -61,13 +61,17 @@
 }
 .tunnel__portal-ring {
   position: absolute; inset: 0; border-radius: 50%;
-  border: 2px solid #8A6845;
-  box-shadow: 0 0 18px rgba(138, 104, 69, .55), inset 0 0 18px rgba(138, 104, 69, .35);
+  border: 2px solid #D8A972;
+  box-shadow: 0 0 22px rgba(216, 169, 114, .65), inset 0 0 18px rgba(22, 74, 112, .45);
 }
-/* halkanın içi: ortası açık, kenara doğru mavi ve saydam */
+/* halkanın içi: sıcak çekirdekten derin deniz mavisine optik geçiş */
 .tunnel__portal-core {
-  position: absolute; inset: 6%; border-radius: 50%;
-  background: radial-gradient(circle, rgba(184, 165, 138, .9) 0%, rgba(138, 104, 69, .35) 45%, rgba(138, 104, 69, 0) 72%);
+  position: absolute; inset: 5%; border-radius: 50%;
+  background: radial-gradient(circle,
+    rgba(255, 248, 232, .94) 0%,
+    rgba(216, 169, 114, .46) 36%,
+    rgba(22, 74, 112, .22) 64%,
+    rgba(16, 24, 32, 0) 78%);
 }
 
 /* ---------- Parlama: portaldan geçerken tek sefer (opaklık js'te, en fazla 0.85) ---------- */

@@ -173,7 +173,7 @@ function createTravertineMaterial({ blocks = false, tone = 1.0, roughness = 0.84
          vec3 r2 = cross(normal, sX);
          float det = dot(sX, r1);
          vec3 sg = sign(det) * (dFdx(hT) * r1 + dFdy(hT) * r2);
-         normal = normalize(abs(det) * normal - 0.075 * sg);`
+         normal = normalize(abs(det) * normal - 0.092 * sg);`
       );
   };
   mat.customProgramCacheKey = () => `trav_${blocks}_${tone}_${roughness}`;
@@ -228,25 +228,26 @@ function createColumnCapitalGeo() {
   return geo;
 }
 
-function buildMediterraneanColumn(stoneMat, bronzeMat) {
-  const col = new THREE.Group();
-  // Kaide bloğu + torus bileziği
-  const plinth = new THREE.Mesh(new THREE.BoxGeometry(1.16, 0.26, 1.16), stoneMat);
-  plinth.position.y = 0.13;
-  const torus = new THREE.Mesh(new THREE.CylinderGeometry(0.46, 0.53, 0.20, 28), stoneMat);
-  torus.position.y = 0.36;
-  // Yivli gövde
-  const shaft = new THREE.Mesh(createFlutedShaftGeo(0.37, 0.44, 4.30, 16), stoneMat);
-  shaft.position.y = 2.61;
-  // Başlık + bronz şerit + abaküs
-  const cap = new THREE.Mesh(createColumnCapitalGeo(), stoneMat);
-  cap.position.y = 4.76;
-  const trim = new THREE.Mesh(new THREE.BoxGeometry(1.24, 0.055, 1.24), bronzeMat);
-  trim.position.y = 5.21;
-  const abacus = new THREE.Mesh(new THREE.BoxGeometry(1.22, 0.22, 1.22), stoneMat);
-  abacus.position.y = 5.34;
-  col.add(plinth, torus, shaft, cap, trim, abacus);
-  return col;
+function createColumnFactory(stoneMat, bronzeMat) {
+  // Tek seferde üretilen paylaşımlı sütun geometrileri (10 sütunda 10x daha az GPU belleği)
+  const plinthGeo = new THREE.BoxGeometry(1.16, 0.26, 1.16);
+  const torusGeo = new THREE.CylinderGeometry(0.46, 0.53, 0.20, 28);
+  const shaftGeo = createFlutedShaftGeo(0.37, 0.44, 4.30, 16);
+  const capGeo = createColumnCapitalGeo();
+  const trimGeo = new THREE.BoxGeometry(1.24, 0.055, 1.24);
+  const abacusGeo = new THREE.BoxGeometry(1.22, 0.22, 1.22);
+
+  return function buildMediterraneanColumn() {
+    const col = new THREE.Group();
+    const plinth = new THREE.Mesh(plinthGeo, stoneMat); plinth.position.y = 0.13;
+    const torus = new THREE.Mesh(torusGeo, stoneMat); torus.position.y = 0.36;
+    const shaft = new THREE.Mesh(shaftGeo, stoneMat); shaft.position.y = 2.61;
+    const cap = new THREE.Mesh(capGeo, stoneMat); cap.position.y = 4.76;
+    const trim = new THREE.Mesh(trimGeo, bronzeMat); trim.position.y = 5.21;
+    const abacus = new THREE.Mesh(abacusGeo, stoneMat); abacus.position.y = 5.34;
+    col.add(plinth, torus, shaft, cap, trim, abacus);
+    return col;
+  };
 }
 
 /* ---------- 3) Gündüz / Gece Geçişli Akdeniz Gökyüzü Kubbesi ---------- */
@@ -264,40 +265,51 @@ function createGrottoSky(uTime, uNight) {
       uniform float uTime, uNight;
       varying vec3 vDir;
       float hash(vec2 p){ return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453123); }
+      float vnoise(vec2 p){
+        vec2 i = floor(p), f = fract(p), u = f * f * (3.0 - 2.0 * f);
+        return mix(mix(hash(i), hash(i + vec2(1.0, 0.0)), u.x), mix(hash(i + vec2(0.0, 1.0)), hash(i + vec2(1.0, 1.0)), u.x), u.y);
+      }
       void main() {
         vec3 d = normalize(vDir);
         float h = clamp(d.y, 0.0, 1.0);
 
-        // Gündüz: berrak Ekmeksiz Plajı Akdeniz gökyüzü
-        vec3 dayZen = vec3(0.14, 0.44, 0.78);
-        vec3 dayMid = vec3(0.42, 0.70, 0.90);
+        // Gündüz: berrak Ekmeksiz Plajı Akdeniz gökyüzü + hafif yüksek sirüs bulutları
+        vec3 dayZen = vec3(0.13, 0.42, 0.77);
+        vec3 dayMid = vec3(0.41, 0.69, 0.90);
         vec3 dayHor = vec3(0.76, 0.89, 0.96);
         vec3 dayCol = mix(dayHor, dayMid, smoothstep(0.0, 0.22, h));
         dayCol = mix(dayCol, dayZen, smoothstep(0.18, 0.72, h));
         vec3 sunDir = normalize(vec3(-0.56, 0.36, -0.74));
         float sd = max(0.0, dot(d, sunDir));
-        dayCol += vec3(1.0, 0.96, 0.86) * (pow(sd, 10.0) * 0.24 + pow(sd, 96.0) * 0.55);
+        dayCol += vec3(1.0, 0.96, 0.86) * (pow(sd, 10.0) * 0.26 + pow(sd, 96.0) * 0.58);
+        if (d.y > 0.04 && uNight < 0.95) {
+          vec2 cuv = d.xz / (d.y + 0.22) * 0.65 + vec2(uTime * 0.008, -uTime * 0.003);
+          float cl = vnoise(cuv) * 0.65 + vnoise(cuv * 2.3 + 4.1) * 0.35;
+          float cmask = smoothstep(0.54, 0.84, cl) * smoothstep(0.04, 0.20, d.y) * (1.0 - smoothstep(0.55, 0.92, d.y));
+          dayCol = mix(dayCol, vec3(0.97, 0.98, 1.0), cmask * 0.34);
+        }
 
-        // Gece: ay ışıklı berrak gece gökyüzü + yıldızlar
-        vec3 nightZen = vec3(0.025, 0.055, 0.115);
-        vec3 nightMid = vec3(0.065, 0.145, 0.255);
-        vec3 nightHor = vec3(0.16, 0.30, 0.44);
+        // Gece: ay ışıklı berrak gece gökyüzü + renk sıcaklıklı yıldızlar
+        vec3 nightZen = vec3(0.022, 0.050, 0.108);
+        vec3 nightMid = vec3(0.060, 0.138, 0.245);
+        vec3 nightHor = vec3(0.15, 0.28, 0.42);
         vec3 nightCol = mix(nightHor, nightMid, smoothstep(0.0, 0.24, h));
         nightCol = mix(nightCol, nightZen, smoothstep(0.20, 0.72, h));
 
         vec3 moonDir = normalize(vec3(-0.62, 0.22, -0.75));
         float md = max(0.0, dot(d, moonDir));
-        nightCol += vec3(0.55, 0.72, 0.92) * pow(md, 14.0) * 0.42;
-        nightCol += vec3(0.95, 0.96, 1.0) * smoothstep(0.9992, 0.9997, md) * 1.4;
+        nightCol += vec3(0.56, 0.74, 0.95) * (pow(md, 12.0) * 0.46 + pow(md, 48.0) * 0.32);
+        nightCol += vec3(0.97, 0.98, 1.0) * smoothstep(0.9992, 0.9997, md) * 1.45;
         nightCol += vec3(0.14, 0.24, 0.34) * exp(-abs(d.y) * 14.0) * 0.55;
 
         if (uNight > 0.15 && d.y > 0.03) {
           vec2 sg = floor(d.xz / (d.y + 0.35) * 95.0);
           float r = hash(sg);
-          if (r > 0.992) {
-            float tw = 0.65 + 0.35 * sin(uTime * (1.8 + fract(r * 73.0) * 3.0) + r * 60.0);
-            float star = smoothstep(0.992, 0.9995, r) * tw * smoothstep(0.03, 0.22, d.y);
-            nightCol += vec3(0.88, 0.93, 1.0) * star * 1.25 * smoothstep(0.15, 0.85, uNight);
+          if (r > 0.991) {
+            float tw = 0.62 + 0.38 * sin(uTime * (1.8 + fract(r * 73.0) * 3.0) + r * 60.0);
+            float star = smoothstep(0.991, 0.9994, r) * tw * smoothstep(0.03, 0.22, d.y);
+            vec3 sCol = mix(vec3(0.84, 0.92, 1.0), vec3(1.0, 0.90, 0.74), step(0.72, fract(r * 41.0)));
+            nightCol += sCol * star * 1.35 * smoothstep(0.15, 0.85, uNight);
           }
         }
 
@@ -362,15 +374,20 @@ function createGrottoSea(uTime, uNight) {
         vec3 shallowCol = mix(dayShallow, nightShallow, uNight);
         vec3 skyRefl = mix(daySky, nightSky, uNight);
 
-        vec3 col = mix(deepCol, shallowCol, shallow * mix(0.88, 0.76, uNight));
+        vec3 col = mix(deepCol, shallowCol, shallow * mix(0.90, 0.76, uNight));
+        // Dalga tepelerinde ince Akdeniz turkuaz alt-yüzey parıltısı
+        float crestGlow = smoothstep(0.12, 0.68, h0) * (1.0 - uNight * 0.75) * shallow;
+        col += vec3(0.08, 0.42, 0.44) * crestGlow * 0.32;
         col = mix(col, skyRefl, fres * mix(0.55, 0.72, uNight));
 
         vec3 L = normalize(mix(vec3(-0.56, 0.38, -0.74), vec3(-0.62, 0.26, -0.75), uNight));
         vec3 H = normalize(L + V);
-        float specBroad = pow(max(dot(N, H), 0.0), 42.0);
-        float specSharp = pow(max(dot(N, H), 0.0), 240.0);
-        vec3 specCol = mix(vec3(1.0, 0.97, 0.88), vec3(0.75, 0.88, 1.0), uNight);
-        col += specCol * (specBroad * 0.42 + specSharp * 1.55);
+        float ndh = max(dot(N, H), 0.0);
+        float specBroad = pow(ndh, 38.0);
+        float specSharp = pow(ndh, 240.0);
+        float specGlint = pow(ndh, 640.0);
+        vec3 specCol = mix(vec3(1.0, 0.97, 0.88), vec3(0.78, 0.90, 1.0), uNight);
+        col += specCol * (specBroad * 0.40 + specSharp * 1.45 + specGlint * 1.25);
 
         float shoreLine = smoothstep(-9.0, -3.5, vWorld.x) * (1.0 - smoothstep(-3.2, -1.6, vWorld.x));
         float foamWave = smoothstep(0.15, 0.65, sin(vWorld.z * 0.45 + uTime * 1.8 + h0 * 2.5) * 0.5 + 0.5);
@@ -481,6 +498,32 @@ function createCampfire(pos) {
   emberBed.rotation.x = -Math.PI / 2;
   emberBed.position.y = 0.15;
   group.add(emberBed);
+
+  // Taş halkanın etrafındaki traverten zeminde ateşle nefes alan sıcak yansıma halesi
+  const groundGlowUniforms = { uFire: emberUniforms.uFire, uTime: emberUniforms.uTime };
+  const groundGlowMat = new THREE.ShaderMaterial({
+    uniforms: groundGlowUniforms,
+    transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, toneMapped: false,
+    vertexShader: /* glsl */`
+      varying vec2 vUv;
+      void main() { vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }`,
+    fragmentShader: /* glsl */`
+      uniform float uFire, uTime;
+      varying vec2 vUv;
+      void main() {
+        float r = length((vUv - 0.5) * 2.0);
+        if (r > 1.0) discard;
+        float flick = 0.92 + 0.08 * sin(uTime * 8.4) + 0.05 * cos(uTime * 14.2);
+        float falloff = pow(1.0 - r, 2.6) * smoothstep(0.18, 0.42, r);
+        float a = falloff * mix(0.10, 0.42, uFire) * flick;
+        vec3 col = mix(vec3(0.92, 0.24, 0.03), vec3(1.0, 0.58, 0.18), uFire * (1.0 - r));
+        gl_FragColor = vec4(col, a);
+      }`
+  });
+  const groundGlow = new THREE.Mesh(new THREE.CircleGeometry(4.2, 28), groundGlowMat);
+  groundGlow.rotation.x = -Math.PI / 2;
+  groundGlow.position.y = 0.015;
+  group.add(groundGlow);
 
   // 28 adet 3B kömür / kor parçası (ocak içinde gerçek hacim)
   const coalGeo = new THREE.DodecahedronGeometry(0.11, 0);
@@ -773,6 +816,9 @@ function initCave3D() {
   try {
     renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false, powerPreference: 'high-performance' });
   } catch (e) {
+    document.body.classList.remove('has-cave-3d');
+    galleryEl.classList.remove('is-cave-3d');
+    contactEl.classList.remove('is-cave-contact');
     return;
   }
 
@@ -872,19 +918,14 @@ function initCave3D() {
   cornice.position.set(WALL_X - 0.12, ROOF_Y - 0.12, -19.25);
   scene.add(cornice);
 
-  // 3) Sol deniz kenarı boyunca sıralı 9 yivli Antik Akdeniz Traverten Sütunu!
-  const colPositionsZ = [4, -3.5, -11, -18.5, -26, -33.5, -41, -48.5, -56];
+  // 3) Sol deniz kenarı boyunca sıralı 10 yivli Antik Akdeniz Traverten Sütunu (paylaşımlı geometri!)
+  const makeColumn = createColumnFactory(travColumnMat, bronzeMat);
+  const colPositionsZ = [4, -3.5, -11, -18.5, -26, -33.5, -41, -48.5, -56, -62.2];
   colPositionsZ.forEach((cz) => {
-    const c = buildMediterraneanColumn(travColumnMat, bronzeMat);
+    const c = makeColumn();
     c.position.set(COL_X, FLOOR_Y + 0.24, cz);
     scene.add(c);
   });
-  // Kamp terası arka sol köşesinde bir sütun daha (deniz çerçevesini tamamlar)
-  {
-    const endCol = buildMediterraneanColumn(travColumnMat, bronzeMat);
-    endCol.position.set(COL_X, FLOOR_Y + 0.24, -62.2);
-    scene.add(endCol);
-  }
 
   // 4) Sütun başlıklarının üstünde uzanan antik traverten arşitrav (saçak) + yatay taş tavan kirişleri
   const architrave = new THREE.Mesh(new THREE.BoxGeometry(1.36, 0.72, 72), travColumnMat);
@@ -1115,12 +1156,14 @@ function initCave3D() {
   window.__toggleCampfire = toggleCampfire;
   if (promptBtn) promptBtn.addEventListener('click', toggleCampfire);
 
-  // ---------- Raycast ----------
+  // ---------- Raycast (sadece imleç hareket ettiğinde veya seyrek aralıkla çalışır → düşük CPU) ----------
   const raycaster = new THREE.Raycaster();
   const pointer = new THREE.Vector2(-9, -9);
   let mx = 0, my = 0;
   let hoveredPhoto = -1;
   let hoveredFire = false;
+  let pointerDirty = false;
+  let rayTick = 0;
 
   const isBlockedTarget = (el) => {
     if (!el || !el.closest) return false;
@@ -1133,6 +1176,7 @@ function initCave3D() {
       my = e.clientY / window.innerHeight - 0.5;
       pointer.x = (e.clientX / window.innerWidth) * 2 - 1;
       pointer.y = -(e.clientY / window.innerHeight) * 2 + 1;
+      pointerDirty = true;
     }, { passive: true });
   }
 
@@ -1183,7 +1227,13 @@ function initCave3D() {
     stage.style.visibility = on ? 'visible' : 'hidden';
     running = on;
   }
-  window.addEventListener('scroll', syncVisibility, { passive: true });
+  let visQueued = false;
+  function onScrollVis() {
+    if (visQueued) return;
+    visQueued = true;
+    requestAnimationFrame(() => { visQueued = false; syncVisibility(); });
+  }
+  window.addEventListener('scroll', onScrollVis, { passive: true });
   document.addEventListener('visibilitychange', syncVisibility);
   syncVisibility();
 
@@ -1272,19 +1322,26 @@ function initCave3D() {
       t.light.intensity = t.base * torchScale * (0.90 + 0.10 * Math.sin(time * 7.5 + t.phase) + 0.05 * Math.cos(time * 13.2 + t.phase));
     }
 
-    // Raycast hover
-    hoveredPhoto = -1;
-    hoveredFire = false;
+    // Raycast hover (imleç hareketinde veya her 4 karede bir — sıfır gereksiz CPU yükü)
+    rayTick = (rayTick + 1) & 3;
     if (finePointer && !mosaicOpen && !document.documentElement.classList.contains('mz-acik')) {
-      raycaster.setFromCamera(pointer, camera);
-      const hits = raycaster.intersectObjects(rayTargets, false);
-      if (hits.length) {
-        const obj = hits[0].object;
-        if (obj.userData.isCampfire && turnRight > 0.2) hoveredFire = true;
-        else if (typeof obj.userData.photoIndex === 'number' && turnRight < 0.55 && hits[0].distance < 24) {
-          hoveredPhoto = obj.userData.photoIndex;
+      if (pointerDirty || rayTick === 0) {
+        pointerDirty = false;
+        hoveredPhoto = -1;
+        hoveredFire = false;
+        raycaster.setFromCamera(pointer, camera);
+        const hits = raycaster.intersectObjects(rayTargets, false);
+        if (hits.length) {
+          const obj = hits[0].object;
+          if (obj.userData.isCampfire && turnRight > 0.2) hoveredFire = true;
+          else if (typeof obj.userData.photoIndex === 'number' && turnRight < 0.55 && hits[0].distance < 24) {
+            hoveredPhoto = obj.userData.photoIndex;
+          }
         }
       }
+    } else {
+      hoveredPhoto = -1;
+      hoveredFire = false;
     }
     document.body.classList.toggle('cave-pointer', hoveredPhoto >= 0 || hoveredFire);
 
@@ -1352,4 +1409,37 @@ function initCave3D() {
 }
 
 applyFireUI(false, false);
-initCave3D();
+
+// Masaüstünde yerleşimi hemen rezerve et (sıfır CLS), ama 3B WebGL + 12 fotoğraf dokusunu yalnızca
+// Blog/Galeri'ye yaklaşırken yükle → ilk açılış ve Fiber Tünel hiç etkilenmez!
+if (!reduce && desktopMq.matches && stage && canvas && galleryEl && contactEl && window.gsap) {
+  document.body.classList.add('has-cave-3d');
+  galleryEl.classList.add('is-cave-3d');
+  contactEl.classList.add('is-cave-contact');
+  if (window.ScrollTrigger) window.ScrollTrigger.refresh();
+  if (window.portalTransition && window.portalTransition.measure) window.portalTransition.measure();
+
+  let booted = false;
+  const bootCave = () => {
+    if (booted) return;
+    booted = true;
+    initCave3D();
+  };
+
+  const io = new IntersectionObserver((ents) => {
+    if (ents.some((e) => e.isIntersecting)) {
+      io.disconnect();
+      bootCave();
+    }
+  }, { rootMargin: '140% 0px 140% 0px' });
+
+  const blogEl = document.getElementById('blog');
+  if (blogEl) io.observe(blogEl);
+  io.observe(galleryEl);
+  io.observe(contactEl);
+
+  // Menüden doğrudan Galeri veya İletişim'e tıklanırsa hemen başlat
+  document.querySelectorAll('a[href="#galeri"], a[href="#contact"]').forEach((a) => {
+    a.addEventListener('click', bootCave, { once: true });
+  });
+}
