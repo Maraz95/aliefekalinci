@@ -3,4 +3,4 @@ Allow: /
 Disallow: /icerik/
 Disallow: /aydinlik.html
 
-Sitemap: https://maraz95.github.io/sitemap.xml
+Sitemap: https://aliefekalinci.vercel.app/sitemap.xml
