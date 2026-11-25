@@ -1754,8 +1754,8 @@ async function build() {
   const projectCount = (window.DATA && Array.isArray(window.DATA.projects) && window.DATA.projects.length) || 6;
   const pillars = createPillars(uTime, uPx, uNight, projectCount);
   const desktopMq = window.matchMedia('(min-width: 900px)');
-  pillars.group.visible = desktopMq.matches;
-  desktopMq.addEventListener('change', (e) => { pillars.group.visible = e.matches; });
+  pillars.group.visible = false;
+  desktopMq.addEventListener('change', (e) => { if (!e.matches) pillars.group.visible = false; });
   scene.add(pillars.group);
 
   // Görsel kutusu ekrandan geniş olabilir (telefonda dikey ekranda ~4 kat).
@@ -1857,7 +1857,7 @@ async function build() {
     life.update(time);
     nightSky.update(camera, time, nightEase);
     // Sütunların gizlenmesi yalnızca kamera Blog gökyüzüne kalkarken (blEase) olur; mobilde 2B kaide kullanıldığı için 3B sütun çizilmez
-    const pillarsMoved = pillars.group.visible ? pillars.update(pj, hoveredIndex, time, dt, camera, blEase) : false;
+    const pillarsMoved = desktopMq.matches ? pillars.update(pj, hoveredIndex, time, dt, camera, blEase) : false;
     if (!lowPower && pillarsMoved) renderer.shadowMap.needsUpdate = true;
     renderer.render(scene, camera);
   }

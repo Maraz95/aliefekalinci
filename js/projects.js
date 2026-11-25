@@ -85,16 +85,10 @@
     `<div class="pj-layer" data-i="${i}" ${i ? 'aria-hidden="true"' : ''}>${visual(p, false)}</div>`).join(''));
 
   els.track.innerHTML = projects.map((p, i) => `
-    <button type="button" class="pj-card" role="listitem" data-i="${i}">
+    <button type="button" class="pj-card" role="listitem" data-i="${i}" aria-label="Proje ${i + 1}">
       <span class="pj-card__sunlight" aria-hidden="true"></span>
-      <span class="pj-card__in">
-        <span class="pj-card__thumb" aria-hidden="true">${visual(p, true)}</span>
-        <span class="pj-card__num">#${p.num}</span>
-        <span class="pj-card__body">
-          <span class="pj-card__title">${esc(p.title)}</span>
-          <span class="pj-card__cat">${esc(p.category)}</span>
-          <span class="pj-card__cta">İncele →</span>
-        </span>
+      <span class="pj-card__in pj-card__in--num">
+        <span class="pj-card__digit" aria-hidden="true">${i + 1}</span>
       </span>
       <span class="pj-card__pedestal" aria-hidden="true">
         <span class="pj-ped__abacus"></span>
