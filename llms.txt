@@ -1,0 +1,17 @@
+# Ali Efe Kalinci — Kişisel Portfolyo (Sahadan Koda)
+
+> Elektrik teknikerliği saha deneyimini Akdeniz Üniversitesi Bilgisayar Programcılığı eğitimi ve yazılım geliştirme ile birleştiren Ali Efe Kalinci'nin kişisel portfolyo sitesi.
+
+- Canlı Site: https://aliefekalinci.vercel.app/
+- GitHub: https://github.com/Maraz95
+- E-posta: efekalinci4@gmail.com
+- Konum: Bolu / Merkez, Türkiye
+- Diller: Türkçe (TR), İngilizce (EN)
+
+## Sayfalar
+- [Ana Sayfa](https://aliefekalinci.vercel.app/): İnteraktif 3B fiber optik tünel, 3B Akdeniz terası, denizden yükselen 6 traverten sütunlu projeler, yıldızlı gece blogu, 3B kolonad galeri ve etkileşimli kamp ateşi.
+- [Hakkımda](https://aliefekalinci.vercel.app/hakkimda.html): Vesikalık fotoğraf, özgeçmiş, iş deneyimi (Şafak Medikal, RMS-A İstasyonu, Bilecik Full Otomatik Kümes), Akdeniz Üniversitesi 2026-2027 ders programı tablosu, ilgi alanları, yol haritası, yetenek yüzdeleri ve Python kod örneği.
+- [Projeler](https://aliefekalinci.vercel.app/projeler.html): Grafik Animasyon I dersi 6 Photoshop projesi (01 History Brush, 02 Ürün Tanıtımı, 03 Karakalem Renklendirme, 04 Smart Object, 05 Image Stack, 06 Web Arayüzü Hazırlama - THY) ile yazılım ve saha projeleri.
+- [Blog](https://aliefekalinci.vercel.app/blog.html): Yazılım fikrinin ürüne dönüşümü, Elektrik ve Yapay Zekâ, Yapay Zekâ Günlük Hayatımızı Nasıl Değiştiriyor?
+- [Galeri](https://aliefekalinci.vercel.app/galeri.html): Doğa, dağcılık, saha ve günlük hayattan 12 fotoğraf ve kısa hikâyeleri.
+- [İletişim](https://aliefekalinci.vercel.app/iletisim.html): Adres, telefon, e-posta, harita bağlantısı ve iletişim formu.

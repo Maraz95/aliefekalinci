@@ -19,6 +19,19 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=Inter+Tight:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/hakkimda.css?v=5">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "ProfilePage",
+    "url": "https://aliefekalinci.vercel.app/hakkimda.html",
+    "mainEntity": {
+      "@type": "Person",
+      "name": "Ali Efe Kalinci",
+      "jobTitle": "Bilgisayar Programcılığı Öğrencisi · Elektrik Teknikeri",
+      "affiliation": { "@type": "CollegeOrUniversity", "name": "Akdeniz Üniversitesi" }
+    }
+  }
+  </script>
 </head>
 <body>
   <!-- Menü: ana sayfadaki menüyle aynı düzen -->
@@ -33,24 +46,6 @@
       <a href="iletisim.html"><span class="nav__num">06.</span> İletişim</a>
     </nav>
   </header>
-
-<!--
-  HAKKIMDA SAYFASI — İÇERİK TASLAĞI
-  Bu dosya sadece içerik ve anlamsal HTML yapısını taşır, stil yok.
-  Claude Code bunu tasarıma uyarlayıp hakkimda.html içine yerleştirecek.
-  "TODO" yazan yerleri Ali Efe onaylayacak / düzeltecek.
-
-  Ödev şartları bu dosyada nerede karşılanıyor:
-  - Vesikalık fotoğraf ............ #ozgecmis > figure
-  - Özgeçmiş ...................... #ozgecmis, #deneyim, #egitim, #diller
-  - Ders programı tablosu ......... #ders-programi > table
-  - Sırasız liste <ul> ............ #ilgi-alanlari
-  - Sıralı liste <ol> ............. #yol-haritasi
-  - abbr .......................... RMS-A, PLC, MYO, MBIL, CEFR, Python vb.
-  - code / pre .................... #sahadan-koda
-  - blockquote .................... #sahadan-koda sonu
-  - Yetenek yüzdeleri ............. #yetenekler (progressbar)
--->
 
 <main id="main">
 
@@ -262,7 +257,6 @@
   <!-- ===================== YETENEKLER (YÜZDE GÖRSELLEŞTİRME) ===================== -->
   <section id="yetenekler" aria-labelledby="yetenek-baslik">
     <h2 id="yetenek-baslik">Yeteneklerim</h2>
-    <!-- TODO (Ali Efe): yüzdeler ÖNERİDİR, kendine göre düzelt. -->
     <ul class="yetenek-listesi">
       <li>
         <span class="yetenek-ad" id="y-python">Python</span>
@@ -329,7 +323,7 @@ for olcum in [24, 27, 29, 31]:
     <a href="index.html">← Ana sayfaya dön</a>
   </footer>
 
-  <script src="js/i18n.js?v=20"></script>
+  <script src="js/i18n.js?v=21"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
   <script src="js/hakkimda.js?v=1"></script>
