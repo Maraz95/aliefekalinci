@@ -29,6 +29,9 @@
     summary: p.summary || '',
     tags: Array.isArray(p.tags) ? p.tags : [],
     image: p.image || '',
+    beforeImage: p.beforeImage || '',
+    beforeLabel: p.beforeLabel || 'Öncesi',
+    imagePos: p.imagePos || '50% 50%',
     url: p.url || '',
     github: p.github || ''
   });
@@ -56,7 +59,13 @@
   const GITHUB = '<svg class="pj-btn__gh" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.11.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.28 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.78 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.83 1.19 3.09 0 4.42-2.69 5.39-5.26 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.68.8.56A11.5 11.5 0 0 0 12 .5z"/></svg>';
 
   function visual(p, mini) {
-    if (p.image) return `<img src="${esc(p.image)}" alt="${mini ? '' : esc(p.title)}" loading="lazy" decoding="async">`;
+    if (p.image) {
+      const pos = ` style="object-position:${esc(p.imagePos)}"`;
+      const cmp = (!mini && p.beforeImage)
+        ? `<button type="button" class="pj-frame__cmp mono" data-showing="after" data-after="${esc(p.image)}" data-before="${esc(p.beforeImage)}" data-before-label="${esc(p.beforeLabel)}"><span>Sonrası</span> · ${esc(p.beforeLabel)} gör</button>`
+        : '';
+      return `<img src="${esc(p.image)}" alt="${mini ? '' : esc(p.title)}"${pos} loading="lazy" decoding="async">${cmp}`;
+    }
     if (mini) return `<span class="pj-bignum pj-bignum--mini">${p.num}</span>`;
     const status = p.status ? `<span class="pj-status mono"><i></i>${esc(p.status)}</span>` : '';
     return `<span class="pj-bignum">${p.num}</span>${status}`;
@@ -71,7 +80,7 @@
       : `<span class="pj-btn pj-btn--fill is-pending" aria-disabled="true" title="Bağlantı henüz eklenmedi">Projeyi İncele ${ARROW}</span>`;
     const ghBtn = p.github
       ? `<a class="pj-btn pj-btn--line" href="${esc(p.github)}" target="_blank" rel="noopener">${GITHUB} GitHub<span class="sr-only"> (yeni sekmede açılır)</span></a>`
-      : `<span class="pj-btn pj-btn--line is-pending" aria-disabled="true" title="Bağlantı henüz eklenmedi">${GITHUB} GitHub</span>`;
+      : '';
     return `
       <p class="pj-meta" data-spot><span class="pj-meta__num">#${p.num}</span><span>${esc(p.category)}</span></p>
       <h3 class="pj-name" id="pjModalTitle" data-spot>${esc(p.title)}</h3>
@@ -237,6 +246,25 @@
   els.backdrop.addEventListener('click', closeModal);
   els.prev.addEventListener('click', () => { show(current - 1); if (window.__projectsHover) window.__projectsHover(current); });
   els.next.addEventListener('click', () => { show(current + 1); if (window.__projectsHover) window.__projectsHover(current); });
+
+  // Spotlight çerçevesindeki Öncesi / Sonrası karşılaştırma düğmesi
+  els.frame.addEventListener('click', (e) => {
+    const btn = e.target.closest('.pj-frame__cmp');
+    if (!btn) return;
+    const layer = btn.closest('.pj-layer');
+    const img = layer && layer.querySelector('img');
+    if (!img) return;
+    const isEn = document.documentElement.lang === 'en';
+    const bLbl = btn.dataset.beforeLabel || (isEn ? 'Before' : 'Öncesi');
+    const aLbl = isEn ? 'After' : 'Sonrası';
+    const showBefore = btn.dataset.showing === 'after';
+    img.src = showBefore ? btn.dataset.before : btn.dataset.after;
+    btn.dataset.showing = showBefore ? 'before' : 'after';
+    btn.classList.toggle('is-before', showBefore);
+    btn.innerHTML = showBefore
+      ? `<span>${esc(bLbl)}</span> · ${isEn ? 'View ' + aLbl : aLbl + ' gör'}`
+      : `<span>${esc(aLbl)}</span> · ${isEn ? 'View ' + bLbl : bLbl + ' gör'}`;
+  });
 
   // Telefonda proje detay panelinde sağa/sola kaydırarak projeler arası geçiş
   let swipeX = null, swipeY = null;

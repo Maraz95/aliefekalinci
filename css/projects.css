@@ -459,6 +459,20 @@ a.pj-btn:hover .pj-btn__arrow { transform: translateX(4px); }
 .pj-layer { position: absolute; inset: 0; }
 .pj-layer + .pj-layer { opacity: 0; visibility: hidden; }
 .pj-layer img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.pj-frame__cmp {
+  position: absolute; left: 12px; bottom: 12px; z-index: 3;
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 7px 13px; border-radius: 999px;
+  font-size: 11px; letter-spacing: .06em; text-transform: uppercase;
+  color: #F5EBD6; background: rgba(12, 19, 28, .86);
+  border: 1px solid rgba(214, 168, 114, .58);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, .55);
+  cursor: pointer; transition: background-color .25s, border-color .25s, transform .25s;
+}
+.pj-frame__cmp span { color: #F2D7A8; font-weight: 600; }
+.pj-frame__cmp:hover { background: rgba(138, 104, 69, .34); border-color: #F2D7A8; transform: translateY(-1px); }
+.pj-frame__cmp.is-before { border-color: rgba(138, 184, 224, .65); }
+.pj-frame__cmp.is-before span { color: #B4DAFF; }
 
 .pj-bignum {
   position: absolute; right: 7%; bottom: -.1em;

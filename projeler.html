@@ -19,7 +19,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=Inter+Tight:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/base.css?v=3">
-  <link rel="stylesheet" href="css/sayfa.css?v=5">
+  <link rel="stylesheet" href="css/sayfa.css?v=6">
 </head>
 <body>
   <a class="skip" href="#main">İçeriğe geç</a>
@@ -42,27 +42,134 @@
     </div>
 
     <section aria-labelledby="ga-baslik">
-      <h2 id="ga-baslik">Grafik Animasyon I Çalışmaları</h2>
-      <div class="kartlar">
-        <figure class="kart">
-          <img src="assets/images/projeler/grafik-animasyon-01.svg" alt="Grafik Animasyon I çalışma 1 (yer tutucu görsel)" width="800" height="600" loading="lazy" decoding="async">
-          <figcaption><b>Çalışma 01</b><span>Kısa açıklama eklenecek: hangi programla, hangi teknikle yapıldı.</span></figcaption>
-        </figure>
-        <figure class="kart">
-          <img src="assets/images/projeler/grafik-animasyon-02.svg" alt="Grafik Animasyon I çalışma 2 (yer tutucu görsel)" width="800" height="600" loading="lazy" decoding="async">
-          <figcaption><b>Çalışma 02</b><span>Kısa açıklama eklenecek: hangi programla, hangi teknikle yapıldı.</span></figcaption>
-        </figure>
-        <figure class="kart">
-          <img src="assets/images/projeler/grafik-animasyon-03.svg" alt="Grafik Animasyon I çalışma 3 (yer tutucu görsel)" width="800" height="600" loading="lazy" decoding="async">
-          <figcaption><b>Çalışma 03</b><span>Kısa açıklama eklenecek: hangi programla, hangi teknikle yapıldı.</span></figcaption>
-        </figure>
-        <figure class="kart">
-          <img src="assets/images/projeler/grafik-animasyon-04.svg" alt="Grafik Animasyon I çalışma 4 (yer tutucu görsel)" width="800" height="600" loading="lazy" decoding="async">
-          <figcaption><b>Çalışma 04</b><span>Kısa açıklama eklenecek: hangi programla, hangi teknikle yapıldı.</span></figcaption>
-        </figure>
+      <h2 id="ga-baslik">Grafik Animasyon I Çalışmaları (01 – 06)</h2>
+      <div class="ga-list">
+
+        <article class="ga-card" id="proje-1">
+          <button type="button" class="ga-stage" aria-label="Proje 01 görselini büyüt">
+            <img src="assets/images/projeler/proje1-sonrasi.jpg" alt="Proje 01: History Brush — kırmızı Mustang Mach 1 seçici renklendirme" loading="lazy" decoding="async">
+            <span class="ga-stage__badge">PROJE 01</span>
+            <span class="ga-stage__zoom">Tam boyut ↗</span>
+          </button>
+          <div class="ga-tabs" role="tablist" aria-label="Proje 01 görünümleri">
+            <button type="button" class="ga-tab is-active" data-src="assets/images/projeler/proje1-sonrasi.jpg" data-pos="50% 52%">Sonrası</button>
+            <button type="button" class="ga-tab" data-src="assets/images/projeler/proje1-oncesi.jpg" data-pos="50% 52%">Öncesi</button>
+          </div>
+          <div class="ga-body">
+            <h3>01 · History Brush</h3>
+            <p>Klasik kırmızı Mustang Mach 1 fotoğrafında arka plan siyah-beyaza dönüştürülüp araç Photoshop History Brush aracıyla seçici olarak renklendirildi.</p>
+            <ul class="etiketler"><li>Photoshop</li><li>History Brush</li><li>Seçici Renk</li></ul>
+          </div>
+        </article>
+
+        <article class="ga-card" id="proje-2">
+          <button type="button" class="ga-stage" aria-label="Proje 02 görselini büyüt">
+            <img src="assets/images/projeler/proje2-sonrasi.jpg" alt="Proje 02: Chrono Master otomatik saat ürün tanıtım afişi" loading="lazy" decoding="async">
+            <span class="ga-stage__badge">PROJE 02</span>
+            <span class="ga-stage__zoom">Tam boyut ↗</span>
+          </button>
+          <div class="ga-tabs" role="tablist" aria-label="Proje 02 görünümleri">
+            <button type="button" class="ga-tab is-active" data-src="assets/images/projeler/proje2-sonrasi.jpg" data-pos="50% 48%">Sonrası</button>
+            <button type="button" class="ga-tab" data-src="assets/images/projeler/proje2-oncesi.jpg" data-pos="50% 50%">Öncesi</button>
+            <button type="button" class="ga-tab" data-src="assets/images/projeler/proje2-katman-yapisi.jpg" data-pos="50% 50%">Katman Yapısı</button>
+          </div>
+          <div class="ga-body">
+            <h3>02 · Ürün Tanıtımı</h3>
+            <p>Chrono Master otomatik saat için stüdyo degrade zemin, ayna yansıması, yumuşak gölge ve tipografik ürün tanıtım afişi tasarlandı.</p>
+            <ul class="etiketler"><li>Photoshop</li><li>Ürün Afişi</li><li>Yansıma &amp; Tipografi</li></ul>
+          </div>
+        </article>
+
+        <article class="ga-card" id="proje-3">
+          <button type="button" class="ga-stage" aria-label="Proje 03 görselini büyüt">
+            <img src="assets/images/projeler/proje3-sonrasi.jpg" alt="Proje 03: Karakalem samuray çiziminin dijital renklendirmesi" style="object-position:50% 18%" loading="lazy" decoding="async">
+            <span class="ga-stage__badge">PROJE 03</span>
+            <span class="ga-stage__zoom">Tam boyut ↗</span>
+          </button>
+          <div class="ga-tabs" role="tablist" aria-label="Proje 03 görünümleri">
+            <button type="button" class="ga-tab is-active" data-src="assets/images/projeler/proje3-sonrasi.jpg" data-pos="50% 18%">Sonrası</button>
+            <button type="button" class="ga-tab" data-src="assets/images/projeler/proje3-oncesi.jpg" data-pos="50% 18%">Öncesi</button>
+            <button type="button" class="ga-tab" data-src="assets/images/projeler/proje3-katman-yapisi.jpg" data-pos="50% 50%">Katman Yapısı</button>
+          </div>
+          <div class="ga-body">
+            <h3>03 · Karakalem Renklendirme</h3>
+            <p>Siyah-beyaz samuray karakalem çizimi katmanlı boyama, kızıl zırh vurguları, gölgelendirme ve kumaş tonlamalarıyla dijital olarak renklendirildi.</p>
+            <ul class="etiketler"><li>Photoshop</li><li>Dijital Boyama</li><li>Katmanlar</li></ul>
+          </div>
+        </article>
+
+        <article class="ga-card" id="proje-4">
+          <button type="button" class="ga-stage" aria-label="Proje 04 görselini büyüt">
+            <img src="assets/images/projeler/proje4-sonrasi.jpg" alt="Proje 04: Smart Object ile Kapadokya sıcak hava balonları kompozisyonu" style="object-position:50% 42%" loading="lazy" decoding="async">
+            <span class="ga-stage__badge">PROJE 04</span>
+            <span class="ga-stage__zoom">Tam boyut ↗</span>
+          </button>
+          <div class="ga-tabs" role="tablist" aria-label="Proje 04 görünümleri">
+            <button type="button" class="ga-tab is-active" data-src="assets/images/projeler/proje4-sonrasi.jpg" data-pos="50% 42%">Sonrası</button>
+            <button type="button" class="ga-tab" data-src="assets/images/projeler/proje4-oncesi.jpg" data-pos="50% 50%">Öncesi</button>
+            <button type="button" class="ga-tab" data-src="assets/images/projeler/proje4-katman-yapisi.jpg" data-pos="50% 50%">Katman Yapısı</button>
+            <button type="button" class="ga-tab" data-src="assets/images/projeler/proje4-smart-object-oncesi.jpg" data-pos="50% 50%">SO Öncesi</button>
+            <button type="button" class="ga-tab" data-src="assets/images/projeler/proje4-smart-object-sonrasi.jpg" data-pos="50% 50%">SO Sonrası</button>
+            <button type="button" class="ga-tab" data-src="assets/images/projeler/proje4-smart-object-katman-yapisi.jpg" data-pos="50% 50%">SO Katman</button>
+          </div>
+          <div class="ga-body">
+            <h3>04 · Smart Object</h3>
+            <p>Kapadokya gün doğumu manzarasına bağlı Smart Object katmanlarıyla 7 sıcak hava balonu yerleştirilip tek kaynak üzerinden eşzamanlı düzenlendi.</p>
+            <ul class="etiketler"><li>Photoshop</li><li>Smart Object</li><li>Kompozisyon</li></ul>
+          </div>
+        </article>
+
+        <article class="ga-card" id="proje-5">
+          <button type="button" class="ga-stage" aria-label="Proje 05 görselini büyüt">
+            <img src="assets/images/projeler/proje5-sonrasi.jpg" alt="Proje 05: 30 karelik Image Stack ile gece trafiği temizleme ve ışık izi" loading="lazy" decoding="async">
+            <span class="ga-stage__badge">PROJE 05</span>
+            <span class="ga-stage__zoom">Tam boyut ↗</span>
+          </button>
+          <div class="ga-tabs" role="tablist" aria-label="Proje 05 görünümleri">
+            <button type="button" class="ga-tab is-active" data-src="assets/images/projeler/proje5-sonrasi.jpg" data-pos="50% 50%">Sonrası</button>
+            <button type="button" class="ga-tab" data-src="assets/images/projeler/proje5-oncesi.jpg" data-pos="50% 50%">Öncesi</button>
+          </div>
+          <div class="ga-body">
+            <h3>05 · Image Stack</h3>
+            <p>30 ardışık gece trafik fotoğrafı Smart Object Image Stack moduyla birleştirilerek sağ şeritteki hareketli araçlar temizlendi ve akıcı ışık izleri elde edildi.</p>
+            <ul class="etiketler"><li>Photoshop</li><li>Image Stack</li><li>30 Kare</li></ul>
+          </div>
+        </article>
+
+        <article class="ga-card" id="proje-6">
+          <button type="button" class="ga-stage" aria-label="Proje 06 görselini büyüt">
+            <img src="assets/images/projeler/proje6-sonrasi.jpg" alt="Proje 06: Türk Hava Yolları web arayüzü tasarımı" style="object-position:50% 0%" loading="lazy" decoding="async">
+            <span class="ga-stage__badge">PROJE 06</span>
+            <span class="ga-stage__zoom">Tam boyut ↗</span>
+          </button>
+          <div class="ga-tabs" role="tablist" aria-label="Proje 06 görünümleri">
+            <button type="button" class="ga-tab is-active" data-src="assets/images/projeler/proje6-sonrasi.jpg" data-pos="50% 0%">Sonrası</button>
+            <button type="button" class="ga-tab" data-src="assets/images/projeler/proje6-eskiz.jpg" data-pos="50% 0%">Eskiz</button>
+            <button type="button" class="ga-tab" data-src="assets/images/projeler/proje6-tasarim1.jpg" data-pos="50% 0%">Tasarım 1</button>
+            <button type="button" class="ga-tab" data-src="assets/images/projeler/proje6-tasarim2.jpg" data-pos="50% 0%">Tasarım 2</button>
+            <button type="button" class="ga-tab" data-src="assets/images/projeler/proje6-tasarim3.jpg" data-pos="50% 0%">Tasarım 3</button>
+            <button type="button" class="ga-tab" data-src="assets/images/projeler/proje6-katman-yapisi.jpg" data-pos="50% 50%">Katmanlar</button>
+            <button type="button" class="ga-tab" data-src="assets/images/projeler/proje6-layer-comps.jpg" data-pos="50% 50%">Layer Comps</button>
+          </div>
+          <div class="ga-body">
+            <h3>06 · Web Arayüzü Hazırlama</h3>
+            <p>Türk Hava Yolları (<a href="https://www.turkishairlines.com" target="_blank" rel="noopener">turkishairlines.com</a>) ana sayfası eskizden başlayarak 3 tasarım varyasyonu ve Layer Comps yapısıyla Photoshop'ta sıfırdan tasarlandı.</p>
+            <ul class="etiketler"><li>Photoshop</li><li>Web UI</li><li>Layer Comps</li></ul>
+          </div>
+        </article>
+
       </div>
-      <p class="not">Görseller yer tutucudur. Çalışmalarını assets/images/projeler/ klasörüne koyup açıklamaları yazacağız.</p>
     </section>
+
+    <dialog class="ga-lightbox" id="gaLightbox" aria-label="Proje görseli tam boyut">
+      <div class="ga-lightbox__head">
+        <span id="gaLightTitle">Proje Görseli</span>
+        <button type="button" class="ga-lightbox__close" id="gaLightClose" aria-label="Kapat">×</button>
+      </div>
+      <div class="ga-lightbox__body">
+        <img id="gaLightImg" src="" alt="">
+      </div>
+    </dialog>
 
     <section aria-labelledby="diger-baslik">
       <h2 id="diger-baslik">Diğer Projeler</h2>
@@ -101,6 +208,41 @@
     <span>© 2026 Ali Efe Kalinci</span>
     <span><a href="https://github.com/Maraz95" target="_blank" rel="noopener">GitHub</a> · <a href="mailto:efekalinci4@gmail.com">efekalinci4@gmail.com</a></span>
   </footer>
-  <script src="js/i18n.js?v=20"></script>
+  <script src="js/i18n.js?v=21"></script>
+  <script>
+    (() => {
+      const dlg = document.getElementById('gaLightbox');
+      const dImg = document.getElementById('gaLightImg');
+      const dTitle = document.getElementById('gaLightTitle');
+      const dClose = document.getElementById('gaLightClose');
+
+      document.querySelectorAll('.ga-card').forEach((card) => {
+        const img = card.querySelector('.ga-stage img');
+        const stage = card.querySelector('.ga-stage');
+        const title = (card.querySelector('h3') || {}).textContent || '';
+        const tabs = card.querySelectorAll('.ga-tab');
+
+        tabs.forEach((tab) => {
+          tab.addEventListener('click', () => {
+            tabs.forEach((t) => t.classList.remove('is-active'));
+            tab.classList.add('is-active');
+            img.src = tab.dataset.src;
+            img.style.objectPosition = tab.dataset.pos || '50% 50%';
+          });
+        });
+
+        stage.addEventListener('click', () => {
+          const activeTab = card.querySelector('.ga-tab.is-active');
+          dImg.src = img.src;
+          dImg.alt = img.alt;
+          dTitle.textContent = title + (activeTab ? ' — ' + activeTab.textContent : '');
+          if (dlg.showModal) dlg.showModal();
+        });
+      });
+
+      if (dClose) dClose.addEventListener('click', () => dlg.close());
+      if (dlg) dlg.addEventListener('click', (e) => { if (e.target === dlg) dlg.close(); });
+    })();
+  </script>
 </body>
 </html>

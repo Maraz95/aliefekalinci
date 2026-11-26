@@ -20,12 +20,90 @@ window.DATA = {
        url      : "Projeyi İncele" bağlantısı (boşsa buton pasif)
        github   : GitHub deposu bağlantısı (boşsa buton pasif) */
   projects: [
-    { slug: 'grafik-animasyon', title: 'Grafik Animasyon I', category: 'Ders çalışmaları', status: 'Eklenecek', summary: 'Grafik Animasyon I dersinde yaptığım çalışmalar. Görseller ve açıklamalar projeler sayfasında.', tags: ['Grafik', 'Animasyon'], image: 'assets/images/projeler/grafik-animasyon-01.svg', url: 'projeler.html', github: '' },
-    { slug: 'portfolyo', title: 'Bu Portfolyo Sitesi', category: 'Web', status: 'Yayında', summary: 'Fiber optik tünel, Blender\'da modellenip Three.js ile canlı çizilen 3B Hakkımda sahnesi ve kaydırma animasyonları.', tags: ['Three.js', 'GSAP', 'Blender', 'JavaScript'], image: '', url: 'projeler.html', github: 'https://github.com/Maraz95' },
-    { slug: 'kumes', title: 'Full Otomatik Kümes', category: 'Saha · Elektrik', status: '2026', summary: 'Bilecik\'te tam otomatik kümeste kablo çekimi ve elektrik tesisatı çalışmaları.', tags: ['Tesisat', 'Kablolama', 'Otomasyon'], image: '', url: 'projeler.html', github: '' },
-    { slug: 'rms-a', title: 'RMS-A İstasyonu', category: 'Saha · Elektrik', status: '2025', summary: 'Doğalgaz istasyonunda pano bağlantıları, saha kablolaması ve projektör montajı.', tags: ['Pano', 'Kablolama', 'Saha'], image: '', url: 'projeler.html', github: '' },
-    { slug: 'oyun', title: 'Oyun Projem', category: 'Oyun · Devlog', status: 'Geliştiriliyor', summary: 'Kendi geliştirdiğim oyun projesi. Tasarım, mekanikler ve geliştirme sürecini blogda paylaşıyorum.', tags: ['Oyun', 'Devlog', 'Kod'], image: '', url: 'projeler.html', github: 'https://github.com/Maraz95' },
-    { slug: 'otomasyon', title: 'Endüstriyel Otomasyon', category: 'PLC · Yazılım', status: 'Yakında', summary: 'Sahadaki pano ve sensör mantığını Python ve PLC kontrol arayüzleriyle birleştiren sistem çalışması.', tags: ['PLC', 'Python', 'Otomasyon'], image: '', url: 'projeler.html', github: '' }
+    {
+      slug: 'proje-1',
+      title: 'History Brush',
+      category: 'Grafik Animasyon I · Proje 01',
+      status: 'Proje 01',
+      summary: 'Klasik kırmızı Mustang Mach 1 fotoğrafında arka plan siyah-beyaza dönüştürülüp araç Photoshop History Brush aracıyla seçici olarak renklendirildi.',
+      tags: ['Photoshop', 'History Brush', 'Seçici Renk'],
+      image: 'assets/images/projeler/proje1-sonrasi.jpg',
+      beforeImage: 'assets/images/projeler/proje1-oncesi.jpg',
+      beforeLabel: 'Öncesi',
+      imagePos: '50% 52%',
+      url: 'projeler.html#proje-1',
+      github: ''
+    },
+    {
+      slug: 'proje-2',
+      title: 'Ürün Tanıtımı',
+      category: 'Grafik Animasyon I · Proje 02',
+      status: 'Proje 02',
+      summary: 'Chrono Master otomatik saat için stüdyo degrade zemin, ayna yansıması, yumuşak gölge ve tipografik ürün tanıtım afişi tasarlandı.',
+      tags: ['Photoshop', 'Ürün Afişi', 'Yansıma & Tipografi'],
+      image: 'assets/images/projeler/proje2-sonrasi.jpg',
+      beforeImage: 'assets/images/projeler/proje2-oncesi.jpg',
+      beforeLabel: 'Öncesi',
+      imagePos: '50% 48%',
+      url: 'projeler.html#proje-2',
+      github: ''
+    },
+    {
+      slug: 'proje-3',
+      title: 'Karakalem Renklendirme',
+      category: 'Grafik Animasyon I · Proje 03',
+      status: 'Proje 03',
+      summary: 'Siyah-beyaz samuray karakalem çizimi katmanlı boyama, kızıl zırh vurguları, gölgelendirme ve kumaş tonlamalarıyla renklendirildi.',
+      tags: ['Photoshop', 'Dijital Boyama', 'Katmanlar'],
+      image: 'assets/images/projeler/proje3-sonrasi.jpg',
+      beforeImage: 'assets/images/projeler/proje3-oncesi.jpg',
+      beforeLabel: 'Öncesi',
+      imagePos: '50% 18%',
+      url: 'projeler.html#proje-3',
+      github: ''
+    },
+    {
+      slug: 'proje-4',
+      title: 'Smart Object',
+      category: 'Grafik Animasyon I · Proje 04',
+      status: 'Proje 04',
+      summary: 'Kapadokya gün doğumu manzarasına bağlı Smart Object katmanlarıyla 7 sıcak hava balonu yerleştirilip tek kaynak üzerinden eşzamanlı düzenlendi.',
+      tags: ['Photoshop', 'Smart Object', 'Kompozisyon'],
+      image: 'assets/images/projeler/proje4-sonrasi.jpg',
+      beforeImage: 'assets/images/projeler/proje4-oncesi.jpg',
+      beforeLabel: 'Öncesi',
+      imagePos: '50% 42%',
+      url: 'projeler.html#proje-4',
+      github: ''
+    },
+    {
+      slug: 'proje-5',
+      title: 'Image Stack',
+      category: 'Grafik Animasyon I · Proje 05',
+      status: 'Proje 05',
+      summary: '30 ardışık gece trafik fotoğrafı Smart Object Image Stack moduyla birleştirilerek sağ şeritteki araçlar temizlendi ve akıcı ışık izleri elde edildi.',
+      tags: ['Photoshop', 'Image Stack', '30 Kare'],
+      image: 'assets/images/projeler/proje5-sonrasi.jpg',
+      beforeImage: 'assets/images/projeler/proje5-oncesi.jpg',
+      beforeLabel: 'Öncesi',
+      imagePos: '50% 50%',
+      url: 'projeler.html#proje-5',
+      github: ''
+    },
+    {
+      slug: 'proje-6',
+      title: 'Web Arayüzü Hazırlama',
+      category: 'Grafik Animasyon I · Proje 06',
+      status: 'Proje 06',
+      summary: 'Türk Hava Yolları (turkishairlines.com) ana sayfası eskizden başlayarak 3 tasarım varyasyonu ve Layer Comps yapısıyla Photoshop\'ta hazırlandı.',
+      tags: ['Photoshop', 'Web UI', 'Layer Comps'],
+      image: 'assets/images/projeler/proje6-sonrasi.jpg',
+      beforeImage: 'assets/images/projeler/proje6-eskiz.jpg',
+      beforeLabel: 'Eskiz',
+      imagePos: '50% 0%',
+      url: 'projeler.html#proje-6',
+      github: ''
+    }
   ],
 
   /* Eski proje kayıtları (silinmedi, gerekirse yukarı geri taşınabilir):
